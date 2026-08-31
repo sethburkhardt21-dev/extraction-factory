@@ -46,9 +46,9 @@
       "sha256": "28c15b13bbda1a77a867dd62484a52f6f7a6862ee1ee71f7e72f04ea9a1fb168"
     },
     {
-      "bytes": 11430,
+      "bytes": 11656,
       "path": "hermes_factory/cli.py",
-      "sha256": "12c35a4248509337c6b04d2e05eb231ccf571e9dc10671b046a0ce58e0249f48"
+      "sha256": "7478261beebcad1ec14fcbf9e82a940d683f629ecb341f81d96a7b43b4fce9e8"
     },
     {
       "bytes": 1741,
@@ -187,7 +187,7 @@
     }
   ],
   "implementation": "CPython",
-  "production_code_manifest_sha256": "01cb6f6106230704c9ca02304c6e53ead9543955087e8dbb8d73ad2ca750e9b9",
+  "production_code_manifest_sha256": "98f8e67c0568307dd9cf3ab1282dc1b8b29633e05aefe76f21077f99d2e1d113",
   "production_globs": [
     "hermes_factory/**/*.py",
     "VERSION",

@@ -45,7 +45,10 @@ def main() -> int:
     ap.add_argument("--blind", default="ollama:gpt-oss:20b", help="backend:model or 'skip'")
     ap.add_argument("--audit", default="ollama:deepseek-r1:14b", help="backend:model or 'skip'")
     ap.add_argument("--timeout", type=int, default=900)
+    ap.add_argument("--think", choices=["false", "low", "medium", "high"],
+                    help="passed to the wrapper as --ollama-think for ollama specs")
     args = ap.parse_args()
+    think_flags = ["--ollama-think", args.think] if args.think else []
 
     def spec(value: str):
         backend, _, model = value.partition(":")
@@ -59,11 +62,13 @@ def main() -> int:
     backends = []
     if args.primary != "skip":
         b, m = spec(args.primary)
-        backends.append((f"PRIMARY {b}/{m}", [py, "-B", str(SCRIPT), "--backend", b, "--model", m, "--timeout", str(args.timeout)],
+        extra = think_flags if b == "ollama" else []
+        backends.append((f"PRIMARY {b}/{m}", [py, "-B", str(SCRIPT), "--backend", b, "--model", m, "--timeout", str(args.timeout)] + extra,
                          build_primary_request(unit, "CAP-SMOKE", "RUN-SMOKE"), args.timeout + 60))
     if args.blind != "skip":
         b, m = spec(args.blind)
-        backends.append((f"BLIND {b}/{m}", [py, "-B", str(SCRIPT), "--backend", b, "--model", m, "--timeout", str(args.timeout)],
+        extra = think_flags if b == "ollama" else []
+        backends.append((f"BLIND {b}/{m}", [py, "-B", str(SCRIPT), "--backend", b, "--model", m, "--timeout", str(args.timeout)] + extra,
                          build_blind_request(unit, "CAP-SMOKE", "RUN-SMOKE"), args.timeout + 60))
     results = {}
     for name, cmd, request, timeout in backends:

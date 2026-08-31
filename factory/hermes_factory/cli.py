@@ -40,6 +40,7 @@ def _provider_from_args(args, role: str):
         underlying_family=getattr(args, prefix + "_family"),
         observed_version=getattr(args, prefix + "_version"),
         role=role,
+        timeout_seconds=args.provider_timeout,
         network_required=not local,
         certification_status="UNBENCHMARKED",
     )
@@ -237,6 +238,8 @@ def build_parser():
     r.add_argument("--primary-local", action="store_true")
     r.add_argument("--blind-local", action="store_true")
     r.add_argument("--cold-local", action="store_true")
+    r.add_argument("--provider-timeout", type=int, default=600,
+                   help="seconds the controller waits on one provider command (wrapper timeouts should be lower)")
     r.set_defaults(func=cmd_run)
 
     s = sub.add_parser("status"); s.add_argument("--run-dir", required=True); s.set_defaults(func=cmd_status)

@@ -167,8 +167,9 @@ def call_claude(model: str, system: str, user: str, timeout: int) -> str:
     return proc.stdout
 
 
-def call_ollama(model: str, system: str, user: str, timeout: int, host: str) -> str:
-    body = json.dumps({
+def call_ollama(model: str, system: str, user: str, timeout: int, host: str,
+                think: str | None = None) -> str:
+    payload = {
         "model": model,
         "messages": [
             {"role": "system", "content": system},
@@ -176,7 +177,10 @@ def call_ollama(model: str, system: str, user: str, timeout: int, host: str) -> 
         ],
         "stream": False,
         "options": {"temperature": 0.2, "num_ctx": 16384, "num_predict": 8192},
-    }).encode("utf-8")
+    }
+    if think is not None:
+        payload["think"] = False if think == "false" else think
+    body = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         host.rstrip("/") + "/api/chat", data=body,
         headers={"Content-Type": "application/json"}, method="POST",
@@ -281,6 +285,8 @@ def run(argv=None) -> int:
     parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--max-retries", type=int, default=1)
     parser.add_argument("--ollama-host", default="http://127.0.0.1:11434")
+    parser.add_argument("--ollama-think", choices=["false", "low", "medium", "high"],
+                        help="thinking control for Ollama reasoning models (false disables; low/medium/high set effort)")
     args = parser.parse_args(argv)
 
     stdin = sys.stdin
@@ -313,7 +319,8 @@ def run(argv=None) -> int:
                 if args.backend == "claude":
                     raw_text = call_claude(args.model, system, user + suffix, args.timeout)
                 else:
-                    raw_text = call_ollama(args.model, system, user + suffix, args.timeout, args.ollama_host)
+                    raw_text = call_ollama(args.model, system, user + suffix, args.timeout,
+                                           args.ollama_host, think=args.ollama_think)
                 parsed = _extract_json_object(raw_text)
             if role == "COLD_AUDIT":
                 verdict = parsed.get("verdict")

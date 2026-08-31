@@ -7,6 +7,11 @@ __pycache__/
 runs/
 handoff/*.zip
 
+# Model-extracted content quoting the rights-quarantined textbook: local + ZIP only
+factory/GOLD/
+factory/OUTPUTS/
+factory/BENCH/
+
 # ---------------------------------------------------------------------------
 # RIGHTS QUARANTINE — textbook-derived bytes. See AUDIT/INTAKE.md.
 # These must never enter git history (local or remote). They stay on disk,

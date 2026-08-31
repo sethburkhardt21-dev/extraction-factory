@@ -44,12 +44,14 @@ def parse_spec(value: str) -> tuple[str, str, str]:
     return backend, model, family
 
 
-def provider_flags(prefix: str, spec: str, timeout: int) -> list[str]:
+def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | None = None) -> list[str]:
     backend, model, family = parse_spec(spec)
     command = (
         f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
         f"--backend {backend} --model {model} --timeout {timeout}"
     )
+    if backend == "ollama" and ollama_think:
+        command += f" --ollama-think {ollama_think}"
     flags = [
         f"--{prefix}-command", command,
         f"--{prefix}-provider", backend.upper(),
@@ -76,6 +78,8 @@ def main(argv=None) -> int:
     parser.add_argument("--output", default=str(FACTORY_ROOT.parent / "runs"))
     parser.add_argument("--cold-audit-rate", type=float, default=0.25)
     parser.add_argument("--timeout-per-call", type=int, default=900)
+    parser.add_argument("--ollama-think", choices=["false", "low", "medium", "high"],
+                        help="thinking control applied to every ollama provider in this run")
     parser.add_argument("--skip-compare", action="store_true")
     args = parser.parse_args(argv)
 
@@ -99,10 +103,11 @@ def main(argv=None) -> int:
             run_cmd += ["--source-id", args.source_id]
     if args.database_09d:
         run_cmd += ["--database-09d", args.database_09d]
-    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call)
-    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call)
+    run_cmd += ["--provider-timeout", str(args.timeout_per_call + 90)]
+    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call, args.ollama_think)
+    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call, args.ollama_think)
     if args.cold:
-        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call)
+        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call, args.ollama_think)
 
     print(f"[appliance] launching factory run ({args.profile}) ...", flush=True)
     proc = subprocess.run(run_cmd, cwd=FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8")
