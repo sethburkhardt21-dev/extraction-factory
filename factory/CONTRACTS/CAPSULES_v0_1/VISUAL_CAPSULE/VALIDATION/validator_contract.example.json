@@ -1,0 +1,13 @@
+{
+  "capsule_type": "VISUAL_CAPSULE",
+  "pre_run": [
+    "manifest/source/input hashes",
+    "lease validity"
+  ],
+  "post_run": [
+    "expected outputs",
+    "receipt",
+    "output hashes"
+  ],
+  "semantic_gate_required": true
+}

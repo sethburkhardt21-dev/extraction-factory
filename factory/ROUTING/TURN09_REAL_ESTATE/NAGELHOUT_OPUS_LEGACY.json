@@ -1,0 +1,17 @@
+{
+  "estate": "Nagelhout Opus legacy",
+  "artifact_status": "KNOWN_HISTORICAL_ARCHIVE_NOT_MOUNTED_IN_TURN09_RUNTIME",
+  "route": "LEGACY_MIGRATION_SALVAGE",
+  "batch_labels": [
+    "KEEP",
+    "RECALL_HARDEN",
+    "REBUILD",
+    "PARTIAL",
+    "BLOCKED"
+  ],
+  "rules": [
+    "Do not trust completion claims.",
+    "Classify each batch before continuation.",
+    "Rebuild missing historical bytes only as new derivatives."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "hermes-benchmark-state-1.1",
+  "source_first": true,
+  "source_units_ready": true,
+  "gold_constructed": false,
+  "prior_extractions_revealed_to_gold_builder": false,
+  "model_benchmark_run": false,
+  "status": "READY_TO_CONSTRUCT_SOURCE_FIRST_GOLD"
+}

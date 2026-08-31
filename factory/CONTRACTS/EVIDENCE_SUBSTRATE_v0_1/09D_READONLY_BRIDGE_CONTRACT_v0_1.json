@@ -1,0 +1,21 @@
+{
+  "bridge_version": "0.1",
+  "direct_09d_insert_allowed": false,
+  "automatic_canonicalization_allowed": false,
+  "automatic_identity_merge_allowed": false,
+  "automatic_release_allowed": false,
+  "factory_output_role": "AUDIT_READY_CANDIDATE_AND_EVIDENCE",
+  "projection_must_preserve": [
+    "assertion_identity",
+    "exact_evidence",
+    "source_locator",
+    "provenance",
+    "qualifiers",
+    "numeric_structure",
+    "relationships",
+    "uncertainty",
+    "review_status",
+    "model_lineage",
+    "semantic_decision_receipts"
+  ]
+}

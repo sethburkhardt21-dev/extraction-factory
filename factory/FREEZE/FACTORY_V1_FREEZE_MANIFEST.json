@@ -1,0 +1,53 @@
+{
+  "freeze_version": "1.0",
+  "turn": "TURN_10",
+  "architecture_status": "FROZEN_V1",
+  "reference_runtime_status": "OFFLINE_CERTIFIED",
+  "semantic_factory_status": "NOT_EMPIRICALLY_CERTIFIED",
+  "production_status": "BLOCKED_PENDING_EMPIRICAL_GATES",
+  "frozen_components": [
+    "authority hierarchy",
+    "W0-W4 task taxonomy",
+    "S0-S3 source risk model",
+    "Tier A/B/C trust model",
+    "candidate/noncanonical rule",
+    "evidence substrate",
+    "source-unit contract",
+    "capsule contracts",
+    "blindness model",
+    "independence model",
+    "risk-adaptive topology",
+    "exception-first router",
+    "P0-P3 priorities",
+    "RCU abstraction",
+    "immutable retry/lineage policy",
+    "SQLite reference ledger contract",
+    "CAS commit semantics",
+    "sidecar-first Buzz/Hermes deployment",
+    "validator vector/gate profiles",
+    "cold-audit requirement",
+    "minimum-rework estate routing",
+    "09D read-only boundary",
+    "implementation maturity discipline"
+  ],
+  "not_frozen_as_empirical_truth": [
+    "specific model rankings",
+    "specific model certifications",
+    "soft escalation thresholds",
+    "cold-audit sampling percentages",
+    "optimal concurrency profile",
+    "optimal capsule size",
+    "provider-specific Hermes launch command",
+    "Buzz native launcher"
+  ],
+  "required_before_semantic_production": [
+    "model benchmark execution",
+    "live worker adapters",
+    "Machines pilot execution",
+    "safe concurrency test",
+    "crash/restart test",
+    "provider failover test",
+    "cold audit"
+  ],
+  "claim_boundary": "FROZEN_V1 describes the architecture and offline-certified reference runtime, not empirical proof of semantic extraction quality."
+}

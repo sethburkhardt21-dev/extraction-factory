@@ -1,0 +1,9 @@
+{
+  "required": [
+    "VAL-SOURCE-SHA",
+    "VAL-EVIDENCE-HASH",
+    "VAL-SPAN-PRESENCE",
+    "VAL-LINEAGE"
+  ],
+  "semantic_receipt_required": false
+}

@@ -1,0 +1,27 @@
+{
+  "model_id": "",
+  "provider": "",
+  "underlying_family": "",
+  "observed_version": "",
+  "cost_tier": "FREE|CHEAP|SPECIALIST|FRONTIER",
+  "eligible_work_classes": [],
+  "prohibited_closure_classes": [
+    "W3",
+    "W4"
+  ],
+  "metrics": {
+    "proposition_recall": null,
+    "precision": null,
+    "numeric_census_recall": null,
+    "numeric_binding_accuracy": null,
+    "qualifier_detection_recall": null,
+    "qualifier_binding_accuracy": null,
+    "relationship_fidelity": null,
+    "atomicity": null,
+    "evidence_fidelity": null,
+    "visual_accuracy": null,
+    "useful_review_yield": null,
+    "long_session_reliability": null
+  },
+  "calibration_status": "UNBENCHMARKED"
+}

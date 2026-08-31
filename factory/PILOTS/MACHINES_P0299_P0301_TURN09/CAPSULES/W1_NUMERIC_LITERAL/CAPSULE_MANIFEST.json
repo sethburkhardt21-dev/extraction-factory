@@ -1,0 +1,43 @@
+{
+  "capsule_id": "CAP-W1_NUMERIC_LITERAL-R001",
+  "capsule_type": "NUMERIC_CAPSULE",
+  "schema_version": "0.1-turn09-pilot",
+  "parent_estate_id": "MACHINES-DORSCH-HERMES",
+  "source_id": "BOOK-DORSCH-5E",
+  "source_sha256": "379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197",
+  "pilot_derivative_sha256": "4395d2ff6f0204ae2539d4e97a6901bc021346640a3ec26b78f408f878e7959e",
+  "source_unit_ids": [
+    "SU-DORSCH-P0299-VAPORPRESSURE",
+    "SU-DORSCH-P0299-BOILING",
+    "SU-DORSCH-P0300-PARTIALPRESSURE",
+    "SU-DORSCH-P0300_0301-TABLE6_1",
+    "SU-DORSCH-P0301-VOLUMESPERCENT",
+    "SU-DORSCH-P0301-EQUATION-PARTIAL",
+    "SU-DORSCH-P0301-HEATVAP"
+  ],
+  "work_class": "W1",
+  "source_class": "S2",
+  "blindness_class": "BLIND_SOURCE_ONLY",
+  "status": "READY_TO_EXECUTE",
+  "empirical_result_status": "NOT_RUN",
+  "expected_outputs": [
+    "numeric_inventory.jsonl",
+    "worker_receipt.json"
+  ],
+  "prohibited_actions": [
+    "outside medical knowledge",
+    "canonical promotion",
+    "silent evidence rewriting",
+    "self-certification"
+  ],
+  "primary_scope_pdf_pages": [
+    299,
+    300,
+    301
+  ],
+  "boundary_context_pdf_pages": [
+    298,
+    302
+  ],
+  "boundary_context_rule": "READ_ONLY_CONTEXT_NOT_EXTRACTION_SCOPE"
+}

@@ -1,0 +1,26 @@
+def route(exception):
+    if exception.has_source_authority_failure():
+        return block_and_recover("P0")
+
+    if exception.has_hard_trigger():
+        return specialist_or_frontier(exception.hard_trigger_destination())
+
+    score = (
+        omission_signal(exception)
+        + precision_signal(exception)
+        + residual_signal(exception)
+        + certification_signal(exception)
+        + source_risk_signal(exception)
+        + independence_signal(exception)
+        + retry_signal(exception)
+        + defect_signal(exception)
+    )
+
+    if score <= 2 and exception.all_gates_pass():
+        return local_close()
+    elif score <= 5:
+        return targeted_review()
+    elif score <= 8:
+        return tier_b_specialist()
+    else:
+        return tier_b_specialist(frontier_eligible=True)

@@ -1,0 +1,79 @@
+# Hermes Advanced v1.1 Test Report
+
+- Overall: **PASS**
+- Return code: `0`
+- Duration: `3.652` seconds
+
+```text
+test_all_known_leakage_keys_removed (test_adversarial_mutations.BlindInjectionTests.test_all_known_leakage_keys_removed) ... ok
+test_authored_status_input_is_ignored_because_api_only_uses_gates (test_adversarial_mutations.ReadinessMutationTests.test_authored_status_input_is_ignored_because_api_only_uses_gates) ... ok
+test_missing_receipt_not_run_blocks (test_adversarial_mutations.ReadinessMutationTests.test_missing_receipt_not_run_blocks) ... ok
+test_unresolved_p0_blocks (test_adversarial_mutations.ReadinessMutationTests.test_unresolved_p0_blocks) ... ok
+test_direction_cue_loss_detected (test_adversarial_mutations.SemanticMutationTests.test_direction_cue_loss_detected) ... ok
+test_dropped_may_detected (test_adversarial_mutations.SemanticMutationTests.test_dropped_may_detected) ... ok
+test_dropped_negation_detected (test_adversarial_mutations.SemanticMutationTests.test_dropped_negation_detected) ... ok
+test_numeric_literal_loss_detected (test_adversarial_mutations.SemanticMutationTests.test_numeric_literal_loss_detected) ... ok
+test_build_blind_request_never_carries_contamination (test_blindness_semantics.BlindnessTests.test_build_blind_request_never_carries_contamination) ... ok
+test_nested_forbidden_key_is_rejected (test_blindness_semantics.BlindnessTests.test_nested_forbidden_key_is_rejected) ... ok
+test_positive_allowlist_drops_eight_injections (test_blindness_semantics.BlindnessTests.test_positive_allowlist_drops_eight_injections) ... ok
+test_numeric_literal_preserves_unit_and_range (test_blindness_semantics.LiteralTests.test_numeric_literal_preserves_unit_and_range) ... ok
+test_qualifiers_detect_may_when_not (test_blindness_semantics.LiteralTests.test_qualifiers_detect_may_when_not) ... ok
+test_relationship_direction_inventory (test_blindness_semantics.LiteralTests.test_relationship_direction_inventory) ... ok
+test_extractor_cannot_set_canonical (test_blindness_semantics.SemanticTests.test_extractor_cannot_set_canonical) ... ok
+test_fixture_primary_and_blind_are_noncanonical (test_blindness_semantics.SemanticTests.test_fixture_primary_and_blind_are_noncanonical) ... ok
+test_non_source_evidence_rejected (test_blindness_semantics.SemanticTests.test_non_source_evidence_rejected) ... ok
+test_family_groups_exact_evidence_only (test_blindness_semantics.UnionTests.test_family_groups_exact_evidence_only) ... ok
+test_table_is_routed_to_specialist_queue (test_blindness_semantics.UnionTests.test_table_is_routed_to_specialist_queue) ... ok
+test_union_preserves_distinct_candidate_origins (test_blindness_semantics.UnionTests.test_union_preserves_distinct_candidate_origins) ... ok
+test_wrapper_bridges_through_json_command_provider (test_cold_audit_semantic_and_providers.EchoBackendBridgeTests.test_wrapper_bridges_through_json_command_provider) ... ok
+test_wrapper_cold_audit_role_roundtrip (test_cold_audit_semantic_and_providers.EchoBackendBridgeTests.test_wrapper_cold_audit_role_roundtrip) ... ok
+test_ambiguous_normalized_match_rejected (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_ambiguous_normalized_match_rejected) ... ok
+test_exact_substring_passes (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_exact_substring_passes) ... ok
+test_fabricated_evidence_rejected (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_fabricated_evidence_rejected) ... ok
+test_json_extraction_handles_fences_and_think_blocks (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_json_extraction_handles_fences_and_think_blocks) ... ok
+test_trimmed_evidence_recovered (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_trimmed_evidence_recovered) ... ok
+test_whitespace_normalized_recovery_uses_source_bytes (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_whitespace_normalized_recovery_uses_source_bytes) ... ok
+test_auditor_crash_is_a_finding_not_a_crash (test_cold_audit_semantic_and_providers.SemanticColdAuditTests.test_auditor_crash_is_a_finding_not_a_crash) ... ok
+test_empty_sample_cannot_pass (test_cold_audit_semantic_and_providers.SemanticColdAuditTests.test_empty_sample_cannot_pass) ... ok
+test_independent_supportive_auditor_passes (test_cold_audit_semantic_and_providers.SemanticColdAuditTests.test_independent_supportive_auditor_passes) ... ok
+test_same_family_auditor_cannot_pass_even_when_supportive (test_cold_audit_semantic_and_providers.SemanticColdAuditTests.test_same_family_auditor_cannot_pass_even_when_supportive) ... ok
+test_unsupported_verdicts_become_bounded_disagreements (test_cold_audit_semantic_and_providers.SemanticColdAuditTests.test_unsupported_verdicts_become_bounded_disagreements) ... ok
+test_bad_page_range (test_ingest_network.PageSpecTests.test_bad_page_range) ... ok
+test_page_ranges (test_ingest_network.PageSpecTests.test_page_ranges) ... ok
+test_machines_three_page_ingestion_if_source_available (test_ingest_network.RealPdfIngestionTests.test_machines_three_page_ingestion_if_source_available) ... skipped 'Machines source not mounted'
+test_added_production_file_detected (test_integrity_readiness.BuildIntegrityTests.test_added_production_file_detected) ... ok
+test_certified_build_detects_mutation_and_verify_does_not_recertify (test_integrity_readiness.BuildIntegrityTests.test_certified_build_detects_mutation_and_verify_does_not_recertify) ... ok
+test_package_roundtrip_and_tamper (test_integrity_readiness.PackageTests.test_package_roundtrip_and_tamper) ... ok
+test_read_only_bridge_blocks_write (test_integrity_readiness.ReadOnly09DTests.test_read_only_bridge_blocks_write) ... ok
+test_bounded_review_queue_can_be_frontier_review_ready (test_integrity_readiness.ReadinessTests.test_bounded_review_queue_can_be_frontier_review_ready) ... ok
+test_external_provider_block_yields_ready_for_provider (test_integrity_readiness.ReadinessTests.test_external_provider_block_yields_ready_for_provider) ... ok
+test_not_run_cannot_be_ready (test_integrity_readiness.ReadinessTests.test_not_run_cannot_be_ready) ... ok
+test_unbounded_review_failure_blocks (test_integrity_readiness.ReadinessTests.test_unbounded_review_failure_blocks) ... ok
+test_runtime_lock_mutation_fails (test_integrity_readiness.RuntimeLockTests.test_runtime_lock_mutation_fails) ... ok
+test_runtime_lock_roundtrip (test_integrity_readiness.RuntimeLockTests.test_runtime_lock_roundtrip) ... ok
+test_atomic_commit_and_reconciliation (test_ledger_staging.LedgerTests.test_atomic_commit_and_reconciliation) ... ok
+test_duplicate_active_lease_rejected (test_ledger_staging.LedgerTests.test_duplicate_active_lease_rejected) ... ok
+test_event_tamper_detected (test_ledger_staging.LedgerTests.test_event_tamper_detected) ... ok
+test_expired_lease_requeues (test_ledger_staging.LedgerTests.test_expired_lease_requeues) ... ok
+test_illegal_direct_accept_rejected (test_ledger_staging.LedgerTests.test_illegal_direct_accept_rejected) ... ok
+test_old_worker_after_expiry_rejected (test_ledger_staging.LedgerTests.test_old_worker_after_expiry_rejected) ... ok
+test_register_becomes_ready (test_ledger_staging.LedgerTests.test_register_becomes_ready) ... ok
+test_restart_reconstructs (test_ledger_staging.LedgerTests.test_restart_reconstructs) ... ok
+test_stale_commit_rejected (test_ledger_staging.LedgerTests.test_stale_commit_rejected) ... ok
+test_state_table_tamper_detected (test_ledger_staging.LedgerTests.test_state_table_tamper_detected) ... ok
+test_two_controllers_race_one_lease_wins (test_ledger_staging.LedgerTests.test_two_controllers_race_one_lease_wins) ... ok
+test_complete_stage_verifies (test_ledger_staging.StagingTests.test_complete_stage_verifies) ... ok
+test_post_stage_artifact_mutation_fails (test_ledger_staging.StagingTests.test_post_stage_artifact_mutation_fails) ... ok
+test_torn_stage_missing_completion_fails (test_ledger_staging.StagingTests.test_torn_stage_missing_completion_fails) ... ok
+test_absent_registry_entry_is_unbenchmarked (test_model_registry.RegistryAuthorityTests.test_absent_registry_entry_is_unbenchmarked) ... ok
+test_only_registry_status_controls_certification (test_model_registry.RegistryAuthorityTests.test_only_registry_status_controls_certification) ... ok
+test_json_stdin_stdout_provider (test_provider_and_pipeline.CommandProviderTests.test_json_stdin_stdout_provider) ... ok
+test_cloud_mode_allows_network_provider (test_provider_and_pipeline.NetworkPolicyTests.test_cloud_mode_allows_network_provider) ... ok
+test_local_only_rejects_network_provider (test_provider_and_pipeline.NetworkPolicyTests.test_local_only_rejects_network_provider) ... ok
+test_one_unit_fixture_pipeline_outputs_package_and_blocks_semantic_certification (test_provider_and_pipeline.PipelineTests.test_one_unit_fixture_pipeline_outputs_package_and_blocks_semantic_certification) ... ok
+
+----------------------------------------------------------------------
+Ran 66 tests in 3.175s
+
+OK (skipped=1)
+```

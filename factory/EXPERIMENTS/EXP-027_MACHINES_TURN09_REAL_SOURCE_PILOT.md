@@ -1,0 +1,4 @@
+# EXP-027 — Machines Turn09 Real-Source Pilot
+Status: READY_TO_EXECUTE / NOT_RUN
+
+See PILOTS/MACHINES_P0299_P0301_TURN09/.

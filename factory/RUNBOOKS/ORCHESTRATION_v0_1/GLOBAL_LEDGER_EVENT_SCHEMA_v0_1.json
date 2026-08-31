@@ -1,0 +1,16 @@
+{
+  "event_id": "",
+  "entity_type": "CAPSULE|LEASE|RUN|ESTATE|INCIDENT",
+  "entity_id": "",
+  "event_type": "",
+  "prior_version": 0,
+  "resulting_version": 1,
+  "capsule_id": "",
+  "run_id": "",
+  "lease_id": "",
+  "controller_identity": "",
+  "validator_receipts": [],
+  "artifact_hashes": {},
+  "timestamp": "",
+  "reason": ""
+}

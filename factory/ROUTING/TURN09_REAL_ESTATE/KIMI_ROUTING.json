@@ -1,0 +1,15 @@
+{
+  "estate": "Kimi historical extraction",
+  "latest_known_state": "Turn012 / 3709 ordinary candidates / exact final bytes not mounted",
+  "physically_present_artifacts": [
+    "/mnt/data/KIMI%20K3%20Textbook%20Extraction%20Work.zip",
+    "/mnt/data/Kimi_Extraction_All_Work_Through_Page_00089_2026-08-21%20%282%29.zip"
+  ],
+  "route": "HISTORICAL_EVIDENCE + BENCHMARK_CHALLENGE + FAILURE_MODE_REFERENCE",
+  "gold_status": "NOT_GOLD",
+  "rules": [
+    "Use source-first gold construction.",
+    "Reveal Kimi only in delayed challenge pass.",
+    "Do not relabel older p89 bytes as final Turn012."
+  ]
+}

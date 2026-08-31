@@ -1,0 +1,18 @@
+{
+  "status": "READY_AFTER_UNION",
+  "inputs": [
+    "source_units",
+    "union evidence families",
+    "typed disagreement labels",
+    "validator facts"
+  ],
+  "model_names_hidden_where_possible": true,
+  "decision_vocabulary": [
+    "KEEP_AS_IS",
+    "REPAIR_PROPOSAL",
+    "SPLIT_PROPOSAL",
+    "MERGE_PROPOSAL",
+    "REJECT_PROPOSAL",
+    "DEFER"
+  ]
+}

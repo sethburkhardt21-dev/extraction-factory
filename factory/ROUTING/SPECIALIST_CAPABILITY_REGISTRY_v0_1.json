@@ -1,0 +1,76 @@
+{
+  "SP-RECALL": {
+    "tasks": [
+      "under-recall",
+      "missing propositions",
+      "dense source reconstruction"
+    ]
+  },
+  "SP-NUMERIC": {
+    "tasks": [
+      "parameter binding",
+      "units",
+      "ranges",
+      "thresholds",
+      "equations"
+    ]
+  },
+  "SP-QUALIFIER": {
+    "tasks": [
+      "negation",
+      "exception",
+      "condition",
+      "timing",
+      "population",
+      "modality"
+    ]
+  },
+  "SP-RELATIONSHIP": {
+    "tasks": [
+      "subject/object",
+      "directionality",
+      "causal/comparative",
+      "cross-page endpoints"
+    ]
+  },
+  "SP-VISUAL": {
+    "tasks": [
+      "tables",
+      "figures",
+      "diagrams",
+      "OCR",
+      "visual topology"
+    ]
+  },
+  "SP-RECOVERY": {
+    "tasks": [
+      "state authority",
+      "lineage",
+      "conflicting generations",
+      "filesystem reconciliation"
+    ]
+  },
+  "SP-PRECISION": {
+    "tasks": [
+      "overbreadth",
+      "atomicity",
+      "semantic near-duplicate",
+      "unsupported inference"
+    ]
+  },
+  "FC-ADJUDICATION": {
+    "tasks": [
+      "W4 retain/repair/merge/reject/defer"
+    ]
+  },
+  "FC-COLD-AUDIT": {
+    "tasks": [
+      "independent final challenge"
+    ]
+  },
+  "FC-PATHOLOGICAL": {
+    "tasks": [
+      "rare prolonged whole-estate/highly entangled dispute"
+    ]
+  }
+}

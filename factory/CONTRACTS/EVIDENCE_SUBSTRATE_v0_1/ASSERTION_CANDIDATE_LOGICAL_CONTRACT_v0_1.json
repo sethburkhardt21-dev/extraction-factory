@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "required_fields": [
+    "candidate_id",
+    "source_unit_id",
+    "assertion_text",
+    "evidence_text",
+    "evidence_sha256",
+    "status",
+    "canonicality",
+    "qualifiers",
+    "numeric_bindings",
+    "relationships",
+    "visual_refs",
+    "uncertainty",
+    "model_lineage",
+    "review_receipts"
+  ],
+  "default_status": "SOURCE_ASSERTION_CANDIDATE",
+  "default_review_state": "UNREVIEWED",
+  "default_canonicality": "NON_CANONICAL"
+}

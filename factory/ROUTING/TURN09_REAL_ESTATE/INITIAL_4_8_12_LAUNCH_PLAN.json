@@ -1,0 +1,42 @@
+{
+  "status": "EXPERIMENTAL_UNCERTIFIED",
+  "rule": "No model assignment is production-certified until benchmark execution.",
+  "SAFE_4": [
+    {
+      "slot": 1,
+      "role": "W2_PRIMARY",
+      "model_hypothesis": "Muse Spark 1.2",
+      "authority": "candidate only"
+    },
+    {
+      "slot": 2,
+      "role": "BLIND_RECALL",
+      "model_hypothesis": "HY3 or X Preview",
+      "authority": "independent candidate only"
+    },
+    {
+      "slot": 3,
+      "role": "W1_NUMERIC_QUALIFIER_LITERAL",
+      "model_hypothesis": "X Preview / HY3",
+      "authority": "inventory only"
+    },
+    {
+      "slot": 4,
+      "role": "SPECIALIST_ON_DEMAND",
+      "model_hypothesis": "Kimi K3 / GLM / Qwen",
+      "authority": "Tier-B bounded repair only"
+    }
+  ],
+  "BALANCED_8": [
+    "4 W2 primary/free",
+    "2 blind/auxiliary",
+    "1 Tier-B specialist",
+    "1 controller/spare"
+  ],
+  "HIGH_12": [
+    "6 W2 primary/free",
+    "3 blind/specialized cheap",
+    "2 Tier-B specialists",
+    "1 controller/spare"
+  ]
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "lane": "P1-L01",
+    "route": "PARTIAL_REBUILD + RECALL_HARDEN + CONTINUE",
+    "rationale": "Preserve strong governed work; rebuild only untrusted/missing scope from frozen source.",
+    "risk": "HIGH"
+  },
+  {
+    "lane": "P1-L02",
+    "route": "RECOVER + RECONCILE",
+    "rationale": "Recover governed artifact chains first; rebuild only unrecoverable chains.",
+    "risk": "HIGH"
+  },
+  {
+    "lane": "P1-L03",
+    "route": "RECALL_HARDEN + CONTINUE",
+    "rationale": "2/7 persisted; harden surviving batches then continue missing 5.",
+    "risk": "HIGH"
+  },
+  {
+    "lane": "P1-L04",
+    "route": "RECONCILE + RETRO_RECALL_HARDEN",
+    "rationale": "7/7 complete with mixed generations; no wholesale re-extraction.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P1-L05",
+    "route": "RECALL_HARDEN + CONTINUE",
+    "rationale": "3/6 current; harden existing 3 and continue 3.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P1-L06",
+    "route": "CONTINUE + COLD_AUDIT_SAMPLE",
+    "rationale": "4/6 strong; finish 2 without reextracting strong 4.",
+    "risk": "LOW"
+  },
+  {
+    "lane": "P1-L07",
+    "route": "CONTINUE_FINAL + PACKAGE",
+    "rationale": "5/6 strong; finish final batch and cold-audit sample.",
+    "risk": "LOW"
+  },
+  {
+    "lane": "P1-L08",
+    "route": "PRECISION_REPAIR + FRONTIER_CLEANUP",
+    "rationale": "6/6 recall-hardened; DO_NOT_REEXTRACT.",
+    "risk": "LOW"
+  },
+  {
+    "lane": "P1-L09",
+    "route": "PRECISION_REPAIR + SPECIALIST_QUEUES",
+    "rationale": "6/6 but semantic debt; target repairs only.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P1-L10",
+    "route": "PACKAGE + COLD_AUDIT",
+    "rationale": "6/6 strengthened; use as exemplar; no re-extraction.",
+    "risk": "LOW"
+  }
+]

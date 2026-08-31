@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Source Unit v0.1",
+  "type": "object",
+  "required": [
+    "source_unit_id",
+    "source_id",
+    "source_version_id",
+    "source_sha256",
+    "unit_type",
+    "content_representation",
+    "locator",
+    "content_sha256",
+    "content"
+  ],
+  "properties": {
+    "source_unit_id": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "source_version_id": {
+      "type": "string"
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "unit_type": {
+      "enum": [
+        "PARAGRAPH",
+        "LIST_ITEM",
+        "TABLE",
+        "TABLE_ROW",
+        "FIGURE",
+        "CAPTION",
+        "EQUATION",
+        "HEADING",
+        "CROSS_PAGE_CONTINUATION",
+        "MIXED_REGION"
+      ]
+    },
+    "content_representation": {
+      "enum": [
+        "TEXT",
+        "TABLE",
+        "FIGURE",
+        "EQUATION",
+        "IMAGE_REGION",
+        "MIXED_LAYOUT",
+        "STRUCTURED_JSON"
+      ]
+    },
+    "locator": {
+      "type": "object"
+    },
+    "content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "content": {
+      "type": "string"
+    },
+    "rights_metadata": {
+      "type": "object"
+    },
+    "process_metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,31 @@
+{
+  "model_id": "",
+  "identity": {
+    "provider": "",
+    "public_alias": "",
+    "underlying_family": "",
+    "observed_version": ""
+  },
+  "certifications": [
+    {
+      "role": "",
+      "work_class": "",
+      "source_class": "",
+      "benchmark_version": "",
+      "status": "UNBENCHMARKED",
+      "tested_units": 0,
+      "metrics": {},
+      "worst_stratum": {},
+      "hard_gate_failures": []
+    }
+  ],
+  "operational_profile": {
+    "long_session_status": "UNBENCHMARKED",
+    "capsule_completion_rate": null,
+    "checkpoint_correctness": null,
+    "state_recovery_success": null,
+    "instruction_drift_events": null
+  },
+  "last_retest": null,
+  "retest_due": null
+}

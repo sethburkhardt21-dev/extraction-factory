@@ -1,0 +1,29 @@
+{
+  "source_id": "BOOK-DORSCH-5E",
+  "source_title": "Understanding Anesthesia Equipment",
+  "source_version_id": "BOOK-DORSCH-5E-SHA-379a5d5c7fdf",
+  "source_path_original": "/mnt/data/Machines Textbook.pdf",
+  "source_sha256": "379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197",
+  "page_count": 2724,
+  "pilot_scope_pdf_pages": [
+    299,
+    300,
+    301
+  ],
+  "pilot_derivative_sha256": "4395d2ff6f0204ae2539d4e97a6901bc021346640a3ec26b78f408f878e7959e",
+  "text_extractor": "pypdf PdfReader.pages[].extract_text()",
+  "render_status": "PASS",
+  "rights_metadata": {
+    "local_extraction_allowed": "UNKNOWN",
+    "text_data_mining_status": "UNKNOWN",
+    "redistribution_status": "UNKNOWN",
+    "commercial_reuse_status": "UNKNOWN",
+    "derivative_reuse_status": "UNKNOWN",
+    "rights_basis": "Not adjudicated in this private extraction pilot."
+  },
+  "boundary_context_pdf_pages": [
+    298,
+    302
+  ],
+  "boundary_context_rule": "READ_ONLY_CONTEXT_NOT_EXTRACTION_SCOPE"
+}

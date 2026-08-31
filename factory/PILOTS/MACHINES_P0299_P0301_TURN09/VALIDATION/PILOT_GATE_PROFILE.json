@@ -1,0 +1,21 @@
+{
+  "profile": "TURN09_MACHINES_PILOT",
+  "pre_execution": [
+    "source identity/hash",
+    "source-unit hash",
+    "exact source-unit substring",
+    "capsule manifest parse"
+  ],
+  "post_execution": [
+    "evidence hash",
+    "span presence",
+    "lineage",
+    "blindness/independence",
+    "numeric census reconciliation",
+    "qualifier census reconciliation",
+    "visual asset",
+    "residual accounting",
+    "semantic receipts where W3"
+  ],
+  "readiness_claim": "READY_TO_EXECUTE_NOT_CERTIFIED"
+}

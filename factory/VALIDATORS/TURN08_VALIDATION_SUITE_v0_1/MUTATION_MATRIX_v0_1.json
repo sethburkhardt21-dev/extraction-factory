@@ -1,0 +1,74 @@
+[
+  {
+    "id": "MUT-001",
+    "mutation": "wrong_source_sha",
+    "expected_gate": "VAL-SOURCE-SHA",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-002",
+    "mutation": "fabricated_evidence",
+    "expected_gate": "VAL-EVIDENCE-HASH/VAL-SPAN-PRESENCE",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-003",
+    "mutation": "dropped_qualifier",
+    "expected_gate": "VAL-QUALIFIER-CENSUS + semantic review",
+    "expected_result": "FAIL_REVIEW_REQUIRED"
+  },
+  {
+    "id": "MUT-004",
+    "mutation": "wrong_numeric_binding",
+    "expected_gate": "VAL-NUMERIC-CENSUS cannot alone prove; W3 semantic receipt/cold audit required",
+    "expected_result": "FAIL_REVIEW_REQUIRED"
+  },
+  {
+    "id": "MUT-005",
+    "mutation": "reversed_relationship",
+    "expected_gate": "semantic relationship gate/cold audit",
+    "expected_result": "FAIL_REVIEW_REQUIRED"
+  },
+  {
+    "id": "MUT-006",
+    "mutation": "missing_visual_asset",
+    "expected_gate": "VAL-VISUAL-ASSET",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-007",
+    "mutation": "duplicate_id",
+    "expected_gate": "VAL-ID-UNIQUE",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-008",
+    "mutation": "broken_lineage",
+    "expected_gate": "VAL-LINEAGE",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-009",
+    "mutation": "stale_parent_version",
+    "expected_gate": "VAL-CAS-VERSION",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-010",
+    "mutation": "unexplained_residual",
+    "expected_gate": "VAL-RESIDUAL-CENSUS",
+    "expected_result": "FAIL_REVIEW_REQUIRED"
+  },
+  {
+    "id": "MUT-011",
+    "mutation": "false_frontier_ready",
+    "expected_gate": "VAL-PACKAGE-CLAIMS",
+    "expected_result": "FAIL_BLOCKING"
+  },
+  {
+    "id": "MUT-012",
+    "mutation": "blindness_breach",
+    "expected_gate": "VAL-BLINDNESS",
+    "expected_result": "INVALIDATE_BLINDNESS"
+  }
+]

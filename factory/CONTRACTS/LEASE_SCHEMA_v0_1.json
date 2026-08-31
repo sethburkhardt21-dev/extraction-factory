@@ -1,0 +1,12 @@
+{
+  "lease_id": "",
+  "capsule_id": "",
+  "worker_identity": {},
+  "issued_at": "",
+  "expires_at": "",
+  "heartbeat_seconds": 300,
+  "retry_generation": 1,
+  "allowed_write_path": "OUTPUT/.staging/<run_id>/",
+  "task_role": "",
+  "status": "ISSUED|ACTIVE|EXPIRED|CANCELLED|COMPLETED"
+}

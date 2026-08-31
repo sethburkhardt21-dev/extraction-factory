@@ -1,0 +1,90 @@
+{
+  "preflight_version": "1.0-turn10",
+  "overall": "PASS",
+  "architecture_status": "FROZEN_V1",
+  "reference_runtime_status": "OFFLINE_CERTIFIED",
+  "semantic_factory_status": "NOT_EMPIRICALLY_CERTIFIED",
+  "production_status": "BLOCKED_PENDING_EMPIRICAL_GATES",
+  "checks": [
+    {
+      "check": "json:FREEZE/FACTORY_V1_FREEZE_MANIFEST.json",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "json:IMPLEMENTATION/IMPLEMENTATION_MATURITY_MATRIX_v0_1.json",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "json:CONTRACTS/EVIDENCE_SUBSTRATE_v0_1/EVIDENCE_SUBSTRATE_CONTRACT_v0_1.json",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "json:PILOTS/MACHINES_P0299_P0301_TURN09/SOURCE/source_identity.json",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "json:PILOTS/MACHINES_P0299_P0301_TURN09/SOURCE_UNITS/source_unit_manifest.json",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "json:RUNTIME_REFERENCE_v1/schemas/BUZZ_SIDECAR_REQUEST_SCHEMA.json",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "schema_coverage",
+      "status": "PASS",
+      "detail": "SCHEMA COVERAGE: PASS"
+    },
+    {
+      "check": "turn08_mutations",
+      "status": "PASS",
+      "detail": "TURN08 mutation skeleton tests: PASS"
+    },
+    {
+      "check": "turn10_runtime_tests",
+      "status": "PASS",
+      "detail": "RUNTIME_REFERENCE_TESTS: PASS"
+    },
+    {
+      "check": "turn10_real_source_mutations",
+      "status": "PASS",
+      "detail": "TURN10_REAL_SOURCE_MUTATIONS: PASS"
+    },
+    {
+      "check": "blindness:W2_PRIMARY",
+      "status": "PASS",
+      "detail": "BLINDNESS INPUT VALIDATION: PASS"
+    },
+    {
+      "check": "blindness:W2_BLIND_RECALL",
+      "status": "PASS",
+      "detail": "BLINDNESS INPUT VALIDATION: PASS"
+    },
+    {
+      "check": "blindness:W1_NUMERIC_LITERAL",
+      "status": "PASS",
+      "detail": "BLINDNESS INPUT VALIDATION: PASS"
+    },
+    {
+      "check": "blindness:W1_QUALIFIER_LITERAL",
+      "status": "PASS",
+      "detail": "BLINDNESS INPUT VALIDATION: PASS"
+    },
+    {
+      "check": "pilot_boundary_scope",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "freeze_claim_boundary",
+      "status": "PASS",
+      "detail": ""
+    }
+  ]
+}

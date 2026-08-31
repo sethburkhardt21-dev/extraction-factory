@@ -1,0 +1,13 @@
+{
+  "provider": "",
+  "public_alias": "",
+  "underlying_family": "",
+  "observed_model_version": "",
+  "context_limit": null,
+  "reasoning_level": "",
+  "tools_enabled": [],
+  "endpoint": "",
+  "cost_class": "FREE|CHEAP|SPECIALIST|FRONTIER",
+  "tested_at": "",
+  "benchmark_version": "BENCHMARK_V0_1"
+}

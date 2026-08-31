@@ -1,0 +1,9 @@
+{
+  "estate": "Understanding Anesthesia Equipment / Machines",
+  "source_path": "/mnt/data/Machines Textbook.pdf",
+  "source_sha256": "379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197",
+  "route": "VIRGIN_HERMES_DEPLOYMENT",
+  "meta_runtime_required": false,
+  "initial_action": "Turn09 pilot on PDF pages 299-301, then scale after benchmark.",
+  "production_scaling": "SAFE_4 -> BALANCED_8 -> HIGH_12 only after quality/concurrency checks"
+}

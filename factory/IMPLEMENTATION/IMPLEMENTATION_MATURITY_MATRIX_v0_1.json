@@ -1,0 +1,296 @@
+{
+  "schema_version": "0.1",
+  "turn": "TURN_09",
+  "components": [
+    {
+      "component": "source_identity",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "OFFLINE_CERTIFIED",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Need broader source-set checks",
+      "next_proof": "Verify all frozen estates"
+    },
+    {
+      "component": "page_artifacts",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "OFFLINE_CERTIFIED",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Implemented for Machines pilot only",
+      "next_proof": "Generalize generator"
+    },
+    {
+      "component": "source_units",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "OFFLINE_CERTIFIED",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Pilot segmentation only",
+      "next_proof": "Run segmentation benchmark across strata"
+    },
+    {
+      "component": "capsule_generator",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Pilot generator only",
+      "next_proof": "Generalize to estate scheduler"
+    },
+    {
+      "component": "risk_classifier",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Threshold calibration absent",
+      "next_proof": "Run EXP-003"
+    },
+    {
+      "component": "primary_worker_adapter",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "NOT_IMPLEMENTED",
+      "test_status": "NOT_IMPLEMENTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "No Hermes/provider adapter executed",
+      "next_proof": "Implement provider adapter"
+    },
+    {
+      "component": "blind_recall_adapter",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "NOT_IMPLEMENTED",
+      "test_status": "NOT_IMPLEMENTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "No live worker execution",
+      "next_proof": "Implement and benchmark"
+    },
+    {
+      "component": "numeric_literal_pass",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Prompt/contract only",
+      "next_proof": "Execute pilot"
+    },
+    {
+      "component": "numeric_binding_pass",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "Tier-B model not certified",
+      "next_proof": "Benchmark W3"
+    },
+    {
+      "component": "qualifier_pass",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Prompt/contract only",
+      "next_proof": "Execute pilot"
+    },
+    {
+      "component": "relationship_pass",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "No pilot execution",
+      "next_proof": "Execute relationship challenge"
+    },
+    {
+      "component": "visual_pass",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Assets packaged, no model run",
+      "next_proof": "Run multimodal worker"
+    },
+    {
+      "component": "deterministic_union",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "No real multi-worker outputs yet",
+      "next_proof": "Union pilot outputs"
+    },
+    {
+      "component": "evidence_family_builder",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "NOT_IMPLEMENTED",
+      "test_status": "NOT_IMPLEMENTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "Requires real outputs",
+      "next_proof": "Implement after pilot"
+    },
+    {
+      "component": "precision_reviewer",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "NOT_IMPLEMENTED",
+      "test_status": "NOT_IMPLEMENTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "No certified Tier-B worker",
+      "next_proof": "Benchmark/adapter"
+    },
+    {
+      "component": "escalation_router",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Thresholds uncalibrated",
+      "next_proof": "Run EXP-013"
+    },
+    {
+      "component": "worker_leases",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Schema only",
+      "next_proof": "Implement scheduler"
+    },
+    {
+      "component": "durable_ledger",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Backend not selected",
+      "next_proof": "Turn10 implementation decision"
+    },
+    {
+      "component": "scheduler",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "Pseudocode only",
+      "next_proof": "Implement minimal local scheduler"
+    },
+    {
+      "component": "provider_adapters",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "NOT_IMPLEMENTED",
+      "test_status": "NOT_IMPLEMENTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "No runtime adapters",
+      "next_proof": "Implement Hermes bridge"
+    },
+    {
+      "component": "buzz_bridge",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "NOT_IMPLEMENTED",
+      "test_status": "NOT_IMPLEMENTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "Native launch mode unverified",
+      "next_proof": "Run sidecar/native pilot"
+    },
+    {
+      "component": "validators",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Limited reference implementation",
+      "next_proof": "Expand against real estates"
+    },
+    {
+      "component": "mutation_tests",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Semantic mutations not fully executable",
+      "next_proof": "Add real-source canaries"
+    },
+    {
+      "component": "cold_audit_sampler",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Sampling rate uncalibrated",
+      "next_proof": "Run EXP-024"
+    },
+    {
+      "component": "package_builder",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Pilot-only packaging",
+      "next_proof": "Generalize"
+    },
+    {
+      "component": "preflight",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "OFFLINE_CERTIFIED",
+      "test_status": "OFFLINE_CERTIFIED",
+      "real_source_status": "OFFLINE_CERTIFIED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Reference-pack scope only",
+      "next_proof": "Run against real estate package"
+    },
+    {
+      "component": "benchmark_harness",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "48-unit corpus not built",
+      "next_proof": "Build/run benchmark"
+    },
+    {
+      "component": "model_certification_registry",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "BLOCKED",
+      "blocker": "No model certified",
+      "next_proof": "Run benchmark"
+    },
+    {
+      "component": "09d_audit_bridge",
+      "design_status": "OFFLINE_CERTIFIED",
+      "code_status": "SKELETON_ONLY",
+      "test_status": "IMPLEMENTED_UNTESTED",
+      "real_source_status": "NOT_IMPLEMENTED",
+      "production_status": "EXPERIMENTAL",
+      "blocker": "Projection contract only",
+      "next_proof": "Map real package to 09D audit intake"
+    }
+  ]
+}

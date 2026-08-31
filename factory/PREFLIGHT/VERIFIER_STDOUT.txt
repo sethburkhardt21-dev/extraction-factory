@@ -1,0 +1,27 @@
+HERMES FACTORY v1 PREFLIGHT: PASS
+PASS: json:FREEZE/FACTORY_V1_FREEZE_MANIFEST.json
+PASS: json:IMPLEMENTATION/IMPLEMENTATION_MATURITY_MATRIX_v0_1.json
+PASS: json:CONTRACTS/EVIDENCE_SUBSTRATE_v0_1/EVIDENCE_SUBSTRATE_CONTRACT_v0_1.json
+PASS: json:PILOTS/MACHINES_P0299_P0301_TURN09/SOURCE/source_identity.json
+PASS: json:PILOTS/MACHINES_P0299_P0301_TURN09/SOURCE_UNITS/source_unit_manifest.json
+PASS: json:RUNTIME_REFERENCE_v1/schemas/BUZZ_SIDECAR_REQUEST_SCHEMA.json
+PASS: schema_coverage
+PASS: turn08_mutations
+PASS: turn10_runtime_tests
+PASS: turn10_real_source_mutations
+PASS: blindness:W2_PRIMARY
+PASS: blindness:W2_BLIND_RECALL
+PASS: blindness:W1_NUMERIC_LITERAL
+PASS: blindness:W1_QUALIFIER_LITERAL
+PASS: pilot_boundary_scope
+PASS: freeze_claim_boundary
+Spreadsheet runtime warmup failed during python startup
+Traceback (most recent call last):
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/patches/warm_spreadsheet_runtime_on_startup.py", line 26, in warm_spreadsheet_runtime_on_startup
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/spreadsheet_warmup.py", line 785, in warm_spreadsheet_runtime
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/spreadsheet_warmup.py", line 720, in _warm_feature_flows
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/spreadsheet_warmup.py", line 704, in _warm_collaboration_flows
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/generated/interface/models.py", line 32317, in hydrate_crdt_from_proto
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/rpc/remote.py", line 749, in __call__
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/rpc/client.py", line 150, in call
+artifact_tool.rpc.client.RemoteError: hydrateCrdtFromProto requires an empty collaborative document.

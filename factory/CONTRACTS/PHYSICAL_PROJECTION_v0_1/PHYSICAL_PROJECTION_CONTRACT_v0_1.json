@@ -1,0 +1,15 @@
+{
+  "logical_contract_version": "0.1",
+  "physical_backend": "FILES_JSONL_REFERENCE",
+  "backend_status": "OFFLINE_CERTIFIED_FOR_REFERENCE_PACK",
+  "database_dependency_required": false,
+  "mappings": {
+    "TEXTBOOK_SOURCE": "SOURCE/source_identity.json",
+    "PAGE_ARTIFACT_TEXT": "SOURCE/page_text/page_####.txt",
+    "PAGE_ARTIFACT_RENDER": "SOURCE/renders/page_####.png",
+    "SOURCE_UNIT": "SOURCE_UNITS/source_units.jsonl",
+    "CAPSULE_MANIFEST": "CAPSULES/*/CAPSULE_MANIFEST.json",
+    "WORKER_OUTPUT": "CAPSULES/*/OUTPUT/.staging/<run_id>/",
+    "PREFLIGHT": "PREFLIGHT/PREFLIGHT.json"
+  }
+}
