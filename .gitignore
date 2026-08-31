@@ -20,6 +20,9 @@ factory/BENCH/
 vendor/hermes_x/**/PILOTS/**/SOURCE/
 vendor/hermes_x/**/PILOTS/**/SOURCE_UNITS/
 vendor/hermes_x/**/CAPSULES/**/SOURCE/
+factory/PILOTS/**/SOURCE/
+factory/PILOTS/**/SOURCE_UNITS/
+factory/CAPSULES/**/SOURCE/
 vendor/hermes_x/**/BENCHMARK_PACK/SOURCE_UNITS/
 vendor/hermes_bench/SOURCE_UNITS/
 vendor/hermes_bench/BENCHMARK_PACK/
