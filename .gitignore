@@ -30,3 +30,6 @@ MACHINES_P0299_P0301.jsonl
 page_0*.txt
 page_0*.png
 Machines_P0299_P0301.pdf
+
+# Deliverable snapshots (bundles embed pre-scrub history; ZIPs are sent, not versioned)
+handoff/
