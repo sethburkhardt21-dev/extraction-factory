@@ -80,6 +80,8 @@ def main() -> int:
         receipt = out.get("provider_receipt", {})
         assertions = out.get("assertions", [])
         print(f"{name}: {dur:.1f}s emitted={len(assertions)} rejected={receipt.get('rejected_count')} attempts={receipt.get('attempts')}", flush=True)
+        for rj in (out.get("provider_diagnostics", {}).get("rejected") or [])[:3]:
+            print(f"   rejected[{rj.get('ordinal')}] {rj.get('reason')}: {rj.get('evidence_head', '')[:120]}", flush=True)
         if assertions:
             a = assertions[0]
             print(f"   sample proposition: {a['proposition'][:140]}", flush=True)

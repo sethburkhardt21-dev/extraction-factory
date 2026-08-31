@@ -202,6 +202,40 @@ def call_echo(request: dict) -> dict:
     ]}
 
 
+_PUNCT_MAP = str.maketrans({
+    "‘": "'", "’": "'", "“": '"', "”": '"',
+    "–": "-", "—": "-", "−": "-", " ": " ",
+})
+
+
+def _recover_span(evidence: str, content: str) -> str | None:
+    """Locate the source span the model plainly meant and return the SOURCE's
+    own bytes for it — never the model's rendition. Escalating tolerance:
+    trim → whitespace-collapse → case-insensitive → typography-normalized.
+    Each step requires a UNIQUE match; ambiguity rejects rather than guesses.
+    """
+    trimmed = evidence.strip()
+    if trimmed and trimmed in content:
+        return trimmed
+    core = re.sub(r"\s+", " ", trimmed.translate(_PUNCT_MAP))
+    if not core:
+        return None
+    parts = [re.escape(w) for w in core.split(" ")]
+    pattern = r"\s+".join(parts)
+    for flags in (0, re.IGNORECASE):
+        matches = list(re.finditer(pattern, content, flags))
+        if len(matches) == 1:
+            return matches[0].group(0)
+        if len(matches) > 1:
+            return None
+    normalized_content = content.translate(_PUNCT_MAP)
+    if len(normalized_content) == len(content):
+        matches = list(re.finditer(pattern, normalized_content, re.IGNORECASE))
+        if len(matches) == 1:
+            return content[matches[0].start():matches[0].end()]
+    return None
+
+
 def validate_assertions(raw_assertions: list, content: str) -> tuple[list, list]:
     valid, rejected = [], []
     for idx, item in enumerate(raw_assertions[:MAX_ASSERTIONS_PER_UNIT]):
@@ -214,25 +248,15 @@ def validate_assertions(raw_assertions: list, content: str) -> tuple[list, list]
             rejected.append({"ordinal": idx, "reason": "missing_proposition_or_evidence"})
             continue
         if evidence not in content:
-            trimmed = evidence.strip()
-            if trimmed in content:
-                evidence = trimmed
-            else:
-                # Whitespace-exact recovery: locate the span the model plainly
-                # meant, then use the source's own bytes for it. Uniqueness is
-                # required; anything else is rejected, not repaired.
-                pattern = re.escape(re.sub(r"\s+", " ", trimmed))
-                pattern = pattern.replace(r"\ ", r"\s+")
-                matches = list(re.finditer(pattern, content))
-                if len(matches) == 1:
-                    evidence = matches[0].group(0)
-                else:
-                    rejected.append({
-                        "ordinal": idx,
-                        "reason": "evidence_not_exact_source_substring",
-                        "evidence_head": trimmed[:120],
-                    })
-                    continue
+            recovered = _recover_span(evidence, content)
+            if recovered is None:
+                rejected.append({
+                    "ordinal": idx,
+                    "reason": "evidence_not_exact_source_substring",
+                    "evidence_head": evidence.strip()[:160],
+                })
+                continue
+            evidence = recovered
         cleaned = dict(item)
         cleaned["proposition"] = proposition
         cleaned["evidence"] = evidence
