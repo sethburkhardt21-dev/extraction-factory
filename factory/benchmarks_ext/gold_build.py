@@ -130,6 +130,8 @@ def main(argv=None) -> int:
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--out", default=str(FACTORY_ROOT / "GOLD" / "MACHINES_P0299_P0301_v1"))
     parser.add_argument("--challenge-dir", help="directory of historical candidate JSONL files for the v2 challenge pass")
+    parser.add_argument("--phase", choices=["build-a", "build-b", "finalize", "all"], default="all",
+                        help="run one phase; build phases persist raw_builder_X.jsonl, finalize reuses them")
     args = parser.parse_args(argv)
 
     out_dir = Path(args.out)
@@ -141,9 +143,28 @@ def main(argv=None) -> int:
     jb, jm = parse_spec(args.adjudicator)
     started = time.time()
 
-    print(f"[gold] builder A = {ab}:{am}   builder B = {bb}:{bm}   adjudicator = {jb}:{jm}", flush=True)
-    rows_a = build_pass("A", ab, am, units, args.timeout, parallel=4 if ab == "claude" else 1, out_dir=out_dir)
-    rows_b = build_pass("B", bb, bm, units, args.timeout, parallel=4 if bb == "claude" else 1, out_dir=out_dir)
+    print(f"[gold] builder A = {ab}:{am}   builder B = {bb}:{bm}   adjudicator = {jb}:{jm}   phase = {args.phase}", flush=True)
+
+    def load_raw(name: str) -> list[dict]:
+        path = out_dir / f"raw_builder_{name}.jsonl"
+        if not path.exists():
+            raise SystemExit(f"phase {args.phase} needs {path.name}; run build-{name.lower()} first")
+        return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+    if args.phase in ("build-a", "all"):
+        rows_a = build_pass("A", ab, am, units, args.timeout, parallel=4 if ab == "claude" else 1, out_dir=out_dir)
+        if args.phase == "build-a":
+            print(json.dumps({"phase": "build-a", "assertions": len(rows_a)}))
+            return 0
+    else:
+        rows_a = load_raw("A")
+    if args.phase in ("build-b", "all"):
+        rows_b = build_pass("B", bb, bm, units, args.timeout, parallel=4 if bb == "claude" else 1, out_dir=out_dir)
+        if args.phase == "build-b":
+            print(json.dumps({"phase": "build-b", "assertions": len(rows_b)}))
+            return 0
+    else:
+        rows_b = load_raw("B")
 
     inventories = {
         u.source_unit_id: {
