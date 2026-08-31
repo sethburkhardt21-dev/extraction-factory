@@ -8,12 +8,13 @@ from pathlib import Path
 from .build_integrity import certify_build, write_current_manifest
 from .controller import run_factory
 from .ledger import Ledger
-from .ingest import ingest_pdf
+from .ingest import ingest_pdf, reconstruct_machines_pilot
 from .package import build_offline_package, verify_offline_package
 from .preflight import run_preflight
 from .providers.command import JSONCommandProvider
 from .providers.fixture import DeterministicFixtureProvider
 from .runtime_lock import write_runtime_lock
+from .model_registry import load_registry, resolve_model_identity
 from .test_runner import run_tests
 
 
@@ -33,16 +34,27 @@ def _provider_from_args(args, role: str):
             return None
         raise SystemExit(f"{role} provider command required for mode {args.mode}")
     local = bool(getattr(args, prefix + "_local") or args.local_provider)
+    provider_name = getattr(args, prefix + "_provider")
+    model_alias = getattr(args, prefix + "_model")
+    registry = load_registry(project_root() / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json")
+    resolved = resolve_model_identity(registry, provider_name, model_alias)
+    declared_family = getattr(args, prefix + "_family")
+    if declared_family not in (None, "", "UNCONFIGURED", resolved["underlying_family"]):
+        raise SystemExit(
+            f"declared model family {declared_family!r} conflicts with authoritative registry "
+            f"family {resolved['underlying_family']!r} for {provider_name}|{model_alias}"
+        )
     return JSONCommandProvider(
         command,
-        provider=getattr(args, prefix + "_provider"),
-        model_alias=getattr(args, prefix + "_model"),
-        underlying_family=getattr(args, prefix + "_family"),
+        provider=resolved["provider"],
+        model_alias=model_alias,
+        underlying_family=resolved["underlying_family"],
         observed_version=getattr(args, prefix + "_version"),
         role=role,
         timeout_seconds=args.provider_timeout,
         network_required=not local,
         certification_status="UNBENCHMARKED",
+        empirical_semantic_model=resolved["empirical_semantic_model"],
     )
 
 
@@ -91,6 +103,16 @@ def cmd_run(args):
         source_sha = "379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197"
         if not source_pdf.exists():
             source_pdf = None
+        if not source_units.exists():
+            if source_pdf is None:
+                raise SystemExit(
+                    "Machines pilot source units are not bundled. Supply --source-pdf pointing to the hash-pinned "
+                    "Machines textbook so pages 299-301 can be reconstructed locally."
+                )
+            ingest_dir = Path(args.output or (root / "OUTPUTS")) / "INGESTED_SOURCE_UNITS"
+            ingest_dir.mkdir(parents=True, exist_ok=True)
+            source_units = ingest_dir / "MACHINES_P0299_P0301_reconstructed.jsonl"
+            ingestion = reconstruct_machines_pilot(source_pdf, source_units)
     else:
         source_pdf = Path(args.source_pdf) if args.source_pdf else None
         if args.source_units:
