@@ -1,0 +1,11 @@
+{
+  "error": "ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\\'pmc.ncbi.nlm.nih.gov\\', port=443): Max retries exceeded with url: /api/oai/v1/mh/?verb=GetRecord&identifier=oai%3Apubmedcentral.nih.gov%3A12124693&metadataPrefix=pmc (Caused by NameResolutionError(\"HTTPSConnection(host=\\'pmc.ncbi.nlm.nih.gov\\', port=443): Failed to resolve \\'pmc.ncbi.nlm.nih.gov\\' ([Errno -3] Temporary failure in name resolution)\"))'))",
+  "error_type": "ConnectionError",
+  "evidence_schema_version": "frontier-turn3-pmc-native-canary-1.0",
+  "mass_extraction_performed": false,
+  "mass_unlock_eligible": false,
+  "pmcid": "PMC12124693",
+  "production_code_manifest_sha256": "dfd8c7ad431c1eabb38015ff0f88a233ac2c827c3ccd990f692205593c99fefa",
+  "source": "pmc",
+  "status": "BLOCKED_ENVIRONMENT_DNS"
+}

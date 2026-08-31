@@ -1,0 +1,27 @@
+{
+  "database_path": "evidence/fault_injection/frontier_relational_smoke.sqlite3",
+  "database_sha256": "c3d119074bbc0e16a6557474d7fb92345e9624af91ab1f6ee438cc3ee8d55f4d",
+  "engine": "sqlite3",
+  "evidence_schema_version": "frontier-relational-smoke-1.0",
+  "foreign_key_negative_test": "PASS",
+  "note": "Executable transactional relational smoke test only; does not certify PostgreSQL or BigQuery.",
+  "rows_by_table": {
+    "canonical_record": 39,
+    "ctg_condition": 3,
+    "ctg_phase": 6,
+    "ctg_study_record": 3,
+    "ctg_study_snapshot": 3,
+    "ingestion_run": 3,
+    "preprint_record": 35,
+    "preprint_snapshot": 35,
+    "pubmed_record": 1,
+    "pubmed_snapshot": 1,
+    "run_artifact": 17,
+    "source_observation": 39,
+    "source_record": 39
+  },
+  "rows_loaded": 224,
+  "status": "PASS",
+  "tables_loaded": 13,
+  "target_database_certification": false
+}

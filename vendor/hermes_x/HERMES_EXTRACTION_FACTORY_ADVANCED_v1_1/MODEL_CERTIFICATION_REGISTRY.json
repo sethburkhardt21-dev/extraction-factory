@@ -1,0 +1,17 @@
+{
+  "schema_version": "hermes-model-certification-registry-1.1",
+  "benchmark_version": "BENCHMARK_SOURCE_FIRST_v1_NOT_YET_GOLD",
+  "certifications": {},
+  "role_status": {
+    "PRIMARY_W2": "UNBENCHMARKED",
+    "BLIND_RECALL_W2": "UNBENCHMARKED",
+    "NUMERIC_BINDING_W3": "UNBENCHMARKED",
+    "QUALIFIER_W3": "UNBENCHMARKED",
+    "RELATIONSHIP_W3": "UNBENCHMARKED",
+    "TABLE_W3": "UNBENCHMARKED",
+    "VISUAL_W3": "UNBENCHMARKED",
+    "PRECISION_REVIEW": "UNBENCHMARKED",
+    "COLD_AUDIT": "UNBENCHMARKED"
+  },
+  "claim_boundary": "No real semantic model is certified by this registry yet. CLI/provider self-claims are not authoritative."
+}

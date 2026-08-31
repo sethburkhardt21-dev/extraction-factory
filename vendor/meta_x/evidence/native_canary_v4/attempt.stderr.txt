@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "/mnt/data/v4_work/frontier_orchestrator.py", line 132, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/mnt/data/v4_work/frontier_orchestrator.py", line 131, in main
+    a=p.parse_args(); print(json.dumps(run_orchestration(a),indent=2,sort_keys=True))
+                                       ~~~~~~~~~~~~~~~~~^^^
+  File "/mnt/data/v4_work/frontier_orchestrator.py", line 91, in run_orchestration
+    orchestration.update(status='FAIL',error='source command failed'); atomic_json(run_dir.parent/f'{run_id}.orchestration.json',orchestration); raise RuntimeError(f'source command failed: {proc.stderr[-2000:]}')
+                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: source command failed: -3] Temporary failure in name resolution)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/data/v4_work/clinicaltrials/canonical/run_extraction.py", line 53, in <module>
+    if __name__ == "__main__": main()
+                               ~~~~^^
+  File "/mnt/data/v4_work/clinicaltrials/canonical/run_extraction.py", line 51, in main
+    result = MassExtractor(ExtractionConfig(args.output, args.page_size, query, None, effective_max, args.rate, not args.no_resume, args.bulk)).run()
+  File "/mnt/data/v4_work/clinicaltrials/canonical/clinicaltrials/extractor.py", line 585, in run
+    current_version = self.client.fetch_version()
+  File "/mnt/data/v4_work/clinicaltrials/canonical/clinicaltrials/client.py", line 92, in fetch_version
+    data = self._request(API_VERSION_ENDPOINT).json()
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/v4_work/clinicaltrials/canonical/clinicaltrials/client.py", line 67, in _request
+    response = self.session.get(url, params=params or {}, timeout=timeout, stream=stream)
+  File "/opt/pyvenv/lib/python3.13/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/pyvenv/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/opt/pyvenv/lib/python3.13/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/opt/pyvenv/lib/python3.13/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='clinicaltrials.gov', port=443): Max retries exceeded with url: /api/v2/version (Caused by NameResolutionError("HTTPSConnection(host='clinicaltrials.gov', port=443): Failed to resolve 'clinicaltrials.gov' ([Errno -3] Temporary failure in name resolution)"))
+

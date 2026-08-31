@@ -1,0 +1,2027 @@
+[
+  {
+    "pmid": "36890001",
+    "x": 0.04588044062256813,
+    "y": 0.044551681727170944,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890002",
+    "x": -0.04558967053890228,
+    "y": -0.09965171664953232,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890003",
+    "x": 0.2435057908296585,
+    "y": -0.1455337256193161,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890004",
+    "x": -0.02658410742878914,
+    "y": 0.21928007900714874,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890005",
+    "x": -0.009328494779765606,
+    "y": -0.19349542260169983,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890006",
+    "x": 0.0667538195848465,
+    "y": -0.1390027552843094,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890007",
+    "x": 0.04517633095383644,
+    "y": 0.07902012765407562,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890008",
+    "x": -0.16215555369853973,
+    "y": 0.059124696999788284,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890009",
+    "x": -0.0726802721619606,
+    "y": -0.19360271096229553,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890010",
+    "x": -0.11642158031463623,
+    "y": 0.07259979099035263,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890011",
+    "x": -0.056809790432453156,
+    "y": 0.06448666751384735,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890012",
+    "x": -0.030281879007816315,
+    "y": 0.1250605583190918,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890013",
+    "x": 0.26479631662368774,
+    "y": -0.08626271039247513,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890014",
+    "x": -0.12092560529708862,
+    "y": -0.12652872502803802,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890015",
+    "x": 0.3406684994697571,
+    "y": -0.010701832361519337,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890016",
+    "x": 0.007191183511167765,
+    "y": 0.023133328184485435,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890017",
+    "x": -0.07432787865400314,
+    "y": -0.057987336069345474,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890018",
+    "x": 0.2561901807785034,
+    "y": 0.30176493525505066,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890019",
+    "x": -0.20553047955036163,
+    "y": -0.20752930641174316,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890020",
+    "x": 0.11780326068401337,
+    "y": -0.045041926205158234,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890021",
+    "x": -0.029559435322880745,
+    "y": 0.11648273468017578,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890022",
+    "x": -0.3672823905944824,
+    "y": 0.1380690485239029,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890023",
+    "x": 0.21749988198280334,
+    "y": 0.12705940008163452,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890024",
+    "x": -0.21855926513671875,
+    "y": -0.011937753297388554,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890025",
+    "x": -0.257260799407959,
+    "y": -0.1664091795682907,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890026",
+    "x": 0.40635183453559875,
+    "y": 0.0248369500041008,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890027",
+    "x": 0.11727496236562729,
+    "y": 0.3997284173965454,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890028",
+    "x": -0.04776950925588608,
+    "y": -0.0848269835114479,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890029",
+    "x": -0.07419149577617645,
+    "y": 0.0358588881790638,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890030",
+    "x": 0.001643512980081141,
+    "y": 0.045680731534957886,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890031",
+    "x": 0.24529343843460083,
+    "y": 0.1150231808423996,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890032",
+    "x": 0.19450242817401886,
+    "y": 0.05615146458148956,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890033",
+    "x": -0.2048904001712799,
+    "y": -0.08763711154460907,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890034",
+    "x": 0.04910404235124588,
+    "y": 0.13079620897769928,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890035",
+    "x": 0.03688300773501396,
+    "y": 0.07464518398046494,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890036",
+    "x": -0.18209415674209595,
+    "y": -0.12067198008298874,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890037",
+    "x": -0.03377418592572212,
+    "y": 0.12935258448123932,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890038",
+    "x": 0.09787136316299438,
+    "y": -0.03311486914753914,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890039",
+    "x": 0.13060231506824493,
+    "y": -0.16641013324260712,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890040",
+    "x": 0.08149494975805283,
+    "y": 0.014266309328377247,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890041",
+    "x": 0.12141985446214676,
+    "y": 0.0156025942414999,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890042",
+    "x": -0.15075349807739258,
+    "y": -0.19529999792575836,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890043",
+    "x": -0.13956141471862793,
+    "y": 0.08755924552679062,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890044",
+    "x": 0.2985047399997711,
+    "y": -0.15826401114463806,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890045",
+    "x": 0.020131675526499748,
+    "y": -0.268684059381485,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890046",
+    "x": 0.2558731734752655,
+    "y": -0.1224522590637207,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890047",
+    "x": -0.00431445986032486,
+    "y": 0.07345648854970932,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890048",
+    "x": 0.06443507224321365,
+    "y": 0.0859081894159317,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890049",
+    "x": -0.10373827069997787,
+    "y": 0.20793844759464264,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890050",
+    "x": -0.010490018874406815,
+    "y": -0.09170395135879517,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890051",
+    "x": 0.0792672336101532,
+    "y": -0.03266996890306473,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890052",
+    "x": -0.04687051102519035,
+    "y": 0.042247287929058075,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890053",
+    "x": -0.21879923343658447,
+    "y": -0.28632891178131104,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890054",
+    "x": -0.09817436337471008,
+    "y": -0.186120867729187,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890055",
+    "x": 0.11240286380052567,
+    "y": 0.12391550838947296,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890056",
+    "x": -0.18032030761241913,
+    "y": -0.012938807718455791,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890057",
+    "x": 0.009387522004544735,
+    "y": -0.204092875123024,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890058",
+    "x": -0.09283597022294998,
+    "y": -0.031529877334833145,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890059",
+    "x": -0.20442569255828857,
+    "y": 0.05878743156790733,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890060",
+    "x": -0.10548657923936844,
+    "y": -0.3454655408859253,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890061",
+    "x": 0.08219713717699051,
+    "y": -0.11160799860954285,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890062",
+    "x": 0.15375445783138275,
+    "y": 0.0018509224755689502,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890063",
+    "x": -0.08715979754924774,
+    "y": 0.013540160842239857,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890064",
+    "x": -0.3137630522251129,
+    "y": 0.10638289153575897,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890065",
+    "x": 0.004263556562364101,
+    "y": 0.02589426003396511,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890066",
+    "x": -0.234167218208313,
+    "y": -0.16239893436431885,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890067",
+    "x": -0.01904299668967724,
+    "y": 0.1734135001897812,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890068",
+    "x": -0.19293446838855743,
+    "y": -0.11254129558801651,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890069",
+    "x": 0.25818008184432983,
+    "y": 0.11998073756694794,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890070",
+    "x": -0.15587806701660156,
+    "y": 0.2110184282064438,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890071",
+    "x": 0.17103487253189087,
+    "y": -0.2720383107662201,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890072",
+    "x": -0.055230263620615005,
+    "y": 0.1914694905281067,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890073",
+    "x": -0.20049652457237244,
+    "y": 0.1341676115989685,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890074",
+    "x": -0.15396781265735626,
+    "y": -0.34049850702285767,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890075",
+    "x": 0.02322900854051113,
+    "y": -0.1438465416431427,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890076",
+    "x": 0.1152515560388565,
+    "y": 0.2221943885087967,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890077",
+    "x": -0.17752519249916077,
+    "y": 0.20204053819179535,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890078",
+    "x": 0.4539453685283661,
+    "y": -0.0551522895693779,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890079",
+    "x": -0.1756233125925064,
+    "y": 0.045761700719594955,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890080",
+    "x": 0.07528796792030334,
+    "y": 0.058686818927526474,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890081",
+    "x": 0.253697007894516,
+    "y": 0.16256137192249298,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890082",
+    "x": -0.2523438632488251,
+    "y": 0.03514357656240463,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890083",
+    "x": 0.058549001812934875,
+    "y": -0.17055484652519226,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890084",
+    "x": -0.08316802233457565,
+    "y": -0.2767617702484131,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890085",
+    "x": 0.3653692305088043,
+    "y": -0.2942507565021515,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890086",
+    "x": 0.0666356086730957,
+    "y": -0.1963154524564743,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890087",
+    "x": 0.0017764188814908266,
+    "y": -0.11519689857959747,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890088",
+    "x": -0.018104316666722298,
+    "y": -0.17931979894638062,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890089",
+    "x": -0.026168622076511383,
+    "y": 0.13075551390647888,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890090",
+    "x": 0.048675160855054855,
+    "y": 0.07430142909288406,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890091",
+    "x": 0.1494598090648651,
+    "y": -0.09501644223928452,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890092",
+    "x": -0.029226725921034813,
+    "y": -0.15802238881587982,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890093",
+    "x": -0.09223596751689911,
+    "y": 0.30693820118904114,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890094",
+    "x": 0.3500724732875824,
+    "y": 0.13469374179840088,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890095",
+    "x": -0.08563227206468582,
+    "y": 0.29473525285720825,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890096",
+    "x": 0.25991952419281006,
+    "y": 0.08475777506828308,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890097",
+    "x": -0.16600696742534637,
+    "y": -0.15188483893871307,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890098",
+    "x": -0.3091120719909668,
+    "y": 0.28752079606056213,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890099",
+    "x": 0.12605376541614532,
+    "y": 0.15697531402111053,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890100",
+    "x": 0.03848695382475853,
+    "y": 0.2317199558019638,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890101",
+    "x": -0.393387109041214,
+    "y": 0.02324480563402176,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890102",
+    "x": 0.21143704652786255,
+    "y": -0.038887087255716324,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890103",
+    "x": 0.11545265465974808,
+    "y": -0.03789636492729187,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890104",
+    "x": -0.1986549198627472,
+    "y": -0.39162638783454895,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890105",
+    "x": 0.22385171055793762,
+    "y": 0.12559401988983154,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890106",
+    "x": 0.03809081390500069,
+    "y": -0.14520911872386932,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890107",
+    "x": 0.12510864436626434,
+    "y": 0.13238030672073364,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890108",
+    "x": -0.047633178532123566,
+    "y": -0.07197148352861404,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890109",
+    "x": 0.05010181665420532,
+    "y": -0.049011338502168655,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890110",
+    "x": 0.13532353937625885,
+    "y": -0.17130371928215027,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890111",
+    "x": 0.016399933025240898,
+    "y": -0.2790566682815552,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890112",
+    "x": -0.2744332253932953,
+    "y": 0.09569141268730164,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890113",
+    "x": 0.09449880570173264,
+    "y": 0.28319016098976135,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890114",
+    "x": -0.020931947976350784,
+    "y": -0.023678958415985107,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890115",
+    "x": 0.005830031353980303,
+    "y": 0.03548891842365265,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890116",
+    "x": -0.14065881073474884,
+    "y": 0.15455326437950134,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890117",
+    "x": 0.14451123774051666,
+    "y": -0.08050370216369629,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890118",
+    "x": -0.2040325105190277,
+    "y": 0.12060872465372086,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890119",
+    "x": 0.017510879784822464,
+    "y": 0.08523889631032944,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890120",
+    "x": 0.09124130010604858,
+    "y": 0.01862013153731823,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890121",
+    "x": -0.27302631735801697,
+    "y": 0.06814804673194885,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890122",
+    "x": 0.0036929557099938393,
+    "y": 0.05515676364302635,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890123",
+    "x": -0.3042454719543457,
+    "y": 0.0750328078866005,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890124",
+    "x": -0.03596239537000656,
+    "y": 0.1236707791686058,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890125",
+    "x": 0.07423069328069687,
+    "y": -0.017841223627328873,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890126",
+    "x": 0.108282171189785,
+    "y": 0.05307525023818016,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890127",
+    "x": 0.015970563516020775,
+    "y": -0.002245471114292741,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890128",
+    "x": -0.1158415898680687,
+    "y": 0.08931919932365417,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890129",
+    "x": -0.36843934655189514,
+    "y": -0.021846309304237366,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890130",
+    "x": 0.00040786940371617675,
+    "y": 0.14903324842453003,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890131",
+    "x": -0.06552495807409286,
+    "y": 0.09008969366550446,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890132",
+    "x": 0.11884453147649765,
+    "y": 0.3765805661678314,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890133",
+    "x": 0.13437384366989136,
+    "y": -0.07282115519046783,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890134",
+    "x": 0.011002333834767342,
+    "y": -0.03998330980539322,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890135",
+    "x": 0.00031324345036409795,
+    "y": -0.19830872118473053,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890136",
+    "x": 0.18151076138019562,
+    "y": 0.1423109620809555,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890137",
+    "x": 0.17409056425094604,
+    "y": -0.3638671636581421,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890138",
+    "x": 0.07188905775547028,
+    "y": 0.1149105355143547,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890139",
+    "x": -0.05321181192994118,
+    "y": -0.0015257338527590036,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890140",
+    "x": 0.06253264099359512,
+    "y": -0.17851658165454865,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890141",
+    "x": 0.15038539469242096,
+    "y": -0.08315706998109818,
+    "title": "Effect of propofol vs sevoflurane on postoperative cognitive dysfunction after g",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "general",
+      "monitoring"
+    ],
+    "confidence": 0.95,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890142",
+    "x": -0.1468961238861084,
+    "y": -0.16249936819076538,
+    "title": "Ultrasound-guided regional anesthesia for brachial plexus block: comparative eff",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "regional"
+    ],
+    "confidence": 0.92,
+    "pub_type": "Comparative Study"
+  },
+  {
+    "pmid": "36890143",
+    "x": -0.018864769488573074,
+    "y": 0.1829385906457901,
+    "title": "Airway management in patients with difficult airway: video laryngoscopy vs direc",
+    "year": 2022,
+    "journal": "Anesthesia & Analgesia",
+    "subfields": [
+      "airway"
+    ],
+    "confidence": 0.88,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890144",
+    "x": -0.15948086977005005,
+    "y": 0.15302465856075287,
+    "title": "Multimodal analgesia for postoperative pain management: opioid-sparing protocols",
+    "year": 2023,
+    "journal": "Journal of Clinical Anesthesia",
+    "subfields": [
+      "pain"
+    ],
+    "confidence": 0.9,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890145",
+    "x": 0.2812328636646271,
+    "y": 0.02091216668486595,
+    "title": "Depth of anesthesia monitoring with BIS in pediatric patients: correlation with ",
+    "year": 2022,
+    "journal": "Paediatric Anaesthesia",
+    "subfields": [
+      "monitoring",
+      "pediatric"
+    ],
+    "confidence": 0.91,
+    "pub_type": "Observational Study"
+  },
+  {
+    "pmid": "36890146",
+    "x": 0.027149010449647903,
+    "y": -0.09236351400613785,
+    "title": "Obstetric anesthesia: labor analgesia with epidural vs combined spinal-epidural ",
+    "year": 2023,
+    "journal": "Anesthesiology",
+    "subfields": [
+      "obstetric",
+      "regional"
+    ],
+    "confidence": 0.94,
+    "pub_type": "Randomized Controlled Trial"
+  },
+  {
+    "pmid": "36890147",
+    "x": -0.0797618106007576,
+    "y": 0.08694510906934738,
+    "title": "Critical care anesthesia: hemodynamic optimization with TEE in cardiac surgery -",
+    "year": 2023,
+    "journal": "Journal of Cardiothoracic and Vascular Anesthesia",
+    "subfields": [
+      "cardiac",
+      "critical_care"
+    ],
+    "confidence": 0.89,
+    "pub_type": "Clinical Trial"
+  },
+  {
+    "pmid": "36890148",
+    "x": -0.20368745923042297,
+    "y": 0.1326979249715805,
+    "title": "Malignant hyperthermia: recognition and management in ambulatory anesthesia - Co",
+    "year": 2022,
+    "journal": "BJA",
+    "subfields": [
+      "safety"
+    ],
+    "confidence": 0.96,
+    "pub_type": "Review"
+  },
+  {
+    "pmid": "36890149",
+    "x": 0.010779003612697124,
+    "y": 0.08939021080732346,
+    "title": "Neuromuscular blockade reversal with sugammadex vs neostigmine: meta-analysis - ",
+    "year": 2023,
+    "journal": "British Journal of Anaesthesia",
+    "subfields": [
+      "pharmacology"
+    ],
+    "confidence": 0.93,
+    "pub_type": "Meta-Analysis"
+  },
+  {
+    "pmid": "36890150",
+    "x": -0.05554237216711044,
+    "y": -0.3053247332572937,
+    "title": "Propofol pharmacokinetics in obese patients undergoing general anesthesia - Coho",
+    "year": 2021,
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "subfields": [
+      "pharmacology",
+      "general"
+    ],
+    "confidence": 0.85,
+    "pub_type": "Clinical Trial"
+  }
+]

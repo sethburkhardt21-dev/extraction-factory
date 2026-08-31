@@ -1,0 +1,62 @@
+{
+  "09d_comparison_performed": false,
+  "automated_output_used_as_gold": false,
+  "automatic_selection_allowed": false,
+  "canonical_authority": false,
+  "early_stop_eligible": false,
+  "fixture_hashes": {
+    "clinical_numeric_markup.xml": "5adbfc4adbc30501b3f46bb7986c44cec2b8261c2dbb8cd501fd354c3cca0e9b",
+    "clinicaltrials_edge.json": "973e94077498bc758e5e1b7bc8e6e995e988044fdd93d59c36ba4185553b19bd",
+    "context_structure.xml": "1cbcda7d6c5722e0b1f26d8b4a57ebff3b0c5dd08026bb970d399584b8b62e2c",
+    "inline_boundaries.xml": "de98d6ca96664935d8b35217ab6c949afaf607e560c0114364e9296a13a6a73e",
+    "monograph_crlf.txt": "c367e7d10fe4813aec81f72d596771dd15bc1d1cee44d60ba342914037cd8e3c",
+    "pubmed_abstract.json": "b146f42864ad5ea606b9dfb17d035960f913c1773cde12756b54180d30a440e1",
+    "structured_odd_keys.json": "3aa65babf27d6af3c479f7db13e7b4ca628344b7d6b1a11bf910dfd63ae31dde",
+    "tables_figures.xml": "0284ad7fb46ab04e6e21463b38585a296d0d4253b18766f79b0318c6c8a259e8"
+  },
+  "gold_acceptance_tests": 45,
+  "gold_authority": "HAND_SPECIFIED_EXPECTATIONS_PLUS_PINNED_PHYSICAL_FIXTURES",
+  "mass_extraction_authorized": false,
+  "named_gold_risk_cases": 36,
+  "native_public_pmc_fulltext_status": "BLOCKED_ENVIRONMENT_RUNTIME",
+  "new_defects_discovered": [
+    {
+      "finding": "terminal newline/edge whitespace contaminated final monograph paragraph identity and evidence span",
+      "fix": "trim boundary whitespace while recomputing exact char/UTF-8 byte offsets",
+      "id": "T46-01",
+      "severity": "LOW_TO_MEDIUM_SUBSTRATE",
+      "status": "FIXED_AND_REGRESSION_TESTED"
+    }
+  ],
+  "pinned_physical_fixtures": 8,
+  "production_code_manifest_sha256": "bca172dab295c35bde24c61ebf93d4f95238c598afcdae384839e325244bb141",
+  "production_manifest_files": 61,
+  "public_structural_references": [
+    {
+      "role": "structural reference only; raw bytes not certified in this package",
+      "source": "NCBI JATS Full Article Samples",
+      "url": "https://jats.nlm.nih.gov/publishing/tag-library/1.2/chapter/samples.html"
+    },
+    {
+      "role": "structural reference only; raw bytes not certified in this package",
+      "source": "PeerJ jats-conversion example",
+      "url": "https://github.com/PeerJ/jats-conversion/blob/master/tests/example-jats-1-1-software.xml"
+    },
+    {
+      "role": "real native full-text canary remains separately blocked in this runtime",
+      "source": "PMC OAI-PMH API",
+      "url": "https://pmc.ncbi.nlm.nih.gov/tools/oai/"
+    }
+  ],
+  "real_public_jats_bytes_in_gold_package": false,
+  "reason_turn5_certification_blocked": "No production general-text model benchmark and no exact native public-source full-text gold corpus yet.",
+  "semantic_verification_performed": false,
+  "status": "PASS_OFFLINE_GOLD_WITH_NATIVE_PUBLIC_SOURCE_BLOCKER",
+  "title": "Heterogeneous evidence gold gate",
+  "turn": "4.6",
+  "turn5_assertion_verifier_implementation_allowed": true,
+  "turn5_production_verifier_certification_allowed": false,
+  "unique_regression_tests": 200,
+  "verification_manifest_files": 26,
+  "verification_manifest_sha256": "cd1b2cddb8227495468a75d42374408a4a5b8cab397a7a65b3c66fd92214b0ff"
+}

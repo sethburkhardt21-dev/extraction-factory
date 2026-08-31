@@ -1,0 +1,33 @@
+Meta Extraction Repaired v1 — offline verification
+root=/mnt/data/Meta_Extraction_Repaired_v1
+
+[1/8] Production Python compile
+PASS: 70 active Python files compiled
+[2/8] ClinicalTrials regression
+..........                                                               [100%]
+10 passed in 0.04s
+[3/8] medRxiv/bioRxiv regression
+.......                                                                  [100%]
+7 passed in 0.03s
+[4/8] Drug reference regression
+......                                                                   [100%]
+6 passed in 0.03s
+[5/8] PubMed/RAG regression
+..................                                                       [100%]
+18 passed in 0.28s
+[6/8] PubMed validators
+=== FILE EXISTENCE VALIDATION ===
+PASS pubmedbert_embedding_pipeline.py: 10315 bytes
+PASS metadata_schema.py: 9389 bytes
+PASS pubmed_anesthesia_extraction.py: 39227 bytes
+PASS production_pipeline.py: 10728 bytes
+PASS requirements.txt: 364 bytes
+PASS static production checks
+VALIDATION OK: imports, date fallback, and dedup
+[7/8] Static production safety checks
+PASS: no banned active paths/fake contacts/fabricated RxNorm hash IDs/shadow Python variants
+[8/8] Canonical package import
+PASS: PubMed/RAG package import
+
+OFFLINE REPAIR CERTIFICATION: PASS
+External network/source/database/model certification: NOT RUN by this script

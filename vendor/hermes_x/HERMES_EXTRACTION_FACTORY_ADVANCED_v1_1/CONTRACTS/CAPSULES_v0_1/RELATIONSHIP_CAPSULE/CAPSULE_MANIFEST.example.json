@@ -1,0 +1,35 @@
+{
+  "capsule_id": "CAP-RELATIONSHIP_CAPSULE-EXAMPLE-R001",
+  "capsule_type": "RELATIONSHIP_CAPSULE",
+  "schema_version": "0.1",
+  "parent_estate_id": "",
+  "parent_artifact_sha256": [],
+  "source_id": "",
+  "source_sha256": "",
+  "primary_scope": {
+    "pages": [],
+    "regions": [],
+    "families": []
+  },
+  "boundary_context_scope": {
+    "pages": []
+  },
+  "work_class": "W2|W3",
+  "source_class": "S0|S1|S2|S3",
+  "blindness_class": "BLIND_STRUCTURED_INPUT|REVIEW_BOUND",
+  "task_contract_version": "0.1",
+  "input_hashes": {},
+  "expected_outputs": [
+    "relationship_proposals_or_review.jsonl",
+    "worker_receipt.json"
+  ],
+  "required_validators": [],
+  "retry_generation": 1,
+  "parent_capsule_id": null,
+  "prohibited_actions": [
+    "modify SOURCE",
+    "overwrite parent",
+    "write canonical output directly",
+    "self-certify semantic authority"
+  ]
+}

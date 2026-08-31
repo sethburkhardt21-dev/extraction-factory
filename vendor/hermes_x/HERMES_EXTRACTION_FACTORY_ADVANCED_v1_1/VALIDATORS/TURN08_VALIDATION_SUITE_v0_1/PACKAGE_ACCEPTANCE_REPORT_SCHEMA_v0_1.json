@@ -1,0 +1,25 @@
+{
+  "package_id": "",
+  "package_sha256": "",
+  "source_id": "",
+  "source_sha256": "",
+  "gate_profile": "",
+  "gate_vector": {
+    "AUTHORITY": "",
+    "STRUCTURE": "",
+    "PROVENANCE": "",
+    "RECONCILIATION": "",
+    "COVERAGE_CONTROL": "",
+    "SEMANTIC_REVIEW": "",
+    "COLD_AUDIT": "",
+    "PACKAGE_CLAIMS": ""
+  },
+  "blocking_findings": [],
+  "review_required_findings": [],
+  "bounded_queues": {},
+  "derived_state": "",
+  "frontier_ready": false,
+  "promotion_ready": false,
+  "validator_receipts": [],
+  "report_sha256": ""
+}

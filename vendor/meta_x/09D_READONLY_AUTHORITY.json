@@ -1,0 +1,34 @@
+{
+  "authoritative_artifacts": {
+    "README.md": "b776d19c7e8772c66bf79a0ef01f37e949fb1f2f",
+    "architecture_v1_1/04_TARGET_DOMAIN_MODEL.md": "5877b899467794a964d95c20aac0e1632e6f887a",
+    "architecture_v1_1/07_CANDIDATE_PROMOTION_MODEL.md": "bdc3743ed05dda0797f04aeee5130f5868fa1a46",
+    "architecture_v1_1/08_DRUG_CANONICAL_MODEL.md": "27a1d830abbee46b4ebc404e678563121581e5f9",
+    "architecture_v1_1/09_RELATIONSHIP_AND_CONFLICT_MODEL.md": "28fac45f6eba3d3af88170dc6c247af92284490f",
+    "architecture_v1_1/10_PROVENANCE_RIGHTS_AND_RELEASE_MODEL.md": "032cb5c79465fe85c883b184b01588055192e90c",
+    "architecture_v1_1/19_QUERY_EVIDENCE.sql": "3b81d44a3d1e0ff1e8d740eee5bd9db9f033046b",
+    "migrations/S02/forward.sql": "d73950848534c719c1c784cb16caba8f633a5a1d",
+    "src/project09d/candidates.py": "c973be7555be9788b632adf4a4129e8e038888ec"
+  },
+  "authority_reference_schema_version": "frontier-09d-readonly-authority-1.0",
+  "frozen_checkpoint_database": {
+    "availability_in_current_turn": "NOT_PRESENT",
+    "bytes": 1669615616,
+    "relative_path": "03_portable/canonical_anesthesia_knowledge.sqlite",
+    "sha256": "11f9e3150e5775f452cd90be7aa33dcb6c3a8df4fc9c3810f41b45248f6d4aee"
+  },
+  "git_tree_sha": "0e626962ccc64e11ae2fa5ff09e4780b55c40377",
+  "mode": "READ_ONLY",
+  "observed_implementation_constraints": {
+    "automatic_selection_allowed": false,
+    "candidate_registry_append_only": true,
+    "candidate_to_canonical_by_status_update_forbidden": true,
+    "current_s02_external_package_direct_insert_supported": false,
+    "current_s02_package_kind": "FROZEN_PARENT_BACKFILL",
+    "extraction_lane_max_authority": "RESOLUTION_READY",
+    "generation_public_release_authority": false
+  },
+  "ref": "main",
+  "repository": "sethburkhardt21-dev/Project_09D_Database_Structure_Implementation",
+  "write_allowed": false
+}

@@ -1,0 +1,44 @@
+{
+  "messages": [
+    {
+      "status": "ok",
+      "category": "all"
+    }
+  ],
+  "collection": [
+    {
+      "title": "Evolution of immunity to SARS-CoV-2",
+      "authors": "Wheatley, A. K.; Juno, J. A.; Wang, J. J.; Selva, K. J.; Kent, S. J.",
+      "author_corresponding": "Stephen J Kent",
+      "author_corresponding_institution": "University of Melbourne",
+      "doi": "10.1101/2020.09.09.20191205",
+      "date": "2020-09-10",
+      "version": "1",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_no",
+      "category": "infectious diseases",
+      "jatsxml": "https://www.medrxiv.org/content/early/2020/09/10/2020.09.09.20191205.source.xml",
+      "abstract": "The durability of infection-induced SARS-CoV-2 immunity has major implications for public health mitigation and vaccine development.",
+      "funder": "NA",
+      "published": "10.1038/s41467-021-21444-5",
+      "server": "medRxiv"
+    },
+    {
+      "title": "Evolution of immunity to SARS-CoV-2",
+      "authors": "Wheatley, A. K.; Juno, J. A.; Wang, J. J.; Selva, K. J.; Kent, S. J.",
+      "author_corresponding": "Stephen J Kent",
+      "author_corresponding_institution": "University of Melbourne",
+      "doi": "10.1101/2020.09.09.20191205",
+      "date": "2020-09-11",
+      "version": "2",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_no",
+      "category": "infectious diseases",
+      "jatsxml": "https://www.medrxiv.org/content/early/2020/09/11/2020.09.09.20191205.source.xml",
+      "abstract": "The durability of infection-induced SARS-CoV-2 immunity has major implications for public health mitigation and vaccine development.",
+      "funder": "NA",
+      "published": "10.1038/s41467-021-21444-5",
+      "server": "medRxiv"
+    }
+  ]
+}

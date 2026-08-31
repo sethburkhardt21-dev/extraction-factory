@@ -1,0 +1,14 @@
+# Exact source-extraction runtime tested by Frontier v4 preflight.
+# Regenerate + rerun preflight before changing any version.
+requests==2.32.5
+certifi==2026.5.20
+charset-normalizer==3.4.7
+idna==3.17
+urllib3==2.7.0
+python-dateutil==2.9.0.post0
+six==1.17.0
+pydantic==2.13.4
+pydantic-core==2.46.4
+annotated-types==0.7.0
+typing-extensions==4.16.0
+typing-inspection==0.4.2

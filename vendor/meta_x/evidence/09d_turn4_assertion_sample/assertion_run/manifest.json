@@ -1,0 +1,35 @@
+{
+  "09d_comparison_performed": false,
+  "assertion_pipeline_manifest_version": "frontier-assertion-pipeline-1.0",
+  "assertions_path": "assertions.jsonl",
+  "assertions_sha256": "6e243c4b0f3c101331eb23e5f6e9f953a67977b68dfc6c04251d5958e20005c1",
+  "automatic_selection_allowed": false,
+  "candidate_resolution_performed": false,
+  "canonical_authority": false,
+  "created_at": "2026-08-30T16:40:15.407935Z",
+  "extractor_provenance": {
+    "code_manifest_sha256": "faf1b6bb5b48f4d44015a55d27f200439af65661371fc807f1e4b14e24d059c6",
+    "engine": "turn4-controlled-evidence-provider",
+    "engine_version": "1.0",
+    "mode": "DETERMINISTIC_PARSER"
+  },
+  "generation_eligible": false,
+  "metrics": {
+    "assertions_emitted": 4,
+    "duplicate_interpretations_collapsed": 0,
+    "proposals_quarantined": 0,
+    "proposals_received": 4,
+    "source_units_seen": 13,
+    "source_units_with_assertions": 4,
+    "verification_status_counts": {
+      "NOT_VERIFIED": 4
+    }
+  },
+  "public_eligible": false,
+  "quarantine_path": "quarantine.jsonl",
+  "quarantine_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "semantic_verification_performed": false,
+  "source_units_path": "/mnt/data/Meta_Extraction_Frontier_v7_09D_Turn4/evidence/09d_turn4_assertion_sample/source_units.jsonl",
+  "source_units_sha256": "d36889777888ad1727a5f8cb7a5599dc2d005090a327d824b824fad76eabcbb1",
+  "status": "PASS"
+}

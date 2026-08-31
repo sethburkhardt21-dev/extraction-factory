@@ -1,0 +1,29 @@
+{
+  "estate": "Nagelhout Gemini p281-p544",
+  "artifact": "/mnt/data/NAGELHOUT_GEMINI_P281_P544_TURNKEY_FRONTIER_v4.zip",
+  "source_sha256": "75851ad2084c33b58a7f967a5679d3c315e0e7232220c5bf99daab08b3ddf443",
+  "candidate_count": 13830,
+  "evidence_family_count": 10114,
+  "unique_queued_candidate_count": 2284,
+  "priority_distribution": {
+    "P0": 358,
+    "P1": 424,
+    "P2": 1277,
+    "P3": 8055
+  },
+  "queues": {
+    "NUMERIC": 283,
+    "RELATIONSHIP": 463,
+    "VISUAL": 324,
+    "CROSS_PAGE": 8,
+    "ATOMICITY": 1190,
+    "STRUCTURAL_REFERENCE": 100
+  },
+  "route": "DO_NOT_REEXTRACT",
+  "actions": [
+    "Project evidence families/queues into Hermes review capsules.",
+    "Tier B first for P0/high-risk P1; Tier C only on router eligibility.",
+    "P2 bounded review; P3 local/cheap with cold audit.",
+    "Recompute Hermes gate vector."
+  ]
+}

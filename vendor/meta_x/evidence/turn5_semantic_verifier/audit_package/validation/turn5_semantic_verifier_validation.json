@@ -1,0 +1,16 @@
+{
+  "assertion_contract_frozen": true,
+  "assertion_engine_complete": true,
+  "assertion_verifier_complete": true,
+  "assertions_must_remain_not_verified": true,
+  "candidate_errors": [],
+  "direct_09d_insert_allowed": false,
+  "fulltext_acquisition_offline_certified": true,
+  "package_manifest_errors": [],
+  "public_host_fulltext_canary_complete": false,
+  "source_unit_assertion_contract_errors": [],
+  "source_unit_contract_frozen": true,
+  "source_unit_segmenter_complete": true,
+  "status": "PASS_TURN5_SEMANTIC_VERIFIER",
+  "verification_events_append_only": true
+}

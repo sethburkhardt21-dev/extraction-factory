@@ -1,0 +1,7 @@
+{
+  "direct_09d_insert_allowed": false,
+  "fulltext_acquisition_offline_certified": true,
+  "public_host_fulltext_canary_complete": false,
+  "source_unit_segmenter_complete": true,
+  "status": "PASS_TURN3_SEGMENTATION"
+}

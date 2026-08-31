@@ -1,0 +1,24 @@
+# Bytecode and caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Run outputs (durable state lives in runs/, packaged handoffs in handoff/)
+runs/
+handoff/*.zip
+
+# ---------------------------------------------------------------------------
+# RIGHTS QUARANTINE — textbook-derived bytes. See AUDIT/INTAKE.md.
+# These must never enter git history (local or remote). They stay on disk,
+# pinned by the vendor zip hashes recorded in AUDIT/INTAKE.md.
+# ---------------------------------------------------------------------------
+vendor/hermes_x/**/PILOTS/**/SOURCE/
+vendor/hermes_x/**/PILOTS/**/SOURCE_UNITS/
+vendor/hermes_x/**/CAPSULES/**/SOURCE/
+vendor/hermes_x/**/BENCHMARK_PACK/SOURCE_UNITS/
+vendor/hermes_bench/SOURCE_UNITS/
+vendor/hermes_bench/BENCHMARK_PACK/
+MACHINES_P0299_P0301.jsonl
+page_0*.txt
+page_0*.png
+Machines_P0299_P0301.pdf

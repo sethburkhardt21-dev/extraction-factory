@@ -1,0 +1,16 @@
+{
+  "run_id": "",
+  "capsule_id": "",
+  "lease_id": "",
+  "worker_identity": {},
+  "task_contract_version": "0.1",
+  "started_at": "",
+  "ended_at": "",
+  "input_hashes_observed": {},
+  "output_hashes": {},
+  "declared_uncertainties": [],
+  "tool_failures": [],
+  "context_reset_events": [],
+  "completion_status": "COMPLETE|PARTIAL|FAILED",
+  "no_self_certification_acknowledged": true
+}

@@ -1,0 +1,287 @@
+{
+  "case_count": 36,
+  "cases": [
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G01",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "superscript magnitude"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G02",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "negative exponent"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G03",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "subscript"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G04",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "MathML msup"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G05",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "MathML fraction"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G06",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "vulgar fraction"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G07",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "xref token boundary"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G08",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "nested list dedup"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G09",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "section context"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G10",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "nested section context"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G11",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "abstract-within-fulltext scope"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G12",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "back matter scope"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G13",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "figure caption"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G14",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "table caption"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G15",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "table header binding"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G16",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "rowspan/colspan"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G17",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "unicode micro sign"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G18",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "empty paragraph exclusion"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G19",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "scope-bound identity"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G20",
+      "family": "JATS",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "resource-bound identity"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G21",
+      "family": "STRUCTURED_JSON",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "null false zero empty string"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G22",
+      "family": "STRUCTURED_JSON",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "empty containers"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G23",
+      "family": "STRUCTURED_JSON",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "odd-key canonical path"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G24",
+      "family": "STRUCTURED_JSON",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "array indices"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G25",
+      "family": "STRUCTURED_JSON",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "ClinicalTrials null/boolean"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G26",
+      "family": "MONOGRAPH",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "CRLF/blank paragraph segmentation"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G27",
+      "family": "MONOGRAPH",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "unicode byte offsets"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G28",
+      "family": "PUBMED_ABSTRACT",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "section labels and scope"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G29",
+      "family": "PUBMED_ABSTRACT",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "no fake empty abstract"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G30",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "all emitted units validate v1.2"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G31",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "wrong source hash"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G32",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "non-JATS XML"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G33",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "OAI error"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G34",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "JATS deterministic replay"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G35",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "JSON deterministic replay"
+    },
+    {
+      "automated_extraction_output_is_not_gold": true,
+      "case_id": "G36",
+      "family": "NEGATIVE_FAIL_CLOSED",
+      "gold_authority": "HAND_SPECIFIED_EXPECTATION",
+      "risk": "inventory heterogeneity"
+    }
+  ],
+  "families": [
+    "JATS",
+    "MONOGRAPH",
+    "NEGATIVE_FAIL_CLOSED",
+    "PUBMED_ABSTRACT",
+    "STRUCTURED_JSON"
+  ],
+  "frontier_ready": false,
+  "mass_extraction_authorized": false,
+  "public_reference_sources": [
+    {
+      "role": "structural reference only; raw bytes not certified in this package",
+      "source": "NCBI JATS Full Article Samples",
+      "url": "https://jats.nlm.nih.gov/publishing/tag-library/1.2/chapter/samples.html"
+    },
+    {
+      "role": "structural reference only; raw bytes not certified in this package",
+      "source": "PeerJ jats-conversion example",
+      "url": "https://github.com/PeerJ/jats-conversion/blob/master/tests/example-jats-1-1-software.xml"
+    },
+    {
+      "role": "real native full-text canary remains separately blocked in this runtime",
+      "source": "PMC OAI-PMH API",
+      "url": "https://pmc.ncbi.nlm.nih.gov/tools/oai/"
+    }
+  ],
+  "purpose": "Pre-verifier source-unit acceptance gate. Hand-specified expected behavior, not generated-output-as-gold.",
+  "real_public_jats_bytes_in_gold_package": false,
+  "reason_real_public_jats_bytes_absent": "Runtime cannot successfully retrieve raw PMC XML; do not relabel web/structural references as native raw evidence.",
+  "schema_version": "frontier-evidence-gold-gate-1.0"
+}

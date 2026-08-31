@@ -1,0 +1,64 @@
+{
+  "assertions_still_not_verified": true,
+  "authority_flags": {
+    "automatic_repair_allowed": false,
+    "automatic_selection_allowed": false,
+    "canonical_authority": false,
+    "generation_eligible": false,
+    "mass_extraction_authorized": false,
+    "public_eligible": false
+  },
+  "metrics": {
+    "ambiguous_or_partial": 2,
+    "entailed_but_not_ready": 1,
+    "frontier_adjudication_cases": 7,
+    "not_entailed": 3,
+    "open_review_cases": 8,
+    "primary_assertions": 8,
+    "recall_assertions": 3,
+    "recall_lane_run": true,
+    "recall_only_candidates": 1,
+    "same_evidence_semantic_disagreements": 1,
+    "semantically_ready_assertions": 2,
+    "verification_events": 8
+  },
+  "recall_reconciliation_counts": {
+    "PRIMARY_AND_RECALL_EXACT": 1,
+    "PRIMARY_ONLY": 6,
+    "RECALL_ONLY_CANDIDATE": 1,
+    "SAME_EVIDENCE_SEMANTIC_DISAGREEMENT": 1
+  },
+  "review_case_lane_counts": {
+    "BLIND_ENTAILMENT": 7,
+    "BLIND_RECALL_REVIEW": 2,
+    "COLD_AUDIT": 4,
+    "FRONTIER_ADJUDICATION": 7,
+    "NUMERIC_BINDING": 4,
+    "PRECISION_REVIEW": 8,
+    "PROVENANCE_REPAIR": 0,
+    "QUALIFIER_SCOPE": 8,
+    "RELATIONSHIP_BINDING": 2,
+    "TABLE_BINDING": 2,
+    "VISUAL_BINDING": 1
+  },
+  "review_case_reason_counts": {
+    "ASSERTION_NOT_ENTAILED": 3,
+    "RECALL_ONLY_CANDIDATE": 1,
+    "SAME_EVIDENCE_SEMANTIC_DISAGREEMENT": 1,
+    "SEMANTIC_REVIEW_UNRESOLVED": 3
+  },
+  "review_case_risk_counts": {
+    "CRITICAL": 4,
+    "HIGH": 4,
+    "LOW": 0,
+    "MEDIUM": 0
+  },
+  "semantic_run_id": "SEMRUN:eeeb0e9977d405a3593ae506779efd41",
+  "verdict_counts": {
+    "AMBIGUOUS": 0,
+    "ENTAILED": 3,
+    "NOT_ENTAILED": 3,
+    "PARTIAL": 2,
+    "PROVENANCE_INCOMPLETE": 0
+  }
+}

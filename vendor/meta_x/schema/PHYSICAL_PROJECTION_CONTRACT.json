@@ -1,0 +1,1823 @@
+{
+  "backends": {
+    "bigquery": {
+      "canonical_record": {
+        "ddl_columns": [
+          "canonical_locator",
+          "canonical_record_key",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "created_at",
+          "parser_version",
+          "source_record_key",
+          "validation_status",
+          "validation_warnings"
+        ],
+        "emitted_columns": [
+          "canonical_locator",
+          "canonical_record_key",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "created_at",
+          "parser_version",
+          "source_record_key",
+          "validation_status",
+          "validation_warnings"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_arm": {
+        "ddl_columns": [
+          "arm_type",
+          "canonical_record_key",
+          "description",
+          "label",
+          "ordinal",
+          "payload"
+        ],
+        "emitted_columns": [
+          "arm_type",
+          "canonical_record_key",
+          "description",
+          "label",
+          "ordinal",
+          "payload"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_available_ipd": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "comment",
+          "ipd_type",
+          "ordinal",
+          "payload",
+          "url"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "comment",
+          "ipd_type",
+          "ordinal",
+          "payload",
+          "url"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_condition": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "condition",
+          "ordinal"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "condition",
+          "ordinal"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_contact": {
+        "ddl_columns": [
+          "affiliation",
+          "canonical_record_key",
+          "contact_type",
+          "email",
+          "name",
+          "ordinal",
+          "payload",
+          "phone",
+          "role"
+        ],
+        "emitted_columns": [
+          "affiliation",
+          "canonical_record_key",
+          "contact_type",
+          "email",
+          "name",
+          "ordinal",
+          "payload",
+          "phone",
+          "role"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_intervention": {
+        "ddl_columns": [
+          "arm_group_labels",
+          "canonical_record_key",
+          "description",
+          "intervention_type",
+          "name",
+          "ordinal",
+          "other_names",
+          "payload"
+        ],
+        "emitted_columns": [
+          "arm_group_labels",
+          "canonical_record_key",
+          "description",
+          "intervention_type",
+          "name",
+          "ordinal",
+          "other_names",
+          "payload"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_keyword": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "keyword",
+          "ordinal"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "keyword",
+          "ordinal"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_location": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "city",
+          "country",
+          "facility",
+          "latitude",
+          "longitude",
+          "ordinal",
+          "payload",
+          "state",
+          "status",
+          "zip"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "city",
+          "country",
+          "facility",
+          "latitude",
+          "longitude",
+          "ordinal",
+          "payload",
+          "state",
+          "status",
+          "zip"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_outcome": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "description",
+          "measure",
+          "ordinal",
+          "outcome_type",
+          "payload",
+          "time_frame"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "description",
+          "measure",
+          "ordinal",
+          "outcome_type",
+          "payload",
+          "time_frame"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_phase": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "phase"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "phase"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_reference": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "citation",
+          "ordinal",
+          "payload",
+          "pmid",
+          "reference_type"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "citation",
+          "ordinal",
+          "payload",
+          "pmid",
+          "reference_type"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_sponsor": {
+        "ddl_columns": [
+          "agency_class",
+          "canonical_record_key",
+          "name",
+          "ordinal",
+          "payload",
+          "sponsor_role"
+        ],
+        "emitted_columns": [
+          "agency_class",
+          "canonical_record_key",
+          "name",
+          "ordinal",
+          "payload",
+          "sponsor_role"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_study_record": {
+        "ddl_columns": [
+          "acronym",
+          "annotation_raw",
+          "arms",
+          "available_ipds",
+          "brief_summary",
+          "brief_title",
+          "canonical_record_key",
+          "completion_date",
+          "completion_date_type",
+          "conditions",
+          "contacts",
+          "derived_raw",
+          "design",
+          "detailed_description",
+          "document_raw",
+          "eligibility",
+          "enrollment_count",
+          "enrollment_type",
+          "expanded_access_info",
+          "has_results",
+          "interventions",
+          "ipd_sharing",
+          "is_fda_regulated_device",
+          "is_fda_regulated_drug",
+          "keywords",
+          "last_update_post_date",
+          "last_update_post_date_type",
+          "last_update_submit_date",
+          "locations",
+          "nct_id",
+          "nct_id_aliases",
+          "official_title",
+          "org_study_id_info",
+          "organization",
+          "other_outcomes",
+          "overall_status",
+          "oversight",
+          "phases",
+          "primary_completion_date",
+          "primary_completion_date_type",
+          "primary_outcomes",
+          "protocol_raw",
+          "references",
+          "results_raw",
+          "secondary_id_infos",
+          "secondary_outcomes",
+          "see_also_links",
+          "sponsors",
+          "start_date",
+          "start_date_type",
+          "study_first_post_date",
+          "study_first_submit_date",
+          "study_type",
+          "why_stopped"
+        ],
+        "emitted_columns": [
+          "acronym",
+          "annotation_raw",
+          "arms",
+          "available_ipds",
+          "brief_summary",
+          "brief_title",
+          "canonical_record_key",
+          "completion_date",
+          "completion_date_type",
+          "conditions",
+          "contacts",
+          "derived_raw",
+          "design",
+          "detailed_description",
+          "document_raw",
+          "eligibility",
+          "enrollment_count",
+          "enrollment_type",
+          "expanded_access_info",
+          "has_results",
+          "interventions",
+          "ipd_sharing",
+          "is_fda_regulated_device",
+          "is_fda_regulated_drug",
+          "keywords",
+          "last_update_post_date",
+          "last_update_post_date_type",
+          "last_update_submit_date",
+          "locations",
+          "nct_id",
+          "nct_id_aliases",
+          "official_title",
+          "org_study_id_info",
+          "organization",
+          "other_outcomes",
+          "overall_status",
+          "oversight",
+          "phases",
+          "primary_completion_date",
+          "primary_completion_date_type",
+          "primary_outcomes",
+          "protocol_raw",
+          "references",
+          "results_raw",
+          "secondary_id_infos",
+          "secondary_outcomes",
+          "see_also_links",
+          "sponsors",
+          "start_date",
+          "start_date_type",
+          "study_first_post_date",
+          "study_first_submit_date",
+          "study_type",
+          "why_stopped"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_study_snapshot": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "nct_id",
+          "retrieved_at",
+          "run_id",
+          "source_api_version",
+          "source_data_timestamp"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "nct_id",
+          "retrieved_at",
+          "run_id",
+          "source_api_version",
+          "source_data_timestamp"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_candidate": {
+        "ddl_columns": [
+          "automatic_identity_merge_allowed",
+          "automatic_selection_allowed",
+          "candidate_id",
+          "canonical_internal_eligible",
+          "created_at",
+          "domain",
+          "generation_eligible",
+          "legacy_entity_id",
+          "normalized_name",
+          "origin_package_id",
+          "preferred_name",
+          "public_eligible",
+          "source_canonical_record_key",
+          "source_identity_sha256",
+          "source_key",
+          "source_table",
+          "state"
+        ],
+        "emitted_columns": [
+          "automatic_identity_merge_allowed",
+          "automatic_selection_allowed",
+          "candidate_id",
+          "canonical_internal_eligible",
+          "created_at",
+          "domain",
+          "generation_eligible",
+          "legacy_entity_id",
+          "normalized_name",
+          "origin_package_id",
+          "preferred_name",
+          "public_eligible",
+          "source_canonical_record_key",
+          "source_identity_sha256",
+          "source_key",
+          "source_table",
+          "state"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_candidate_alias": {
+        "ddl_columns": [
+          "alias",
+          "candidate_id",
+          "normalized_alias",
+          "source"
+        ],
+        "emitted_columns": [
+          "alias",
+          "candidate_id",
+          "normalized_alias",
+          "source"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_candidate_linkage_evidence": {
+        "ddl_columns": [
+          "candidate_count",
+          "candidate_id",
+          "canonical_record_key",
+          "confidence",
+          "created_at",
+          "evidence",
+          "linkage_id",
+          "method",
+          "source",
+          "source_id",
+          "status"
+        ],
+        "emitted_columns": [
+          "candidate_count",
+          "candidate_id",
+          "canonical_record_key",
+          "confidence",
+          "created_at",
+          "evidence",
+          "linkage_id",
+          "method",
+          "source",
+          "source_id",
+          "status"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_source_record": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "normalized_name",
+          "payload",
+          "preferred_name",
+          "source",
+          "source_id"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "normalized_name",
+          "payload",
+          "preferred_name",
+          "source",
+          "source_id"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ingestion_run": {
+        "ddl_columns": [
+          "artifacts",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "certification_status",
+          "complete_against_source",
+          "completed_at",
+          "errors",
+          "expected_records",
+          "manifest",
+          "manifest_schema_version",
+          "mode",
+          "observed_records",
+          "parser_version",
+          "provenance_sha256",
+          "quarantine_sha256",
+          "quarantined_records",
+          "query",
+          "query_fingerprint",
+          "raw_sha256",
+          "run_id",
+          "source",
+          "source_changed_during_run",
+          "source_version_end",
+          "source_version_start",
+          "started_at",
+          "status",
+          "truncated",
+          "unique_records",
+          "valid_records",
+          "warnings"
+        ],
+        "emitted_columns": [
+          "artifacts",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "certification_status",
+          "complete_against_source",
+          "completed_at",
+          "errors",
+          "expected_records",
+          "manifest",
+          "manifest_schema_version",
+          "mode",
+          "observed_records",
+          "parser_version",
+          "provenance_sha256",
+          "quarantine_sha256",
+          "quarantined_records",
+          "query",
+          "query_fingerprint",
+          "raw_sha256",
+          "run_id",
+          "source",
+          "source_changed_during_run",
+          "source_version_end",
+          "source_version_start",
+          "started_at",
+          "status",
+          "truncated",
+          "unique_records",
+          "valid_records",
+          "warnings"
+        ],
+        "missing_emitted_columns": []
+      },
+      "preprint_record": {
+        "ddl_columns": [
+          "abstract",
+          "author_corresponding",
+          "author_corresponding_institution",
+          "authors",
+          "canonical_record_key",
+          "category",
+          "doi",
+          "license",
+          "posted_date",
+          "published_doi",
+          "server",
+          "source_payload",
+          "title",
+          "version"
+        ],
+        "emitted_columns": [
+          "abstract",
+          "author_corresponding",
+          "author_corresponding_institution",
+          "authors",
+          "canonical_record_key",
+          "category",
+          "doi",
+          "license",
+          "posted_date",
+          "published_doi",
+          "server",
+          "source_payload",
+          "title",
+          "version"
+        ],
+        "missing_emitted_columns": []
+      },
+      "preprint_snapshot": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "doi",
+          "retrieved_at",
+          "run_id",
+          "server",
+          "version"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "doi",
+          "retrieved_at",
+          "run_id",
+          "server",
+          "version"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_author": {
+        "ddl_columns": [
+          "affiliations",
+          "canonical_record_key",
+          "collective_name",
+          "family_name",
+          "given_name",
+          "identifiers",
+          "initials",
+          "ordinal",
+          "payload"
+        ],
+        "emitted_columns": [
+          "affiliations",
+          "canonical_record_key",
+          "collective_name",
+          "family_name",
+          "given_name",
+          "identifiers",
+          "initials",
+          "ordinal",
+          "payload"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_mesh_heading": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "descriptor_name",
+          "descriptor_ui",
+          "major_topic",
+          "ordinal",
+          "qualifiers"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "descriptor_name",
+          "descriptor_ui",
+          "major_topic",
+          "ordinal",
+          "qualifiers"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_record": {
+        "ddl_columns": [
+          "abstract",
+          "abstract_sections",
+          "article_date",
+          "article_ids",
+          "authors",
+          "book_metadata",
+          "canonical_record_key",
+          "chemicals",
+          "date_completed",
+          "date_created",
+          "date_revised",
+          "doi",
+          "grants",
+          "issue",
+          "journal",
+          "journal_abbrev",
+          "journal_issn",
+          "keywords",
+          "languages",
+          "medline_date",
+          "mesh_headings",
+          "pages",
+          "pmcid",
+          "pmid",
+          "publication_date",
+          "publication_status",
+          "publication_types",
+          "pubmed_dates",
+          "raw_xml",
+          "record_type",
+          "references",
+          "title",
+          "version",
+          "volume"
+        ],
+        "emitted_columns": [
+          "abstract",
+          "abstract_sections",
+          "article_date",
+          "article_ids",
+          "book_metadata",
+          "canonical_record_key",
+          "chemicals",
+          "date_completed",
+          "date_created",
+          "date_revised",
+          "doi",
+          "grants",
+          "issue",
+          "journal",
+          "journal_abbrev",
+          "journal_issn",
+          "keywords",
+          "languages",
+          "medline_date",
+          "pages",
+          "pmcid",
+          "pmid",
+          "publication_date",
+          "publication_status",
+          "publication_types",
+          "pubmed_dates",
+          "raw_xml",
+          "record_type",
+          "references",
+          "title",
+          "version",
+          "volume"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_snapshot": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "pmid",
+          "retrieval_queries",
+          "retrieved_at",
+          "run_id"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "pmid",
+          "retrieval_queries",
+          "retrieved_at",
+          "run_id"
+        ],
+        "missing_emitted_columns": []
+      },
+      "quarantine_record": {
+        "ddl_columns": [
+          "archive_member",
+          "error_message",
+          "error_type",
+          "metadata",
+          "quarantine_id",
+          "quarantined_at",
+          "raw_base64",
+          "raw_locator",
+          "raw_payload",
+          "raw_text",
+          "run_id",
+          "source",
+          "source_record_id",
+          "source_record_sha256"
+        ],
+        "emitted_columns": [
+          "archive_member",
+          "error_message",
+          "error_type",
+          "metadata",
+          "quarantine_id",
+          "quarantined_at",
+          "raw_base64",
+          "raw_locator",
+          "raw_payload",
+          "raw_text",
+          "run_id",
+          "source",
+          "source_record_id",
+          "source_record_sha256"
+        ],
+        "missing_emitted_columns": []
+      },
+      "release_run": {
+        "ddl_columns": [
+          "release_id",
+          "run_id"
+        ],
+        "emitted_columns": [
+          "release_id",
+          "run_id"
+        ],
+        "missing_emitted_columns": []
+      },
+      "release_snapshot": {
+        "ddl_columns": [
+          "created_at",
+          "label",
+          "manifest",
+          "manifest_sha256",
+          "release_id",
+          "schema_version",
+          "status"
+        ],
+        "emitted_columns": [
+          "created_at",
+          "label",
+          "manifest",
+          "manifest_sha256",
+          "release_id",
+          "schema_version",
+          "status"
+        ],
+        "missing_emitted_columns": []
+      },
+      "run_artifact": {
+        "ddl_columns": [
+          "artifact_id",
+          "byte_size",
+          "created_at",
+          "locator",
+          "media_type",
+          "metadata",
+          "record_count",
+          "role",
+          "run_id",
+          "sha256"
+        ],
+        "emitted_columns": [
+          "artifact_id",
+          "byte_size",
+          "created_at",
+          "locator",
+          "media_type",
+          "metadata",
+          "record_count",
+          "role",
+          "run_id",
+          "sha256"
+        ],
+        "missing_emitted_columns": []
+      },
+      "source_observation": {
+        "ddl_columns": [
+          "parse_status",
+          "parse_warnings",
+          "provenance",
+          "provenance_schema_version",
+          "raw_locator",
+          "retrieved_at",
+          "run_id",
+          "source_record_key",
+          "source_updated_at",
+          "source_version",
+          "transport_raw_locators"
+        ],
+        "emitted_columns": [
+          "parse_status",
+          "parse_warnings",
+          "provenance",
+          "provenance_schema_version",
+          "raw_locator",
+          "retrieved_at",
+          "run_id",
+          "source_record_key",
+          "source_updated_at",
+          "source_version",
+          "transport_raw_locators"
+        ],
+        "missing_emitted_columns": []
+      },
+      "source_record": {
+        "ddl_columns": [
+          "first_seen_at",
+          "metadata",
+          "source",
+          "source_record_id",
+          "source_record_key",
+          "source_record_sha256",
+          "source_url",
+          "source_version_id"
+        ],
+        "emitted_columns": [
+          "first_seen_at",
+          "metadata",
+          "source",
+          "source_record_id",
+          "source_record_key",
+          "source_record_sha256",
+          "source_url",
+          "source_version_id"
+        ],
+        "missing_emitted_columns": []
+      }
+    },
+    "postgres": {
+      "canonical_record": {
+        "ddl_columns": [
+          "canonical_locator",
+          "canonical_record_key",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "created_at",
+          "parser_version",
+          "source_record_key",
+          "unique",
+          "validation_status",
+          "validation_warnings"
+        ],
+        "emitted_columns": [
+          "canonical_locator",
+          "canonical_record_key",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "created_at",
+          "parser_version",
+          "source_record_key",
+          "validation_status",
+          "validation_warnings"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_arm": {
+        "ddl_columns": [
+          "arm_type",
+          "canonical_record_key",
+          "description",
+          "label",
+          "ordinal",
+          "payload",
+          "primary"
+        ],
+        "emitted_columns": [
+          "arm_type",
+          "canonical_record_key",
+          "description",
+          "label",
+          "ordinal",
+          "payload"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_available_ipd": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "comment",
+          "ipd_type",
+          "ordinal",
+          "payload",
+          "primary",
+          "url"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "comment",
+          "ipd_type",
+          "ordinal",
+          "payload",
+          "url"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_condition": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "condition",
+          "ordinal",
+          "primary"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "condition",
+          "ordinal"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_contact": {
+        "ddl_columns": [
+          "affiliation",
+          "canonical_record_key",
+          "contact_type",
+          "email",
+          "name",
+          "ordinal",
+          "payload",
+          "phone",
+          "primary",
+          "role"
+        ],
+        "emitted_columns": [
+          "affiliation",
+          "canonical_record_key",
+          "contact_type",
+          "email",
+          "name",
+          "ordinal",
+          "payload",
+          "phone",
+          "role"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_intervention": {
+        "ddl_columns": [
+          "arm_group_labels",
+          "canonical_record_key",
+          "description",
+          "intervention_type",
+          "name",
+          "ordinal",
+          "other_names",
+          "payload",
+          "primary"
+        ],
+        "emitted_columns": [
+          "arm_group_labels",
+          "canonical_record_key",
+          "description",
+          "intervention_type",
+          "name",
+          "ordinal",
+          "other_names",
+          "payload"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_keyword": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "keyword",
+          "ordinal",
+          "primary"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "keyword",
+          "ordinal"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_location": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "city",
+          "country",
+          "facility",
+          "latitude",
+          "longitude",
+          "ordinal",
+          "payload",
+          "primary",
+          "state",
+          "status",
+          "zip"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "city",
+          "country",
+          "facility",
+          "latitude",
+          "longitude",
+          "ordinal",
+          "payload",
+          "state",
+          "status",
+          "zip"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_outcome": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "description",
+          "measure",
+          "ordinal",
+          "outcome_type",
+          "payload",
+          "primary",
+          "time_frame"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "description",
+          "measure",
+          "ordinal",
+          "outcome_type",
+          "payload",
+          "time_frame"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_phase": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "phase",
+          "primary"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "phase"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_reference": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "citation",
+          "ordinal",
+          "payload",
+          "pmid",
+          "primary",
+          "reference_type"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "citation",
+          "ordinal",
+          "payload",
+          "pmid",
+          "reference_type"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_sponsor": {
+        "ddl_columns": [
+          "agency_class",
+          "canonical_record_key",
+          "name",
+          "ordinal",
+          "payload",
+          "primary",
+          "sponsor_role"
+        ],
+        "emitted_columns": [
+          "agency_class",
+          "canonical_record_key",
+          "name",
+          "ordinal",
+          "payload",
+          "sponsor_role"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_study_record": {
+        "ddl_columns": [
+          "acronym",
+          "annotation_raw",
+          "arms",
+          "available_ipds",
+          "brief_summary",
+          "brief_title",
+          "canonical_record_key",
+          "completion_date",
+          "completion_date_type",
+          "conditions",
+          "contacts",
+          "derived_raw",
+          "design",
+          "detailed_description",
+          "document_raw",
+          "eligibility",
+          "enrollment_count",
+          "enrollment_type",
+          "expanded_access_info",
+          "has_results",
+          "interventions",
+          "ipd_sharing",
+          "is_fda_regulated_device",
+          "is_fda_regulated_drug",
+          "keywords",
+          "last_update_post_date",
+          "last_update_post_date_type",
+          "last_update_submit_date",
+          "locations",
+          "nct_id",
+          "nct_id_aliases",
+          "official_title",
+          "org_study_id_info",
+          "organization",
+          "other_outcomes",
+          "overall_status",
+          "oversight",
+          "phases",
+          "primary_completion_date",
+          "primary_completion_date_type",
+          "primary_outcomes",
+          "protocol_raw",
+          "references",
+          "results_raw",
+          "secondary_id_infos",
+          "secondary_outcomes",
+          "see_also_links",
+          "sponsors",
+          "start_date",
+          "start_date_type",
+          "study_first_post_date",
+          "study_first_submit_date",
+          "study_type",
+          "why_stopped"
+        ],
+        "emitted_columns": [
+          "acronym",
+          "annotation_raw",
+          "arms",
+          "available_ipds",
+          "brief_summary",
+          "brief_title",
+          "canonical_record_key",
+          "completion_date",
+          "completion_date_type",
+          "conditions",
+          "contacts",
+          "derived_raw",
+          "design",
+          "detailed_description",
+          "document_raw",
+          "eligibility",
+          "enrollment_count",
+          "enrollment_type",
+          "expanded_access_info",
+          "has_results",
+          "interventions",
+          "ipd_sharing",
+          "is_fda_regulated_device",
+          "is_fda_regulated_drug",
+          "keywords",
+          "last_update_post_date",
+          "last_update_post_date_type",
+          "last_update_submit_date",
+          "locations",
+          "nct_id",
+          "nct_id_aliases",
+          "official_title",
+          "org_study_id_info",
+          "organization",
+          "other_outcomes",
+          "overall_status",
+          "oversight",
+          "phases",
+          "primary_completion_date",
+          "primary_completion_date_type",
+          "primary_outcomes",
+          "protocol_raw",
+          "references",
+          "results_raw",
+          "secondary_id_infos",
+          "secondary_outcomes",
+          "see_also_links",
+          "sponsors",
+          "start_date",
+          "start_date_type",
+          "study_first_post_date",
+          "study_first_submit_date",
+          "study_type",
+          "why_stopped"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ctg_study_snapshot": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "nct_id",
+          "primary",
+          "retrieved_at",
+          "run_id",
+          "source_api_version",
+          "source_data_timestamp"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "nct_id",
+          "retrieved_at",
+          "run_id",
+          "source_api_version",
+          "source_data_timestamp"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_candidate": {
+        "ddl_columns": [
+          "automatic_identity_merge_allowed",
+          "automatic_selection_allowed",
+          "candidate_id",
+          "canonical_internal_eligible",
+          "created_at",
+          "domain",
+          "generation_eligible",
+          "legacy_entity_id",
+          "normalized_name",
+          "origin_package_id",
+          "preferred_name",
+          "public_eligible",
+          "source_canonical_record_key",
+          "source_identity_sha256",
+          "source_key",
+          "source_table",
+          "state"
+        ],
+        "emitted_columns": [
+          "automatic_identity_merge_allowed",
+          "automatic_selection_allowed",
+          "candidate_id",
+          "canonical_internal_eligible",
+          "created_at",
+          "domain",
+          "generation_eligible",
+          "legacy_entity_id",
+          "normalized_name",
+          "origin_package_id",
+          "preferred_name",
+          "public_eligible",
+          "source_canonical_record_key",
+          "source_identity_sha256",
+          "source_key",
+          "source_table",
+          "state"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_candidate_alias": {
+        "ddl_columns": [
+          "alias",
+          "candidate_id",
+          "normalized_alias",
+          "primary",
+          "source"
+        ],
+        "emitted_columns": [
+          "alias",
+          "candidate_id",
+          "normalized_alias",
+          "source"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_candidate_linkage_evidence": {
+        "ddl_columns": [
+          "candidate_count",
+          "candidate_id",
+          "canonical_record_key",
+          "confidence",
+          "created_at",
+          "evidence",
+          "linkage_id",
+          "method",
+          "source",
+          "source_id",
+          "status"
+        ],
+        "emitted_columns": [
+          "candidate_count",
+          "candidate_id",
+          "canonical_record_key",
+          "confidence",
+          "created_at",
+          "evidence",
+          "linkage_id",
+          "method",
+          "source",
+          "source_id",
+          "status"
+        ],
+        "missing_emitted_columns": []
+      },
+      "drug_source_record": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "normalized_name",
+          "payload",
+          "preferred_name",
+          "source",
+          "source_id"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "normalized_name",
+          "payload",
+          "preferred_name",
+          "source",
+          "source_id"
+        ],
+        "missing_emitted_columns": []
+      },
+      "ingestion_run": {
+        "ddl_columns": [
+          "artifacts",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "certification_status",
+          "complete_against_source",
+          "completed_at",
+          "errors",
+          "expected_records",
+          "manifest",
+          "manifest_schema_version",
+          "mode",
+          "observed_records",
+          "parser_version",
+          "provenance_sha256",
+          "quarantine_sha256",
+          "quarantined_records",
+          "query",
+          "query_fingerprint",
+          "raw_sha256",
+          "run_id",
+          "source",
+          "source_changed_during_run",
+          "source_version_end",
+          "source_version_start",
+          "started_at",
+          "status",
+          "truncated",
+          "unique_records",
+          "valid_records",
+          "warnings"
+        ],
+        "emitted_columns": [
+          "artifacts",
+          "canonical_schema_version",
+          "canonical_sha256",
+          "certification_status",
+          "complete_against_source",
+          "completed_at",
+          "errors",
+          "expected_records",
+          "manifest",
+          "manifest_schema_version",
+          "mode",
+          "observed_records",
+          "parser_version",
+          "provenance_sha256",
+          "quarantine_sha256",
+          "quarantined_records",
+          "query",
+          "query_fingerprint",
+          "raw_sha256",
+          "run_id",
+          "source",
+          "source_changed_during_run",
+          "source_version_end",
+          "source_version_start",
+          "started_at",
+          "status",
+          "truncated",
+          "unique_records",
+          "valid_records",
+          "warnings"
+        ],
+        "missing_emitted_columns": []
+      },
+      "preprint_record": {
+        "ddl_columns": [
+          "abstract",
+          "author_corresponding",
+          "author_corresponding_institution",
+          "authors",
+          "canonical_record_key",
+          "category",
+          "doi",
+          "license",
+          "posted_date",
+          "published_doi",
+          "server",
+          "source_payload",
+          "title",
+          "unique",
+          "version"
+        ],
+        "emitted_columns": [
+          "abstract",
+          "author_corresponding",
+          "author_corresponding_institution",
+          "authors",
+          "canonical_record_key",
+          "category",
+          "doi",
+          "license",
+          "posted_date",
+          "published_doi",
+          "server",
+          "source_payload",
+          "title",
+          "version"
+        ],
+        "missing_emitted_columns": []
+      },
+      "preprint_snapshot": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "doi",
+          "primary",
+          "retrieved_at",
+          "run_id",
+          "server",
+          "version"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "doi",
+          "retrieved_at",
+          "run_id",
+          "server",
+          "version"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_author": {
+        "ddl_columns": [
+          "affiliations",
+          "canonical_record_key",
+          "collective_name",
+          "family_name",
+          "given_name",
+          "identifiers",
+          "initials",
+          "ordinal",
+          "payload",
+          "primary"
+        ],
+        "emitted_columns": [
+          "affiliations",
+          "canonical_record_key",
+          "collective_name",
+          "family_name",
+          "given_name",
+          "identifiers",
+          "initials",
+          "ordinal",
+          "payload"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_mesh_heading": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "descriptor_name",
+          "descriptor_ui",
+          "major_topic",
+          "ordinal",
+          "primary",
+          "qualifiers"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "descriptor_name",
+          "descriptor_ui",
+          "major_topic",
+          "ordinal",
+          "qualifiers"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_record": {
+        "ddl_columns": [
+          "abstract",
+          "abstract_sections",
+          "article_date",
+          "article_ids",
+          "book_metadata",
+          "canonical_record_key",
+          "chemicals",
+          "date_completed",
+          "date_created",
+          "date_revised",
+          "doi",
+          "grants",
+          "issue",
+          "journal",
+          "journal_abbrev",
+          "journal_issn",
+          "keywords",
+          "languages",
+          "medline_date",
+          "pages",
+          "pmcid",
+          "pmid",
+          "publication_date",
+          "publication_status",
+          "publication_types",
+          "pubmed_dates",
+          "raw_xml",
+          "record_type",
+          "references",
+          "title",
+          "version",
+          "volume"
+        ],
+        "emitted_columns": [
+          "abstract",
+          "abstract_sections",
+          "article_date",
+          "article_ids",
+          "book_metadata",
+          "canonical_record_key",
+          "chemicals",
+          "date_completed",
+          "date_created",
+          "date_revised",
+          "doi",
+          "grants",
+          "issue",
+          "journal",
+          "journal_abbrev",
+          "journal_issn",
+          "keywords",
+          "languages",
+          "medline_date",
+          "pages",
+          "pmcid",
+          "pmid",
+          "publication_date",
+          "publication_status",
+          "publication_types",
+          "pubmed_dates",
+          "raw_xml",
+          "record_type",
+          "references",
+          "title",
+          "version",
+          "volume"
+        ],
+        "missing_emitted_columns": []
+      },
+      "pubmed_snapshot": {
+        "ddl_columns": [
+          "canonical_record_key",
+          "pmid",
+          "primary",
+          "retrieval_queries",
+          "retrieved_at",
+          "run_id"
+        ],
+        "emitted_columns": [
+          "canonical_record_key",
+          "pmid",
+          "retrieval_queries",
+          "retrieved_at",
+          "run_id"
+        ],
+        "missing_emitted_columns": []
+      },
+      "quarantine_record": {
+        "ddl_columns": [
+          "archive_member",
+          "error_message",
+          "error_type",
+          "metadata",
+          "quarantine_id",
+          "quarantined_at",
+          "raw_base64",
+          "raw_locator",
+          "raw_payload",
+          "raw_text",
+          "run_id",
+          "source",
+          "source_record_id",
+          "source_record_sha256"
+        ],
+        "emitted_columns": [
+          "archive_member",
+          "error_message",
+          "error_type",
+          "metadata",
+          "quarantine_id",
+          "quarantined_at",
+          "raw_base64",
+          "raw_locator",
+          "raw_payload",
+          "raw_text",
+          "run_id",
+          "source",
+          "source_record_id",
+          "source_record_sha256"
+        ],
+        "missing_emitted_columns": []
+      },
+      "release_run": {
+        "ddl_columns": [
+          "primary",
+          "release_id",
+          "run_id"
+        ],
+        "emitted_columns": [
+          "release_id",
+          "run_id"
+        ],
+        "missing_emitted_columns": []
+      },
+      "release_snapshot": {
+        "ddl_columns": [
+          "created_at",
+          "label",
+          "manifest",
+          "manifest_sha256",
+          "release_id",
+          "schema_version",
+          "status"
+        ],
+        "emitted_columns": [
+          "created_at",
+          "label",
+          "manifest",
+          "manifest_sha256",
+          "release_id",
+          "schema_version",
+          "status"
+        ],
+        "missing_emitted_columns": []
+      },
+      "run_artifact": {
+        "ddl_columns": [
+          "artifact_id",
+          "byte_size",
+          "created_at",
+          "locator",
+          "media_type",
+          "metadata",
+          "record_count",
+          "role",
+          "run_id",
+          "sha256",
+          "unique"
+        ],
+        "emitted_columns": [
+          "artifact_id",
+          "byte_size",
+          "created_at",
+          "locator",
+          "media_type",
+          "metadata",
+          "record_count",
+          "role",
+          "run_id",
+          "sha256"
+        ],
+        "missing_emitted_columns": []
+      },
+      "source_observation": {
+        "ddl_columns": [
+          "parse_status",
+          "parse_warnings",
+          "primary",
+          "provenance",
+          "provenance_schema_version",
+          "raw_locator",
+          "retrieved_at",
+          "run_id",
+          "source_record_key",
+          "source_updated_at",
+          "source_version",
+          "transport_raw_locators"
+        ],
+        "emitted_columns": [
+          "parse_status",
+          "parse_warnings",
+          "provenance",
+          "provenance_schema_version",
+          "raw_locator",
+          "retrieved_at",
+          "run_id",
+          "source_record_key",
+          "source_updated_at",
+          "source_version",
+          "transport_raw_locators"
+        ],
+        "missing_emitted_columns": []
+      },
+      "source_record": {
+        "ddl_columns": [
+          "first_seen_at",
+          "metadata",
+          "source",
+          "source_record_id",
+          "source_record_key",
+          "source_record_sha256",
+          "source_url",
+          "source_version_id",
+          "unique"
+        ],
+        "emitted_columns": [
+          "first_seen_at",
+          "metadata",
+          "source",
+          "source_record_id",
+          "source_record_key",
+          "source_record_sha256",
+          "source_url",
+          "source_version_id"
+        ],
+        "missing_emitted_columns": []
+      }
+    }
+  },
+  "contract_schema_version": "frontier-physical-projection-contract-1.0",
+  "emitted_tables": [
+    "canonical_record",
+    "ctg_arm",
+    "ctg_available_ipd",
+    "ctg_condition",
+    "ctg_contact",
+    "ctg_intervention",
+    "ctg_keyword",
+    "ctg_location",
+    "ctg_outcome",
+    "ctg_phase",
+    "ctg_reference",
+    "ctg_sponsor",
+    "ctg_study_record",
+    "ctg_study_snapshot",
+    "drug_candidate",
+    "drug_candidate_alias",
+    "drug_candidate_linkage_evidence",
+    "drug_source_record",
+    "ingestion_run",
+    "preprint_record",
+    "preprint_snapshot",
+    "pubmed_author",
+    "pubmed_mesh_heading",
+    "pubmed_record",
+    "pubmed_snapshot",
+    "quarantine_record",
+    "release_run",
+    "release_snapshot",
+    "run_artifact",
+    "source_observation",
+    "source_record"
+  ],
+  "method": "actual rich offline projector fixtures; emitted columns must be subset of both DDLs",
+  "missing_columns": {
+    "bigquery": {},
+    "postgres": {}
+  },
+  "missing_tables": {
+    "bigquery": [],
+    "postgres": []
+  },
+  "status": "PASS"
+}

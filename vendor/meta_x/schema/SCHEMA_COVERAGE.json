@@ -1,0 +1,670 @@
+{
+  "failures": [],
+  "principle": "project high-value fields; retain/pin lossless Bronze evidence for deterministic reparsing of everything else",
+  "schema_coverage_version": "frontier-schema-coverage-1.0",
+  "sources": {
+    "clinicaltrials": {
+      "canonical_fields": 62,
+      "covered_fields": 62,
+      "fields": [
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "nct_id",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "brief_title",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "official_title",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "acronym",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "nct_id_aliases",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "org_study_id_info",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "secondary_id_infos",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "organization",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "brief_summary",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "detailed_description",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "overall_status",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "why_stopped",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "expanded_access_info",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "phase",
+          "route": "ctg_phase"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "study_type",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "design",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "enrollment_count",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "enrollment_type",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "conditions",
+          "route": "ctg_condition"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "keywords",
+          "route": "ctg_keyword"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "sponsors",
+          "route": "ctg_sponsor"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "start_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "start_date_type",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "primary_completion_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "primary_completion_date_type",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "completion_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "completion_date_type",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "study_first_submit_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "study_first_post_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "last_update_submit_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "last_update_post_date",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "last_update_post_date_type",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "eligibility_criteria",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "minimum_age",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "maximum_age",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "sex",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "gender_based",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "gender_description",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "healthy_volunteers",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "standard_ages",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "eligibility",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "arms",
+          "route": "ctg_arm"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "interventions",
+          "route": "ctg_intervention"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "central_contacts",
+          "route": "ctg_contact"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "overall_officials",
+          "route": "ctg_contact"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "locations",
+          "route": "ctg_location"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "primary_outcomes",
+          "route": "ctg_outcome"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "secondary_outcomes",
+          "route": "ctg_outcome"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "other_outcomes",
+          "route": "ctg_outcome"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "references",
+          "route": "ctg_reference"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "see_also_links",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "available_ipds",
+          "route": "ctg_available_ipd"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "ipd_sharing",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "oversight",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "has_results",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "is_fda_regulated_drug",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "is_fda_regulated_device",
+          "route": "ctg_study_record"
+        },
+        {
+          "coverage": "lossless_raw_section",
+          "field": "protocol_section",
+          "route": "ctg_study_record.protocol_raw"
+        },
+        {
+          "coverage": "lossless_raw_section",
+          "field": "results_section",
+          "route": "ctg_study_record.results_raw"
+        },
+        {
+          "coverage": "lossless_raw_section",
+          "field": "annotation_section",
+          "route": "ctg_study_record.annotation_raw"
+        },
+        {
+          "coverage": "lossless_raw_section",
+          "field": "document_section",
+          "route": "ctg_study_record.document_raw"
+        },
+        {
+          "coverage": "lossless_raw_section",
+          "field": "derived_section",
+          "route": "ctg_study_record.derived_raw"
+        }
+      ],
+      "lossless_reparse_invariant": "exact API response bytes retained for paginated runs or exact bulk ZIP retained for bulk runs; complete v2 protocol/results/annotation/document/derived sections retained in Silver",
+      "unaccounted_fields": []
+    },
+    "drug_references": {
+      "lossless_reparse_invariant": "every production source artifact is retained or cryptographically pinned; linkage evidence never substitutes for source evidence",
+      "source_contracts": 3,
+      "sources": [
+        {
+          "bronze_evidence": "licensed XML artifact SHA-256 + pinned release/version + per-record XML-element SHA-256",
+          "source": "drugbank",
+          "warehouse_route": "drug_source_record.payload"
+        },
+        {
+          "bronze_evidence": "exact RxNav JSON response retained as source_payload + SHA-256",
+          "source": "rxnorm",
+          "warehouse_route": "drug_source_record.payload"
+        },
+        {
+          "bronze_evidence": "retained source_payload/source_text or independently pinned source snapshot + SHA-256",
+          "source": "livertox",
+          "warehouse_route": "drug_source_record.payload"
+        }
+      ],
+      "unaccounted_sources": []
+    },
+    "preprints": {
+      "covered_fields": 19,
+      "fields": [
+        {
+          "coverage": "lossless_source_payload",
+          "field": "abstract",
+          "route": "preprint_record.source_payload"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "author_corresponding",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "author_corresponding_institution",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "authors",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "lossless_source_payload",
+          "field": "biorxiv_doi",
+          "route": "preprint_record.source_payload"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "category",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "date",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "doi",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "lossless_source_payload",
+          "field": "funding",
+          "route": "preprint_record.source_payload"
+        },
+        {
+          "coverage": "lossless_source_payload",
+          "field": "jatsxml",
+          "route": "preprint_record.source_payload"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "license",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "lossless_source_payload",
+          "field": "medrxiv_doi",
+          "route": "preprint_record.source_payload"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "published",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "server",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "source_payload",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "source_record_sha256",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "title",
+          "route": "preprint_record"
+        },
+        {
+          "coverage": "lossless_source_payload",
+          "field": "type",
+          "route": "preprint_record.source_payload"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "version",
+          "route": "preprint_record"
+        }
+      ],
+      "lossless_reparse_invariant": "exact details API HTTP response bytes retained in Bronze transport artifacts and exact parsed collection item retained as source_payload for every version",
+      "normalized_fields": 19,
+      "unaccounted_fields": []
+    },
+    "pubmed": {
+      "canonical_fields": 42,
+      "covered_fields": 42,
+      "fields": [
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "record_type",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "pmid",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "doi",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "pmc_id",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "version",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "title",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "abstract",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "abstract_sections",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "lossless_reparse",
+          "field": "title_truncated",
+          "route": "pubmed_record.raw_xml"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "authors",
+          "route": "pubmed_author"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "journal",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "journal_abbrev",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "journal_issn",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "volume",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "issue",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "pages",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "pub_date",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "article_date",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "pubmed_pub_dates",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "date_created",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "date_completed",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "date_revised",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_child_table",
+          "field": "mesh_headings",
+          "route": "pubmed_mesh_heading"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "keywords",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "publication_types",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "languages",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "chemicals",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "grants",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "article_ids",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "references",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "publication_status",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "book_metadata",
+          "route": "pubmed_record"
+        },
+        {
+          "coverage": "snapshot_provenance",
+          "field": "retrieval_query",
+          "route": "pubmed_snapshot.retrieval_queries"
+        },
+        {
+          "coverage": "snapshot_provenance",
+          "field": "retrieval_queries",
+          "route": "pubmed_snapshot.retrieval_queries"
+        },
+        {
+          "coverage": "generic_provenance_core",
+          "field": "retrieval_source",
+          "route": "ingestion_run.mode/provenance"
+        },
+        {
+          "coverage": "generic_provenance_core",
+          "field": "source_url",
+          "route": "source_record.source_url"
+        },
+        {
+          "coverage": "generic_provenance_core",
+          "field": "run_id",
+          "route": "ingestion_run.run_id"
+        },
+        {
+          "coverage": "generic_provenance_core",
+          "field": "parser_version",
+          "route": "canonical_record.parser_version"
+        },
+        {
+          "coverage": "generic_provenance_core",
+          "field": "canonical_schema_version",
+          "route": "canonical_record.canonical_schema_version"
+        },
+        {
+          "coverage": "generic_provenance_core",
+          "field": "source_record_sha256",
+          "route": "source_record.source_record_sha256"
+        },
+        {
+          "coverage": "snapshot_provenance",
+          "field": "retrieved_at",
+          "route": "pubmed_snapshot.retrieved_at"
+        },
+        {
+          "coverage": "first_class_or_structured_record",
+          "field": "raw_xml",
+          "route": "pubmed_record"
+        }
+      ],
+      "forbidden_enrichment_fields_present": [],
+      "lossless_reparse_invariant": "exact ESearch/EFetch HTTP response bytes retained in Bronze transport artifacts; per-record semantic XML retained in Bronze/Silver for deterministic reparse",
+      "unaccounted_fields": []
+    }
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,15 @@
+{
+  "canonical_sha256": "9fbf59aa317ba2bf7525433f719011860a4cabf703329c4c8eedcd3aa46ebb0d",
+  "commit_schema_version": "ctg-page-commit-1.0",
+  "committed_at": "2026-08-30T02:12:40.746564Z",
+  "next_page_token_sha256": "3946ca64ff78d93ca61090a437cbb6b3d2ca0d488f5f9ccf3059608368b27693",
+  "observed_records": 2,
+  "page_index": 0,
+  "provenance_sha256": "58cc9b6e8ada696817e0db6eb10c66005ca82feabe89192bdda4aa035e581f49",
+  "quarantine_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "quarantined_records": 0,
+  "raw_sha256": "c445910cf54b2919b56f0061728702db20f0846c4eb8d183d27837c453367bb4",
+  "transport_raw_locator": "raw/transport/00000001_studies_page.json",
+  "transport_raw_sha256": "1dfb8b6863e9e046d5b6036749dc6628d6d33454ac09d0c90c9d2cf9edc4a03f",
+  "valid_records": 2
+}

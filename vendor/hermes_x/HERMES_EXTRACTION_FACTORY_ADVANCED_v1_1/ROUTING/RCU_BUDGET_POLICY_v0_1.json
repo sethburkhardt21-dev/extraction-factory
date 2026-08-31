@@ -1,0 +1,16 @@
+{
+  "unit_costs": {
+    "deterministic": 0,
+    "tier_a_pass": 1,
+    "tier_b_bounded": 5,
+    "tier_c_bounded": 20,
+    "tier_c_pathological": 50
+  },
+  "soft_ceiling_by_priority": {
+    "P3": 2,
+    "P2": 8,
+    "P1": 20,
+    "P0": 50
+  },
+  "quality_rule": "budget exhaustion cannot close an unresolved hard quality gate"
+}

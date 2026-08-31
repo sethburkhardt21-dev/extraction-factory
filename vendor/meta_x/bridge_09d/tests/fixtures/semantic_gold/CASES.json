@@ -1,0 +1,446 @@
+{
+  "cases": [
+    {
+      "evidence": "Apnea is defined as cessation of breathing",
+      "expected": "ENTAILED",
+      "id": "SG-001",
+      "proposition": "Apnea is cessation of breathing.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "text": "Apnea is defined as cessation of breathing.",
+      "type": "DEFINITION"
+    },
+    {
+      "evidence": "Apnea is defined as cessation of breathing",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-002",
+      "proposition": "Apnea is rapid breathing.",
+      "ready": false,
+      "reviewer": "NOT_ENTAILED",
+      "text": "Apnea is defined as cessation of breathing.",
+      "type": "DEFINITION"
+    },
+    {
+      "evidence": "associated with mortality",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-003",
+      "proposition": "Hypotension causes mortality.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Hypotension was associated with mortality.",
+      "type": "CAUSATION"
+    },
+    {
+      "evidence": "Heart rate increased",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-004",
+      "proposition": "Heart rate decreased after treatment.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Heart rate increased after treatment.",
+      "type": "TREATMENT_EFFECT"
+    },
+    {
+      "evidence": "no significant difference in mortality",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-005",
+      "proposition": "Mortality increased.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "There was no significant difference in mortality.",
+      "type": "MORTALITY"
+    },
+    {
+      "evidence": "did not reduce mortality",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-006",
+      "proposition": "The treatment reduced mortality.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "The treatment did not reduce mortality.",
+      "type": "MORTALITY"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Propofol 0.5 mg/kg IV",
+      "expected": "ENTAILED",
+      "id": "SG-007",
+      "numeric": {
+        "unit": "mg/kg",
+        "value": 0.5
+      },
+      "proposition": "Propofol was administered at 0.5 mg/kg IV.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "risk": "CRITICAL",
+      "text": "Propofol 0.5 mg/kg IV was administered.",
+      "type": "DOSING"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Propofol 0.5 mg/kg IV",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-008",
+      "numeric": {
+        "unit": "mg/kg",
+        "value": 5
+      },
+      "proposition": "Propofol was administered at 5 mg/kg IV.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Propofol 0.5 mg/kg IV was administered.",
+      "type": "DOSING"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Propofol 0.5 mg/kg IV",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-009",
+      "numeric": {
+        "unit": "mcg/kg",
+        "value": 0.5
+      },
+      "proposition": "Propofol was administered at 0.5 mcg/kg IV.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Propofol 0.5 mg/kg IV was administered.",
+      "type": "DOSING"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Propofol 0.5 mg/kg IV",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-010",
+      "proposition": "Propofol was administered at 0.5 mg/kg IV.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Propofol 0.5 mg/kg IV was administered.",
+      "type": "DOSING"
+    },
+    {
+      "context": {},
+      "evidence": "Propofol 0.5 mg/kg IV",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-011",
+      "numeric": {
+        "unit": "mg/kg",
+        "value": 0.5
+      },
+      "proposition": "Propofol was administered at 0.5 mg/kg IV.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Propofol 0.5 mg/kg IV was administered.",
+      "type": "DOSING"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "5 \u00b5g kg^-1 min^-1 IV",
+      "expected": "ENTAILED",
+      "id": "SG-012",
+      "numeric": {
+        "unit": "mcg/kg/min",
+        "value": 5
+      },
+      "proposition": "The IV infusion rate was 5 mcg/kg/min.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "risk": "CRITICAL",
+      "text": "Infusion rate was 5 \u00b5g kg^-1 min^-1 IV.",
+      "type": "DOSING"
+    },
+    {
+      "evidence": "10\u207b\u2076 M",
+      "expected": "ENTAILED",
+      "id": "SG-013",
+      "numeric": {
+        "unit": "M",
+        "value": 1e-06
+      },
+      "proposition": "The concentration was 1e-6 M.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "risk": "CRITICAL",
+      "text": "Concentration was 10\u207b\u2076 M.",
+      "type": "CONCENTRATION"
+    },
+    {
+      "evidence": "\u00bd mg",
+      "expected": "ENTAILED",
+      "id": "SG-014",
+      "numeric": {
+        "unit": "mg",
+        "value": 0.5
+      },
+      "proposition": "The dose was 0.5 mg.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "risk": "CRITICAL",
+      "text": "The dose was \u00bd mg.",
+      "type": "DOSING"
+    },
+    {
+      "evidence": "Apnea is cessation of breathing",
+      "expected": "ENTAILED",
+      "id": "SG-015",
+      "minimum_risk": "MODERATE",
+      "proposition": "Apnea is cessation of breathing.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "scope": "ABSTRACT_ONLY",
+      "text": "Apnea is cessation of breathing.",
+      "type": "DEFINITION"
+    },
+    {
+      "evidence": "5 mg",
+      "expected": "PARTIAL",
+      "gold_rationale": "Bare table cell contains only 5 mg and lacks retained header semantics proving the value is a dose; general reviewer ENTAILED must be downgraded by TABLE_BINDING.",
+      "id": "SG-016",
+      "kind": "TABLE_CELL",
+      "numeric": {
+        "unit": "mg",
+        "value": 5
+      },
+      "proposition": "The dose was 5 mg.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "risk": "CRITICAL",
+      "scope": "TABLE",
+      "text": "5 mg",
+      "type": "DOSING"
+    },
+    {
+      "evidence": "may reduce nausea",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-017",
+      "policy_note": "Source hedging cannot be waived by a blind reviewer; strengthening modality is a deterministic contradiction.",
+      "proposition": "The drug reduces nausea.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "The drug may reduce nausea.",
+      "type": "TREATMENT_EFFECT"
+    },
+    {
+      "evidence": "may reduce nausea",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-018",
+      "policy_note": "Source hedging cannot be waived by a blind reviewer; strengthening modality is a deterministic contradiction.",
+      "proposition": "The drug reduces nausea.",
+      "ready": false,
+      "resolved": [
+        "QUALIFIER_SCOPE"
+      ],
+      "reviewer": "ENTAILED",
+      "text": "The drug may reduce nausea.",
+      "type": "TREATMENT_EFFECT"
+    },
+    {
+      "context": {
+        "population": "adults"
+      },
+      "evidence": "finding was reported",
+      "expected": "PARTIAL",
+      "id": "SG-019",
+      "proposition": "The finding was reported in adults.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "The finding was reported in the study population.",
+      "type": "OTHER_CLINICAL_ASSERTION"
+    },
+    {
+      "context": {
+        "population": "adults"
+      },
+      "evidence": "finding was reported",
+      "expected": "ENTAILED",
+      "id": "SG-020",
+      "proposition": "The finding was reported in adults.",
+      "ready": true,
+      "resolved": [
+        "QUALIFIER_SCOPE"
+      ],
+      "reviewer": "ENTAILED",
+      "text": "The finding was reported in the study population.",
+      "type": "OTHER_CLINICAL_ASSERTION"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Ondansetron 4 mg PO",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-021",
+      "numeric": {
+        "unit": "mg",
+        "value": 4
+      },
+      "proposition": "Ondansetron 4 mg IV was administered.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Ondansetron 4 mg PO was administered.",
+      "type": "DOSING"
+    },
+    {
+      "evidence": "associated with lower risk",
+      "expected": "ENTAILED",
+      "id": "SG-022",
+      "proposition": "Treatment was associated with lower risk.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "text": "Treatment was associated with lower risk.",
+      "type": "ASSOCIATION"
+    },
+    {
+      "evidence": "reduced risk",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-023",
+      "proposition": "Treatment reduced risk.",
+      "ready": false,
+      "reviewer": "NOT_ENTAILED",
+      "text": "Treatment reduced risk.",
+      "type": "TREATMENT_EFFECT"
+    },
+    {
+      "evidence": "might reduce pain",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-024",
+      "policy_note": "Source hedging cannot be waived by a blind reviewer; strengthening modality is a deterministic contradiction.",
+      "proposition": "The intervention reduces pain.",
+      "ready": false,
+      "reviewer": "AMBIGUOUS",
+      "text": "The intervention might reduce pain.",
+      "type": "EFFICACY"
+    },
+    {
+      "evidence": "might reduce pain",
+      "expected": "ENTAILED",
+      "id": "SG-025",
+      "proposition": "The intervention might reduce pain.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "text": "The intervention might reduce pain.",
+      "type": "EFFICACY"
+    },
+    {
+      "context": {
+        "route": "PO"
+      },
+      "evidence": "orally",
+      "expected": "ENTAILED",
+      "id": "SG-026",
+      "proposition": "The medication was administered PO.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "risk": "HIGH",
+      "text": "Patients received the medication orally.",
+      "type": "ADMINISTRATION"
+    },
+    {
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "orally",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-027",
+      "proposition": "The medication was administered IV.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Patients received the medication orally.",
+      "type": "ADMINISTRATION"
+    },
+    {
+      "evidence": "No adverse events were reported",
+      "expected": "ENTAILED",
+      "id": "SG-028",
+      "negated": true,
+      "proposition": "No adverse events were reported.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "text": "No adverse events were reported.",
+      "type": "NEGATIVE_FINDING"
+    },
+    {
+      "evidence": "Adverse events were reported",
+      "expected": "NOT_ENTAILED",
+      "id": "SG-029",
+      "negated": true,
+      "proposition": "No adverse events were reported.",
+      "ready": false,
+      "reviewer": "ENTAILED",
+      "text": "Adverse events were reported.",
+      "type": "NEGATIVE_FINDING"
+    },
+    {
+      "evidence": "Mortality decreased",
+      "expected": "ENTAILED",
+      "id": "SG-030",
+      "proposition": "Mortality decreased after treatment.",
+      "ready": true,
+      "reviewer": "ENTAILED",
+      "risk": "HIGH",
+      "text": "Mortality decreased after treatment.",
+      "type": "MORTALITY"
+    }
+  ],
+  "principle": "Hand-authored semantic expectations; extractor/verifier output must not define gold.",
+  "schema_version": "frontier-semantic-gold-1.1",
+  "structured_cases": [
+    {
+      "expected": "ENTAILED",
+      "id": "SG-J01",
+      "numeric": {
+        "unit": "participants",
+        "value": 10
+      },
+      "path": "$.protocolSection.designModule.enrollmentInfo.count",
+      "proposition": "The study enrollment was 10 participants.",
+      "type": "STUDY_ENROLLMENT",
+      "value": 10
+    },
+    {
+      "expected": "NOT_ENTAILED",
+      "id": "SG-J02",
+      "numeric": {
+        "unit": "participants",
+        "value": 10
+      },
+      "path": "$.protocolSection.designModule.enrollmentInfo.count",
+      "proposition": "The study enrollment was 11 participants.",
+      "type": "STUDY_ENROLLMENT",
+      "value": 10
+    },
+    {
+      "expected": "ENTAILED",
+      "id": "SG-J03",
+      "path": "$.protocolSection.designModule.phases[0]",
+      "proposition": "The study phase included Phase2.",
+      "type": "TRIAL_PROTOCOL_FACT",
+      "value": "PHASE2"
+    },
+    {
+      "expected": "ENTAILED",
+      "id": "SG-J04",
+      "path": "$.protocolSection.statusModule.overallStatus",
+      "proposition": "The study overall status was Completed.",
+      "type": "TRIAL_PROTOCOL_FACT",
+      "value": "COMPLETED"
+    },
+    {
+      "expected": "ENTAILED",
+      "id": "SG-J05",
+      "path": "$.hasResults",
+      "proposition": "The registry indicated that posted results were not available.",
+      "type": "TRIAL_RESULT_FACT",
+      "value": false
+    }
+  ]
+}

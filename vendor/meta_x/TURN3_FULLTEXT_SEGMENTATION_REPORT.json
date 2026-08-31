@@ -1,0 +1,41 @@
+{
+  "turn": 3,
+  "scope": "rights-aware full-text acquisition and deterministic source-unit segmentation",
+  "status": "PASS",
+  "09d_repo_write_performed": false,
+  "frontier_ready": false,
+  "mass_extraction_authorized": false,
+  "production_code_manifest_sha256": "dfd8c7ad431c1eabb38015ff0f88a233ac2c827c3ccd990f692205593c99fefa",
+  "production_manifest_files": 57,
+  "production_python_files": 44,
+  "regression_tests_passed": 123,
+  "contracts": {
+    "source_unit_schema_version": "frontier-source-unit-1.1",
+    "source_unit_segmenter": "IMPLEMENTED_OFFLINE_CERTIFIED",
+    "fulltext_acquisition": "IMPLEMENTED_OFFLINE_CERTIFIED_PUBLIC_CANARY_PENDING",
+    "assertion_engine": "NOT_IMPLEMENTED",
+    "assertion_verifier": "NOT_IMPLEMENTED"
+  },
+  "controlled_demonstration": {
+    "source_records": 3,
+    "source_units": 13,
+    "fulltext_artifacts": 1,
+    "assertions": 0,
+    "real_source_extraction": false
+  },
+  "public_host_pmc_canary": "BLOCKED_ENVIRONMENT_DNS",
+  "closed_gaps": [
+    "exact full-text artifact bytes and hashes",
+    "rights dimensions separated",
+    "PMC OAI-PMH full-text acquisition path",
+    "preprint JATS acquisition path",
+    "deterministic JATS paragraph/table/figure segmentation",
+    "explicit abstract-only fallback",
+    "structured JSON scalar segmentation",
+    "literal JSON null representation",
+    "monograph paragraph segmentation",
+    "full-text tamper rejection",
+    "source-unit package source-record anchoring"
+  ],
+  "next_highest_value_turn": "atomic assertion extraction engine"
+}

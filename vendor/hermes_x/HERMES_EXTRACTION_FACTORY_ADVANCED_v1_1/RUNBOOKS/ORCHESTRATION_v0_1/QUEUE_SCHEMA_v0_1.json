@@ -1,0 +1,21 @@
+{
+  "queues": [
+    "Q_READY_W1",
+    "Q_READY_W2_PRIMARY",
+    "Q_READY_W2_RECALL",
+    "Q_READY_SPECIALIST",
+    "Q_READY_FRONTIER",
+    "Q_VALIDATION",
+    "Q_RETRY",
+    "Q_DEFERRED",
+    "Q_BLOCKED_AUTHORITY"
+  ],
+  "ordering": [
+    "dependency_ready",
+    "priority",
+    "age",
+    "certified_worker_available",
+    "rcu_budget",
+    "estate_fairness"
+  ]
+}

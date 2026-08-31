@@ -1,0 +1,18 @@
+{
+  "assertion_engine_status": "NOT_IMPLEMENTED",
+  "assertions": 0,
+  "frontier_ready": false,
+  "fulltext_artifacts": 1,
+  "mass_extraction_performed": false,
+  "real_source_extraction": false,
+  "scope_counts": {
+    "ABSTRACT_ONLY": 1,
+    "FIGURE": 1,
+    "FULL_TEXT": 3,
+    "REGISTRY_STRUCTURED": 4,
+    "TABLE": 4
+  },
+  "source_records": 3,
+  "source_units": 13,
+  "status": "PASS_CONTROLLED_TURN3_DEMONSTRATION"
+}

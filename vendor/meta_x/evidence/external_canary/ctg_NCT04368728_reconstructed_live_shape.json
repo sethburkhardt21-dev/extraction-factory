@@ -1,0 +1,82 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT04368728",
+      "briefTitle": "Study to Describe the Safety, Tolerability, Immunogenicity, and Efficacy of RNA Vaccine Candidates Against COVID-19 in Healthy Individuals",
+      "officialTitle": "A PHASE 1/2/3, PLACEBO-CONTROLLED, RANDOMIZED, OBSERVER-BLIND, DOSE-FINDING STUDY TO EVALUATE THE SAFETY, TOLERABILITY, IMMUNOGENICITY, AND EFFICACY OF SARS-COV-2 RNA VACCINE CANDIDATES AGAINST COVID-19 IN HEALTHY INDIVIDUALS",
+      "orgStudyIdInfo": {
+        "id": "C4591001"
+      }
+    },
+    "statusModule": {
+      "overallStatus": "COMPLETED",
+      "startDateStruct": {
+        "date": "2020-04-29",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2023-02-10",
+        "type": "ACTUAL"
+      },
+      "completionDateStruct": {
+        "date": "2023-02-10",
+        "type": "ACTUAL"
+      },
+      "lastUpdatePostDateStruct": {
+        "date": "2026-03-25",
+        "type": "ACTUAL"
+      }
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2",
+        "PHASE3"
+      ],
+      "enrollmentInfo": {
+        "count": 46969,
+        "type": "ACTUAL"
+      },
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "PREVENTION"
+      }
+    },
+    "conditionsModule": {
+      "conditions": [
+        "SARS-CoV-2 Infection",
+        "COVID-19"
+      ]
+    },
+    "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+        "name": "BioNTech SE"
+      }
+    },
+    "armsInterventionsModule": {
+      "interventions": [
+        {
+          "type": "BIOLOGICAL",
+          "name": "BNT162b1"
+        },
+        {
+          "type": "BIOLOGICAL",
+          "name": "BNT162b2"
+        },
+        {
+          "type": "OTHER",
+          "name": "Placebo"
+        },
+        {
+          "type": "BIOLOGICAL",
+          "name": "BNT162b2SA"
+        }
+      ]
+    }
+  },
+  "resultsSection": {
+    "participantFlowModule": {}
+  },
+  "hasResults": true
+}

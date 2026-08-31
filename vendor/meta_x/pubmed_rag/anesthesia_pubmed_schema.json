@@ -1,0 +1,354 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Anesthesia PubMed Max Extraction Record",
+  "type": "object",
+  "description": "Full metadata schema for every anesthesia PubMed record from 16-agent swarm max recall extraction",
+  "required": [
+    "pmid",
+    "extraction_metadata"
+  ],
+  "properties": {
+    "pmid": {
+      "type": "string",
+      "description": "PubMed ID"
+    },
+    "doi": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "DOI"
+    },
+    "pmcid": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "PubMed Central ID"
+    },
+    "title": {
+      "type": "string"
+    },
+    "abstract": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "abstract_structured": {
+      "type": "object",
+      "description": "Structured abstract sections",
+      "properties": {
+        "background": {
+          "type": "string"
+        },
+        "methods": {
+          "type": "string"
+        },
+        "results": {
+          "type": "string"
+        },
+        "conclusions": {
+          "type": "string"
+        },
+        "full_sections": {
+          "type": "object"
+        }
+      }
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "last_name": {
+            "type": "string"
+          },
+          "fore_name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "affiliation": {
+            "type": "string"
+          },
+          "orcid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "journal": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "iso_abbreviation": {
+          "type": "string"
+        },
+        "issn": {
+          "type": "string"
+        },
+        "volume": {
+          "type": "string"
+        },
+        "issue": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "string"
+        },
+        "impact_factor": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "publisher": {
+          "type": "string"
+        }
+      }
+    },
+    "publication_date": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer"
+        },
+        "month": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "day": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "pub_type_date": {
+          "type": "string",
+          "description": "epub, ppublish, etc"
+        },
+        "pdat": {
+          "type": "string"
+        }
+      }
+    },
+    "mesh_terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "descriptor_name": {
+            "type": "string"
+          },
+          "descriptor_ui": {
+            "type": "string"
+          },
+          "qualifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "major_topic": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "publication_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "PT field: RCT, SR, MA, Guideline, etc"
+    },
+    "chemicals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "registry_number": {
+            "type": "string"
+          },
+          "ui": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "anesthesia_subdomains": {
+      "type": "array",
+      "description": "16-agent swarm classification",
+      "items": {
+        "type": "string",
+        "enum": [
+          "General Anesthesia",
+          "Regional Anesthesia - Spinal Epidural",
+          "Peripheral Nerve Blocks",
+          "Local Anesthetics Pharmacology",
+          "Airway Management",
+          "Anesthesia Monitoring",
+          "Pediatric Anesthesia",
+          "Obstetric Anesthesia",
+          "Cardiac Anesthesia",
+          "Neuroanesthesia",
+          "Critical Care ICU Sedation",
+          "Pain Medicine",
+          "Anesthesia Safety",
+          "Pharmacology - Opioids Propofol Ketamine NMB",
+          "ERAS Perioperative",
+          "AI Simulation Education"
+        ]
+      }
+    },
+    "study_design": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "RCT",
+            "Systematic Review",
+            "Meta-Analysis",
+            "Observational",
+            "Case Report",
+            "Guideline",
+            "Narrative Review",
+            "Bibliometric",
+            "Animal",
+            "In Vitro",
+            "Other"
+          ]
+        },
+        "is_landmark": {
+          "type": "boolean"
+        },
+        "n_patients": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "n_studies_included": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "For SRMA"
+        },
+        "multicenter": {
+          "type": "boolean"
+        },
+        "blinding": {
+          "type": "string"
+        },
+        "registration": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "NCT, PROSPERO ID"
+        }
+      }
+    },
+    "anesthesia_specific": {
+      "type": "object",
+      "properties": {
+        "drugs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "techniques": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "PONV, awareness, delirium, mortality, pain score, etc"
+        },
+        "population": {
+          "type": "string",
+          "description": "adult, pediatric, obstetric, cardiac"
+        },
+        "asa_class": {
+          "type": "string"
+        }
+      }
+    },
+    "citation_metrics": {
+      "type": "object",
+      "properties": {
+        "citation_count_openalex": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "citation_count_semantic_scholar": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "is_top_100_pediatric": {
+          "type": "boolean"
+        }
+      }
+    },
+    "extraction_metadata": {
+      "type": "object",
+      "properties": {
+        "query_used": {
+          "type": "string"
+        },
+        "agent_id": {
+          "type": "integer"
+        },
+        "retrieval_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dedup_status": {
+          "type": "string",
+          "enum": [
+            "unique",
+            "duplicate_type_I",
+            "duplicate_type_II",
+            "merged"
+          ]
+        },
+        "duplicate_of_pmid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

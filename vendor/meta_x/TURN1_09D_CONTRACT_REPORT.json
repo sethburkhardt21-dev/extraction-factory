@@ -1,0 +1,32 @@
+{
+  "turn": 1,
+  "name": "09D contract freeze",
+  "status": "PASS_BOUNDARY_ONLY",
+  "frontier_ready": false,
+  "mass_extraction_authorized": false,
+  "09d_repo_write_performed": false,
+  "direct_09d_insert_allowed": false,
+  "production_manifest_sha256": "893e3d8b5043d49e5a178f7489002fc4aeecd0329338d931203c82d249488491",
+  "production_manifest_files": 52,
+  "production_python_files": 42,
+  "regression_tests_passed": 97,
+  "closed_gaps": [
+    "premature DrugBank-to-canonical drug authority removed",
+    "09D deterministic candidate source identity adopted",
+    "current S02 direct insertion explicitly prohibited",
+    "research-ingestion snapshot separated from 09D clinical release",
+    "external 09D audit-package bridge skeleton implemented",
+    "09D read-only authority revision pinned"
+  ],
+  "next_turn": "atomic assertion and source-unit contract",
+  "blocked_or_not_implemented": [
+    "source-unit layer",
+    "assertion schema/engine",
+    "assertion entailment verifier",
+    "09D comparator",
+    "variant/conflict engine",
+    "gold-set precision/recall",
+    "public-host native canaries",
+    "target database execution qualification"
+  ]
+}

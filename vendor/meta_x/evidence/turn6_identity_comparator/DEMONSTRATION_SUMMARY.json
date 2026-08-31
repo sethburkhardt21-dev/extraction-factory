@@ -1,0 +1,29 @@
+{
+  "09d_mutation_performed": false,
+  "actual_09d_database_expected_sha256": "11f9e3150e5775f452cd90be7aa33dcb6c3a8df4fc9c3810f41b45248f6d4aee",
+  "actual_09d_database_present": false,
+  "candidate_records": 4,
+  "canonical_assignments_performed": 0,
+  "comparison_classifications": {
+    "CONTEXT_DIFFERENT": 1,
+    "CONTRADICTORY": 1,
+    "EXACT_EXISTING": 1,
+    "IDENTITY_NOT_FOUND": 1
+  },
+  "downstream_semantic_ready": 2,
+  "identity_lookup_states": {
+    "EXACT_NAME_SINGLE_CANONICAL_TARGET": 3,
+    "NO_MATCH": 1
+  },
+  "mass_extraction_authorized": false,
+  "production_code_manifest_sha256": "d9a3c5087f55913b57d00f5029f71aafd809312f0dc7979b04279ef0d36f4900",
+  "semantic_verdicts": {
+    "AMBIGUOUS": 0,
+    "ENTAILED": 4,
+    "NOT_ENTAILED": 0,
+    "PARTIAL": 0,
+    "PROVENANCE_INCOMPLETE": 0
+  },
+  "snapshot_source_kind": "SYNTHETIC_CONTRACT_FIXTURE",
+  "status": "PASS_OFFLINE_TURN6_CONTRACT"
+}

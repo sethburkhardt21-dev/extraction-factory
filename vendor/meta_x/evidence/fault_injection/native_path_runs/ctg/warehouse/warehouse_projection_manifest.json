@@ -1,0 +1,105 @@
+{
+  "artifacts": {
+    "canonical_record": {
+      "path": "canonical_record.jsonl",
+      "records": 3,
+      "sha256": "0410ef783906c0e52d7d8ec5a2db1e78d665851109eff9b51ef18c9b7d2cfe69"
+    },
+    "ctg_arm": {
+      "path": "ctg_arm.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_available_ipd": {
+      "path": "ctg_available_ipd.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_condition": {
+      "path": "ctg_condition.jsonl",
+      "records": 3,
+      "sha256": "4a5328e510d48dbd054ff06f31e8c9d8e341fb8b508df011fd4807931af327bf"
+    },
+    "ctg_contact": {
+      "path": "ctg_contact.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_intervention": {
+      "path": "ctg_intervention.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_keyword": {
+      "path": "ctg_keyword.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_location": {
+      "path": "ctg_location.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_outcome": {
+      "path": "ctg_outcome.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_phase": {
+      "path": "ctg_phase.jsonl",
+      "records": 6,
+      "sha256": "6b957c4eef659a0f7959a9c7c1b588edac7b2284307e04972560cfa816c7e41c"
+    },
+    "ctg_reference": {
+      "path": "ctg_reference.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_sponsor": {
+      "path": "ctg_sponsor.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctg_study_record": {
+      "path": "ctg_study_record.jsonl",
+      "records": 3,
+      "sha256": "a25399ea8bf00c9e1e026b92f091a6baaebdd1f79955c59d49d85eb80c81ce29"
+    },
+    "ctg_study_snapshot": {
+      "path": "ctg_study_snapshot.jsonl",
+      "records": 3,
+      "sha256": "e9dd2f5662ef57e9d23d270fe9627527ff363050cf61239d2d6985da34d7936e"
+    },
+    "ingestion_run": {
+      "path": "ingestion_run.jsonl",
+      "records": 1,
+      "sha256": "ad499ca87780e0dfe61bcf6e29e5a956549eed51d63694178e4f6e806c6fdcca"
+    },
+    "quarantine_record": {
+      "path": "quarantine_record.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run_artifact": {
+      "path": "run_artifact.jsonl",
+      "records": 11,
+      "sha256": "f7f64f2e8e8200d9bc1bdcc745c3951b8fd71da2b8d42d6b37fb123ea2f0c7d1"
+    },
+    "source_observation": {
+      "path": "source_observation.jsonl",
+      "records": 3,
+      "sha256": "e1cb915d3fdb7ea79b26ded4851cd9516ecee1ee71d3b8975165f7970d54406f"
+    },
+    "source_record": {
+      "path": "source_record.jsonl",
+      "records": 3,
+      "sha256": "017b0ac4f9e6bfe35a9a05f460d92d2c5bf68a135e276d2259585551ed62135b"
+    }
+  },
+  "created_at": "2026-08-30T02:12:40.880685Z",
+  "projection_version": "frontier-warehouse-projection-1.0",
+  "referential_errors": [],
+  "source": "clinicaltrials.gov",
+  "source_manifest_sha256": "9d3e1bf0c8f3a17009d8ff53a7947b1ece82733885198e0a8a4deaee705bcef7",
+  "validation_status": "PASS"
+}

@@ -1,0 +1,11 @@
+{
+  "benchmark_unit_id": "B2-001",
+  "stratum": "B0|B1|B2|B3|B4|B5|B6|B7",
+  "source_id": "",
+  "source_sha256": "",
+  "page_start": null,
+  "page_end": null,
+  "source_risk": "S0|S1|S2|S3",
+  "historical_outputs_hidden": true,
+  "gold_version": "v0"
+}

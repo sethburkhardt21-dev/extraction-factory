@@ -1,0 +1,62 @@
+[
+  {
+    "lane": "P2-L11",
+    "route": "TARGETED_HARDEN + PACKAGE",
+    "rationale": "6/6 emitted; deeply re-audit remaining outputs.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P2-L12",
+    "route": "RECOVER + SEMANTIC_RECONCILE",
+    "rationale": "Competing living/recovery states; resolve current authority first.",
+    "risk": "HIGH"
+  },
+  {
+    "lane": "P2-L13",
+    "route": "RECOVER + RECALL_HARDEN + CONTINUE",
+    "rationale": "2/6 persisted; recover/re-harden then continue 4.",
+    "risk": "HIGH"
+  },
+  {
+    "lane": "P2-L14",
+    "route": "CONTINUE",
+    "rationale": "Preserve strong 2/6 and continue 4.",
+    "risk": "LOW"
+  },
+  {
+    "lane": "P2-L15",
+    "route": "RECOVER_AUTHORITY + TARGETED_HARDEN",
+    "rationale": "Multiple competing output trees; reconstruct authority first.",
+    "risk": "HIGH"
+  },
+  {
+    "lane": "P2-L16",
+    "route": "NOT_SUPPLIED / UNKNOWN",
+    "rationale": "Do not infer status.",
+    "risk": "BLOCKED"
+  },
+  {
+    "lane": "P2-L17",
+    "route": "HARDEN + CONTINUE",
+    "rationale": "4/6 current; harden non-hardened outputs and continue 2.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P2-L18",
+    "route": "RECALL_HARDEN + CONTINUE",
+    "rationale": "3/6 older under-recall; harden 3 and continue 3.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P2-L19",
+    "route": "RECALL_HARDEN + CONTINUE",
+    "rationale": "2/6 conservative; harden 2 and continue 4.",
+    "risk": "MEDIUM"
+  },
+  {
+    "lane": "P2-L20",
+    "route": "RECONCILE_B0002 + CONTINUE",
+    "rationale": "Bounded B0002 conflict; never count-fit; continue missing 2.",
+    "risk": "HIGH"
+  }
+]

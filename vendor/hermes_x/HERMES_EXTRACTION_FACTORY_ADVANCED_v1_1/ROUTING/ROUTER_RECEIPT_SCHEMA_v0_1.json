@@ -1,0 +1,28 @@
+{
+  "exception_id": "",
+  "capsule_id": "",
+  "evidence_family_id": "",
+  "work_class": "W0|W1|W2|W3|W4",
+  "source_class": "S0|S1|S2|S3",
+  "priority": "P0|P1|P2|P3",
+  "hard_triggers": [],
+  "soft_signals": [],
+  "escalation_score": 0,
+  "reviewer_depth": {
+    "tier_a_passes": 0,
+    "tier_b_passes": 0,
+    "tier_c_passes": 0
+  },
+  "rcu": {
+    "spent": 0,
+    "soft_ceiling": 0,
+    "additional_authorized": 0
+  },
+  "destination_capability": "",
+  "eligible_models": [],
+  "chosen_worker": {},
+  "reason": "",
+  "expected_output": "",
+  "return_path": "",
+  "timestamp": ""
+}

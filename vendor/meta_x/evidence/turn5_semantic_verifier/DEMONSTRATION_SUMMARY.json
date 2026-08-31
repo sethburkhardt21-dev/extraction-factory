@@ -1,0 +1,29 @@
+{
+  "09d_comparison_performed": false,
+  "all_assertions_remain_NOT_VERIFIED": true,
+  "assertions": 6,
+  "assertions_mutated": false,
+  "blind_independent_review": true,
+  "candidate_resolution_performed": false,
+  "canonical_authority": false,
+  "demonstration": "TURN5_CONTROLLED_SEMANTIC_VERIFIER",
+  "mass_extraction_authorized": false,
+  "note": "Controlled semantic contract demonstration with deliberate wrong-dose, lost-condition, and paraphrase cases. Not a production model precision/recall certification.",
+  "package_status": "PASS_TURN5_SEMANTIC_VERIFIER",
+  "production_code_manifest_sha256": "938fb21f798358036560052f1656c9418b19e21432a0d08531732aac3dbbdc35",
+  "risk_counts": {
+    "CRITICAL": 1,
+    "HIGH": 1,
+    "LOW": 3,
+    "MEDIUM": 1
+  },
+  "source_units": 6,
+  "verdict_counts": {
+    "AMBIGUOUS": 1,
+    "ENTAILED": 3,
+    "NOT_ENTAILED": 2,
+    "PARTIAL": 0,
+    "PROVENANCE_INCOMPLETE": 0
+  },
+  "verification_events": 6
+}

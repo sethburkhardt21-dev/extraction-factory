@@ -1,0 +1,4139 @@
+{
+  "09d_comparison_performed": false,
+  "automatic_repair_allowed": false,
+  "automatic_selection_allowed": false,
+  "blind_recall": {
+    "09d_comparison_performed": false,
+    "assertion_engine_schema_version": "frontier-assertion-engine-1.0",
+    "assertions": [
+      {
+        "assertion_id": "ASSERT:1afc43aa2afe7762f298ff022e97369f",
+        "assertion_schema_version": "frontier-atomic-assertion-1.0",
+        "assertion_type": "ADVERSE_EFFECT",
+        "automatic_selection_allowed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "certainty": null,
+        "conditional": false,
+        "context": {},
+        "edition_or_version": null,
+        "evidence_span": {
+          "char_end": 21,
+          "char_start": 0,
+          "text": "Propofol caused apnea",
+          "text_sha256": "abd9308665765b6a2c1ae4bfe9fd36c3f0d080357d8e0f6a2842767e8ba2a2ae",
+          "utf8_byte_end": 21,
+          "utf8_byte_start": 0
+        },
+        "extractor_provenance": {
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-blind-recall",
+          "engine_version": "1.0",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_RECALL_FIXTURE",
+          "model_revision": "turn5-final-demo",
+          "prompt_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:72dc7f87297b6d55fe34d0f6ad9c2ac0",
+        "locator": {
+          "locator_type": "PARAGRAPH",
+          "paragraph": 1
+        },
+        "negated": false,
+        "normalized_proposition": "Propofol caused apnea.",
+        "numeric": null,
+        "object_candidate_id": null,
+        "public_eligible": false,
+        "publication_year": null,
+        "source_era": null,
+        "source_record_key": "recall-dose",
+        "source_resource_id": "RES:recall-dose",
+        "source_scope": "FULL_TEXT",
+        "source_sha256": "c5c907b6ed340fc6643bc901ec301fd43cfcc0ff0c6c12ad3d4071749956ae5f",
+        "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89",
+        "source_unit_sha256": "badab8051a9df0f52552da1011f090ac5dbf57e90852be3150901bf026c2e13b",
+        "source_version_id": "1",
+        "structured_evidence_path": null,
+        "study_context": {},
+        "subject_candidate_id": null,
+        "verification_status": "NOT_VERIFIED"
+      },
+      {
+        "assertion_id": "ASSERT:c40d6de4ecd4779f8869ba2db7b3d6e1",
+        "assertion_schema_version": "frontier-atomic-assertion-1.0",
+        "assertion_type": "DOSING",
+        "automatic_selection_allowed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "certainty": null,
+        "conditional": false,
+        "context": {
+          "route": "IV"
+        },
+        "edition_or_version": null,
+        "evidence_span": {
+          "char_end": 57,
+          "char_start": 27,
+          "text": "propofol dose was 0.5 mg/kg IV",
+          "text_sha256": "3321c12426c558cbebbcf397d5df695bb1b196eabd4ccbee47e21fd198b12bf7",
+          "utf8_byte_end": 57,
+          "utf8_byte_start": 27
+        },
+        "extractor_provenance": {
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-blind-recall",
+          "engine_version": "1.0",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_RECALL_FIXTURE",
+          "model_revision": "turn5-final-demo",
+          "prompt_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:c8ab02aff8cfcab53958fe67ff136e84",
+        "locator": {
+          "locator_type": "PARAGRAPH",
+          "paragraph": 1
+        },
+        "negated": false,
+        "normalized_proposition": "The propofol dose was 0.5 mg/kg IV.",
+        "numeric": {
+          "unit": "mg/kg",
+          "value": 0.5
+        },
+        "object_candidate_id": null,
+        "public_eligible": false,
+        "publication_year": null,
+        "source_era": null,
+        "source_record_key": "recall-dose",
+        "source_resource_id": "RES:recall-dose",
+        "source_scope": "FULL_TEXT",
+        "source_sha256": "c5c907b6ed340fc6643bc901ec301fd43cfcc0ff0c6c12ad3d4071749956ae5f",
+        "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89",
+        "source_unit_sha256": "badab8051a9df0f52552da1011f090ac5dbf57e90852be3150901bf026c2e13b",
+        "source_version_id": "1",
+        "structured_evidence_path": null,
+        "study_context": {},
+        "subject_candidate_id": null,
+        "verification_status": "NOT_VERIFIED"
+      },
+      {
+        "assertion_id": "ASSERT:d261bf60d1ca01313c4e4b2a96d408c1",
+        "assertion_schema_version": "frontier-atomic-assertion-1.0",
+        "assertion_type": "ASSOCIATION",
+        "automatic_selection_allowed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "certainty": null,
+        "conditional": false,
+        "context": {},
+        "edition_or_version": null,
+        "evidence_span": {
+          "char_end": 39,
+          "char_start": 0,
+          "text": "Drug X was associated with hypotension.",
+          "text_sha256": "ff364341c41de250d8f4e8ad9c7f3b3d414ac10bc7cac66f9548adf516339ba3",
+          "utf8_byte_end": 39,
+          "utf8_byte_start": 0
+        },
+        "extractor_provenance": {
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-blind-recall",
+          "engine_version": "1.0",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_RECALL_FIXTURE",
+          "model_revision": "turn5-final-demo",
+          "prompt_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:3754fdf1ca1cccfdc39a411c633def62",
+        "locator": {
+          "locator_type": "PARAGRAPH",
+          "paragraph": 1
+        },
+        "negated": false,
+        "normalized_proposition": "Drug X was associated with hypotension.",
+        "numeric": null,
+        "object_candidate_id": null,
+        "public_eligible": false,
+        "publication_year": null,
+        "source_era": null,
+        "source_record_key": "disagreement",
+        "source_resource_id": "RES:disagreement",
+        "source_scope": "FULL_TEXT",
+        "source_sha256": "e41ad30981fdcda6833b3a73aa32f63283b809bea5876e472cde70b386f5c5e8",
+        "source_unit_id": "UNIT:67b0906880054b2ee24193c2f4d0c8c7",
+        "source_unit_sha256": "ff364341c41de250d8f4e8ad9c7f3b3d414ac10bc7cac66f9548adf516339ba3",
+        "source_version_id": "1",
+        "structured_evidence_path": null,
+        "study_context": {},
+        "subject_candidate_id": null,
+        "verification_status": "NOT_VERIFIED"
+      }
+    ],
+    "authority_granted": false,
+    "blind_recall_schema_version": "frontier-blind-recall-1.0",
+    "candidate_resolution_performed": false,
+    "extractor_provenance": {
+      "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+      "engine": "frontier-blind-recall",
+      "engine_version": "1.0",
+      "mode": "MODEL_ASSISTED",
+      "model": "CONTROLLED_RECALL_FIXTURE",
+      "model_revision": "turn5-final-demo",
+      "prompt_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "independent_of_primary_extractor": true,
+    "metrics": {
+      "assertions_emitted": 3,
+      "duplicate_interpretations_collapsed": 0,
+      "proposals_quarantined": 0,
+      "proposals_received": 3,
+      "source_units_seen": 8,
+      "source_units_with_assertions": 2,
+      "verification_status_counts": {
+        "NOT_VERIFIED": 3
+      }
+    },
+    "primary_mutation_performed": false,
+    "quarantine": [],
+    "recall_outputs_are_unverified": true,
+    "reconciliation": {
+      "authority_granted": false,
+      "automatic_merge_allowed": false,
+      "automatic_repair_allowed": false,
+      "blind_recall_schema_version": "frontier-blind-recall-1.0",
+      "counts": {
+        "PRIMARY_AND_RECALL_EXACT": 1,
+        "PRIMARY_ONLY": 6,
+        "RECALL_ONLY_CANDIDATE": 1,
+        "SAME_EVIDENCE_SEMANTIC_DISAGREEMENT": 1
+      },
+      "rows": [
+        {
+          "assertion_id": "ASSERT:1afc43aa2afe7762f298ff022e97369f",
+          "automatic_action": false,
+          "reconciliation_state": "PRIMARY_AND_RECALL_EXACT",
+          "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:3004be4cafdbbea2211f6c6fc21408bd",
+          "recall_assertion_id": "ASSERT:d261bf60d1ca01313c4e4b2a96d408c1",
+          "reconciliation_state": "SAME_EVIDENCE_SEMANTIC_DISAGREEMENT",
+          "source_unit_id": "UNIT:67b0906880054b2ee24193c2f4d0c8c7"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:17470b5dde30d433404896082ac10340",
+          "reconciliation_state": "PRIMARY_ONLY",
+          "source_unit_id": "UNIT:682e507cfad8a0c6dcaee8ddca75f9f8"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:1a6023c97ed4d0cc0194d0560deea0fd",
+          "reconciliation_state": "PRIMARY_ONLY",
+          "source_unit_id": "UNIT:90b9dbaeed320bf0b6caf199c136da10"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:57746ca64a5a7c2b94a3bdfdc71e3a90",
+          "reconciliation_state": "PRIMARY_ONLY",
+          "source_unit_id": "UNIT:672580acea966c081652e13e8acdd558"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:84a5a835c8711741488556ac2df4a511",
+          "reconciliation_state": "PRIMARY_ONLY",
+          "source_unit_id": "UNIT:f8c2a594c0d911194b5c16671274a136"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:8eb0de87da745b688c959ea4c2609275",
+          "reconciliation_state": "PRIMARY_ONLY",
+          "source_unit_id": "UNIT:6e61e62e693082fe5467d195f8140e19"
+        },
+        {
+          "automatic_action": false,
+          "primary_assertion_id": "ASSERT:e5c05305b2b6f0cb5a4bcd170196066b",
+          "reconciliation_state": "PRIMARY_ONLY",
+          "source_unit_id": "UNIT:1c3fd8cecb69c7e3f62f0b373623af32"
+        },
+        {
+          "automatic_action": false,
+          "recall_assertion_id": "ASSERT:c40d6de4ecd4779f8869ba2db7b3d6e1",
+          "reconciliation_state": "RECALL_ONLY_CANDIDATE",
+          "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89"
+        }
+      ]
+    },
+    "semantic_verification_performed": false,
+    "status": "PASS"
+  },
+  "candidate_resolution_performed": false,
+  "canonical_authority": false,
+  "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+  "generation_eligible": false,
+  "mass_extraction_authorized": false,
+  "metrics": {
+    "ambiguous_or_partial": 2,
+    "entailed_but_not_ready": 1,
+    "frontier_adjudication_cases": 7,
+    "not_entailed": 3,
+    "open_review_cases": 8,
+    "primary_assertions": 8,
+    "recall_assertions": 3,
+    "recall_lane_run": true,
+    "recall_only_candidates": 1,
+    "same_evidence_semantic_disagreements": 1,
+    "semantically_ready_assertions": 2,
+    "verification_events": 8
+  },
+  "primary_assertions_mutated": false,
+  "public_eligible": false,
+  "recall_assertions_are_unverified": true,
+  "semantic_factory_schema_version": "frontier-semantic-factory-1.0",
+  "semantic_routing": {
+    "09d_comparison_performed": false,
+    "authority_granted": false,
+    "automatic_action_allowed": false,
+    "automatic_repair_allowed": false,
+    "automatic_selection_allowed": false,
+    "candidate_resolution_performed": false,
+    "metrics": {
+      "lane_counts": {
+        "BLIND_ENTAILMENT": 7,
+        "BLIND_RECALL_REVIEW": 2,
+        "COLD_AUDIT": 4,
+        "FRONTIER_ADJUDICATION": 7,
+        "NUMERIC_BINDING": 4,
+        "PRECISION_REVIEW": 8,
+        "PROVENANCE_REPAIR": 0,
+        "QUALIFIER_SCOPE": 8,
+        "RELATIONSHIP_BINDING": 2,
+        "TABLE_BINDING": 2,
+        "VISUAL_BINDING": 1
+      },
+      "open_review_cases": 8,
+      "reason_counts": {
+        "ASSERTION_NOT_ENTAILED": 3,
+        "RECALL_ONLY_CANDIDATE": 1,
+        "SAME_EVIDENCE_SEMANTIC_DISAGREEMENT": 1,
+        "SEMANTIC_REVIEW_UNRESOLVED": 3
+      },
+      "recall_assertions_seen": 3,
+      "recall_reconciliation_rows_seen": 9,
+      "risk_counts": {
+        "CRITICAL": 4,
+        "HIGH": 4,
+        "LOW": 0,
+        "MEDIUM": 0
+      },
+      "verification_events_seen": 8
+    },
+    "review_cases": [
+      {
+        "assertion_ids": [
+          "ASSERT:8eb0de87da745b688c959ea4c2609275"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+          "review_state": "REJECTED_BY_SPECIALIST"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "ASSERTION_NOT_ENTAILED",
+        "recall_assertion_ids": [],
+        "required_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_case_id": "SEMCASE:6e4fae00ca33060d41a83dd436b021e5",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "HIGH",
+        "source_unit_id": "UNIT:6e61e62e693082fe5467d195f8140e19",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [
+          "ASSERT:1a6023c97ed4d0cc0194d0560deea0fd"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "review_state": "SPECIALIST_OR_FRONTIER_REVIEW_REQUIRED",
+          "unresolved_warning_codes": [
+            "VISUAL_BINDING"
+          ],
+          "verdict": "PARTIAL"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "SEMANTIC_REVIEW_UNRESOLVED",
+        "recall_assertion_ids": [],
+        "required_lanes": [
+          "QUALIFIER_SCOPE",
+          "VISUAL_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_case_id": "SEMCASE:a82256a53321eb871c7bbe47f92705e5",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "HIGH",
+        "source_unit_id": "UNIT:90b9dbaeed320bf0b6caf199c136da10",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [
+          "ASSERT:57746ca64a5a7c2b94a3bdfdc71e3a90"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+          "unresolved_warning_codes": [
+            "TABLE_BINDING"
+          ],
+          "verdict": "PARTIAL"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "SEMANTIC_REVIEW_UNRESOLVED",
+        "recall_assertion_ids": [],
+        "required_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "TABLE_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_case_id": "SEMCASE:d70134f3dc81bdeff82db5143837852a",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "CRITICAL",
+        "source_unit_id": "UNIT:672580acea966c081652e13e8acdd558",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [
+          "ASSERT:3004be4cafdbbea2211f6c6fc21408bd"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+          "review_state": "REJECTED_BY_SPECIALIST"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "ASSERTION_NOT_ENTAILED",
+        "recall_assertion_ids": [],
+        "required_lanes": [
+          "QUALIFIER_SCOPE",
+          "RELATIONSHIP_BINDING",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_case_id": "SEMCASE:dbfcb5747b75dd8b249cc37ae6ccbecf",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "HIGH",
+        "source_unit_id": "UNIT:67b0906880054b2ee24193c2f4d0c8c7",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [
+          "ASSERT:3004be4cafdbbea2211f6c6fc21408bd"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "primary_verdict": "NOT_ENTAILED",
+          "recall_assertion_type": "ASSOCIATION"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "SAME_EVIDENCE_SEMANTIC_DISAGREEMENT",
+        "recall_assertion_ids": [
+          "ASSERT:d261bf60d1ca01313c4e4b2a96d408c1"
+        ],
+        "required_lanes": [
+          "QUALIFIER_SCOPE",
+          "RELATIONSHIP_BINDING",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT",
+          "BLIND_ENTAILMENT",
+          "BLIND_RECALL_REVIEW"
+        ],
+        "review_case_id": "SEMCASE:f12bbe0316d007a316856d608bb3ca9e",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "HIGH",
+        "source_unit_id": "UNIT:67b0906880054b2ee24193c2f4d0c8c7",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [
+          "ASSERT:17470b5dde30d433404896082ac10340"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+          "unresolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "SEMANTIC_REVIEW_UNRESOLVED",
+        "recall_assertion_ids": [],
+        "required_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "TABLE_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_case_id": "SEMCASE:fab8d2ca095d5af2b23b9e4142a76003",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "CRITICAL",
+        "source_unit_id": "UNIT:682e507cfad8a0c6dcaee8ddca75f9f8",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "recall_assertion_type": "DOSING"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "RECALL_ONLY_CANDIDATE",
+        "recall_assertion_ids": [
+          "ASSERT:c40d6de4ecd4779f8869ba2db7b3d6e1"
+        ],
+        "required_lanes": [
+          "BLIND_ENTAILMENT",
+          "BLIND_RECALL_REVIEW",
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_case_id": "SEMCASE:fb530c22d629280a5d1f04afc2a2bc21",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "CRITICAL",
+        "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89",
+        "status": "OPEN"
+      },
+      {
+        "assertion_ids": [
+          "ASSERT:e5c05305b2b6f0cb5a4bcd170196066b"
+        ],
+        "automatic_action_allowed": false,
+        "automatic_repair_allowed": false,
+        "automatic_selection_allowed": false,
+        "candidate_resolution_allowed": false,
+        "canonical_authority": false,
+        "detail": {
+          "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+          "review_state": "REJECTED_BY_SPECIALIST"
+        },
+        "generation_eligible": false,
+        "public_eligible": false,
+        "reason": "ASSERTION_NOT_ENTAILED",
+        "recall_assertion_ids": [],
+        "required_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_case_id": "SEMCASE:fd7d5197fdc79fc4111f2f246175a966",
+        "review_case_schema_version": "frontier-semantic-review-case-1.0",
+        "risk_tier": "CRITICAL",
+        "source_unit_id": "UNIT:1c3fd8cecb69c7e3f62f0b373623af32",
+        "status": "OPEN"
+      }
+    ],
+    "semantic_review_router_schema_version": "frontier-semantic-review-router-1.0",
+    "status": "PASS"
+  },
+  "semantic_run_id": "SEMRUN:eeeb0e9977d405a3593ae506779efd41",
+  "status": "PASS",
+  "verification": {
+    "09d_comparison_performed": false,
+    "assertion_verifier_schema_version": "frontier-assertion-verifier-1.0",
+    "assertions_mutated": false,
+    "authority_granted": false,
+    "blind_independent_review": true,
+    "candidate_resolution_performed": false,
+    "events": [
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:8eb0de87da745b688c959ea4c2609275",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "efd9b66d3aabac93315a689b72b7ce8e300ecc8e696e5e419087e7150698210f",
+        "blocking_codes": [
+          "CONDITIONALITY"
+        ],
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": true,
+            "check_code": "CONDITIONALITY",
+            "detail": "source condition was dropped from proposition",
+            "state": "FAIL"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no deterministic relationship contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:2e705897cb729dbc2472c4b72f76c8da",
+        "observed_interpretation_id": "INTERP:2e705897cb729dbc2472c4b72f76c8da",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_state": "REJECTED_BY_SPECIALIST",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "condition",
+        "source_unit_id": "UNIT:6e61e62e693082fe5467d195f8140e19",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "source condition was dropped from proposition",
+              "severity": "HIGH",
+              "state": "FAIL"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no deterministic relationship contradiction detected",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "deterministic specialist failure"
+            ]
+          }
+        },
+        "verdict": "NOT_ENTAILED",
+        "verification_event_id": "VERIF:08c4749a2f0800fbfb2b3779a2bf44f7",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:08c4749a2f0800fbfb2b3779a2bf44f7",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:3004be4cafdbbea2211f6c6fc21408bd",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "fb716101559d0aad51104f9d16ff43d6beba20c8a2c1d2c3a253390ce6b83c1d",
+        "blocking_codes": [
+          "CERTAINTY_MODALITY"
+        ],
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": true,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "proposition strengthens hedged/uncertain source language",
+            "state": "FAIL"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "proposition may overstate uncertain/associational evidence",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "causal wording may overstate associational source language",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:39ed8d4c85fab2480b8868912225a168",
+        "observed_interpretation_id": "INTERP:39ed8d4c85fab2480b8868912225a168",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "RELATIONSHIP_BINDING",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_state": "REJECTED_BY_SPECIALIST",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "MEDIUM",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "disagreement",
+        "source_unit_id": "UNIT:67b0906880054b2ee24193c2f4d0c8c7",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "proposition strengthens hedged/uncertain source language",
+              "severity": "HIGH",
+              "state": "FAIL"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "proposition may overstate uncertain/associational evidence",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": true,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "MODERATE",
+              "state": "WARN",
+              "warnings": [
+                "proposition may overstate uncertain/associational evidence"
+              ]
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "causal wording may overstate associational source language",
+              "severity": "MODERATE",
+              "state": "WARN",
+              "warnings": [
+                "causal wording may overstate associational source language"
+              ]
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": false,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "RELATIONSHIP_SEMANTICS"
+            ],
+            "risk_level": "MODERATE",
+            "risk_reasons": [
+              "semantic relationship or numeric claim",
+              "deterministic specialist failure",
+              "unresolved specialist warning"
+            ]
+          }
+        },
+        "verdict": "NOT_ENTAILED",
+        "verification_event_id": "VERIF:389d19ba7abdf49625f840885d3e65c8",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:389d19ba7abdf49625f840885d3e65c8",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:1a6023c97ed4d0cc0194d0560deea0fd",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "9487cf6529b7480af91d98bb05899ea57a30aa7595cd82fb1f8f5371dafe41f3",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "claim depends on visual semantics but current source unit contains caption text only; image/plot payload has not been independently inspected",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_REVIEW_ENTAILED_WITH_UNRESOLVED_SPECIALIST_WARNINGS",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:e8db502a9a603a787eaa5c21a40ee2b5",
+        "observed_interpretation_id": "INTERP:e8db502a9a603a787eaa5c21a40ee2b5",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "VISUAL_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_state": "SPECIALIST_OR_FRONTIER_REVIEW_REQUIRED",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "figure",
+        "source_unit_id": "UNIT:90b9dbaeed320bf0b6caf199c136da10",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "claim depends on visual semantics but current source unit contains caption text only; image/plot payload has not been independently inspected",
+              "severity": "HIGH",
+              "state": "WARN",
+              "visual_payload_available": false
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": false,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "VISUAL_BINDING"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "table/figure context requires specialist binding",
+              "unresolved specialist warning"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [
+          "VISUAL_BINDING"
+        ],
+        "verdict": "PARTIAL",
+        "verification_event_id": "VERIF:3deefd722b1fe03763fb2a42da9ee811",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:3deefd722b1fe03763fb2a42da9ee811",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:1afc43aa2afe7762f298ff022e97369f",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "7c688b67df4a83f1f0de3dee38733a69581433db07b99b8162722612be2df2d7",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no deterministic relationship contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+        "downstream_semantic_ready": true,
+        "escalation_required": false,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:ca99c0030b511bdda0e48c3d62b42bc5",
+        "observed_interpretation_id": "INTERP:ca99c0030b511bdda0e48c3d62b42bc5",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_state": "BLIND_REVIEW_COMPLETE",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "recall-dose",
+        "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [
+                  "IV"
+                ],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no deterministic relationship contradiction detected",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": false,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "high-risk clinical assertion type"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [],
+        "verdict": "ENTAILED",
+        "verification_event_id": "VERIF:824378d407f24ce91d3ebe6d3faa9e50",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:824378d407f24ce91d3ebe6d3faa9e50",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:e5c05305b2b6f0cb5a4bcd170196066b",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "bc7920b523d7a13d4e318e44fea3a5748302d68aea96c3efc15d63ae08d1eb13",
+        "blocking_codes": [
+          "NUMERIC_BINDING"
+        ],
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": true,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "numeric.value 5 absent from cited evidence",
+            "state": "FAIL"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:fde31560c20ba969bbdea956534fccb8",
+        "observed_interpretation_id": "INTERP:fde31560c20ba969bbdea956534fccb8",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_state": "REJECTED_BY_SPECIALIST",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "CRITICAL",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "wrong-dose",
+        "source_unit_id": "UNIT:1c3fd8cecb69c7e3f62f0b373623af32",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "numeric.value 5 absent from cited evidence",
+              "failures": [
+                "numeric.value 5 absent from cited evidence"
+              ],
+              "severity": "CRITICAL",
+              "state": "FAIL",
+              "warnings": []
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [
+                  "IV"
+                ],
+                "detected_source_routes": [
+                  "IV"
+                ],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "NUMERIC_BINDING",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "CRITICAL",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "high-risk numeric clinical claim",
+              "deterministic specialist failure"
+            ]
+          }
+        },
+        "verdict": "NOT_ENTAILED",
+        "verification_event_id": "VERIF:8e9a6619005e34a64d49619bd7dacb7c",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:8e9a6619005e34a64d49619bd7dacb7c",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:57746ca64a5a7c2b94a3bdfdc71e3a90",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "afab76d2a38a586c9e461eeb8efb7a9259f7e4025791e9d897686065a9bbcbc1",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "structured numeric value/unit are source-bound",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "numeric table assertion lacks retained row/column header semantics",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_REVIEW_ENTAILED_WITH_UNRESOLVED_SPECIALIST_WARNINGS",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:97dfa21871c6fc5c02abc95e147add28",
+        "observed_interpretation_id": "INTERP:97dfa21871c6fc5c02abc95e147add28",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "TABLE_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "CRITICAL",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "table-bare",
+        "source_unit_id": "UNIT:672580acea966c081652e13e8acdd558",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "structured numeric value/unit are source-bound",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "col_index": 1,
+              "detail": "numeric table assertion lacks retained row/column header semantics",
+              "headers": [],
+              "row_index": 1,
+              "severity": "MODERATE",
+              "state": "WARN"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "NUMERIC_BINDING",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "TABLE_BINDING"
+            ],
+            "risk_level": "CRITICAL",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "high-risk numeric clinical claim",
+              "unresolved specialist warning"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [
+          "TABLE_BINDING"
+        ],
+        "verdict": "PARTIAL",
+        "verification_event_id": "VERIF:b069f5cbf634bb47d6a67e4e640ac341",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:b069f5cbf634bb47d6a67e4e640ac341",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:84a5a835c8711741488556ac2df4a511",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "98c405008a85f86fbcf6b15c582a606890a39677de88ef6eaffabca4494d3e68",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no deterministic relationship contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+        "downstream_semantic_ready": true,
+        "escalation_required": false,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:b338ec0ddaaf38ffa252b05ddc873ec0",
+        "observed_interpretation_id": "INTERP:b338ec0ddaaf38ffa252b05ddc873ec0",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_state": "BLIND_REVIEW_COMPLETE",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "exact",
+        "source_unit_id": "UNIT:f8c2a594c0d911194b5c16671274a136",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": true,
+                "proposition_negation": false,
+                "proposition_uncertainty": true
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no deterministic relationship contradiction detected",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": false,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "high-risk clinical assertion type"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [],
+        "verdict": "ENTAILED",
+        "verification_event_id": "VERIF:fa4dd57313beb5fe8cca7622af01ca7b",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:fa4dd57313beb5fe8cca7622af01ca7b",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:17470b5dde30d433404896082ac10340",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "516cf8c800194fecc22c18918b439e35fdc5be5bdc58c810e00dc9125d46723d",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "structured numeric value/unit are source-bound",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "table cell is position-bound with retained header context",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:e045e2340fca8d2fe1a582b90f495d6b",
+        "observed_interpretation_id": "INTERP:e045e2340fca8d2fe1a582b90f495d6b",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "TABLE_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "CRITICAL",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "table-bound",
+        "source_unit_id": "UNIT:682e507cfad8a0c6dcaee8ddca75f9f8",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "structured numeric value/unit are source-bound",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "col_index": 2,
+              "detail": "table cell is position-bound with retained header context",
+              "headers": [
+                "Dose"
+              ],
+              "row_index": 2,
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "NUMERIC_BINDING",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "TABLE_BINDING"
+            ],
+            "risk_level": "CRITICAL",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "high-risk numeric clinical claim"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [],
+        "verdict": "ENTAILED",
+        "verification_event_id": "VERIF:fbc25d1b8e918d0c0f2ad53993ac43d9",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:fbc25d1b8e918d0c0f2ad53993ac43d9",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      }
+    ],
+    "metrics": {
+      "assertions_seen": 8,
+      "downstream_semantic_ready": 2,
+      "frontier_adjudication_required": 2,
+      "quarantine": 0,
+      "quarantined": 0,
+      "review_state_counts": {
+        "BLIND_REVIEW_COMPLETE": 2,
+        "FRONTIER_ADJUDICATION_REQUIRED": 2,
+        "REJECTED_BY_SPECIALIST": 3,
+        "SPECIALIST_OR_FRONTIER_REVIEW_REQUIRED": 1
+      },
+      "risk_counts": {
+        "CRITICAL": 3,
+        "HIGH": 4,
+        "LOW": 0,
+        "MEDIUM": 1
+      },
+      "verdict_counts": {
+        "AMBIGUOUS": 0,
+        "ENTAILED": 3,
+        "NOT_ENTAILED": 3,
+        "PARTIAL": 2,
+        "PROVENANCE_INCOMPLETE": 0
+      },
+      "verification_events": 8
+    },
+    "quarantine": [],
+    "source_assertions_mutated": false,
+    "status": "PASS",
+    "verification_events": [
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:8eb0de87da745b688c959ea4c2609275",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "efd9b66d3aabac93315a689b72b7ce8e300ecc8e696e5e419087e7150698210f",
+        "blocking_codes": [
+          "CONDITIONALITY"
+        ],
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": true,
+            "check_code": "CONDITIONALITY",
+            "detail": "source condition was dropped from proposition",
+            "state": "FAIL"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no deterministic relationship contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:2e705897cb729dbc2472c4b72f76c8da",
+        "observed_interpretation_id": "INTERP:2e705897cb729dbc2472c4b72f76c8da",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_state": "REJECTED_BY_SPECIALIST",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "condition",
+        "source_unit_id": "UNIT:6e61e62e693082fe5467d195f8140e19",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "source condition was dropped from proposition",
+              "severity": "HIGH",
+              "state": "FAIL"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no deterministic relationship contradiction detected",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "deterministic specialist failure"
+            ]
+          }
+        },
+        "verdict": "NOT_ENTAILED",
+        "verification_event_id": "VERIF:08c4749a2f0800fbfb2b3779a2bf44f7",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:08c4749a2f0800fbfb2b3779a2bf44f7",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:3004be4cafdbbea2211f6c6fc21408bd",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "fb716101559d0aad51104f9d16ff43d6beba20c8a2c1d2c3a253390ce6b83c1d",
+        "blocking_codes": [
+          "CERTAINTY_MODALITY"
+        ],
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": true,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "proposition strengthens hedged/uncertain source language",
+            "state": "FAIL"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "proposition may overstate uncertain/associational evidence",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "causal wording may overstate associational source language",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:39ed8d4c85fab2480b8868912225a168",
+        "observed_interpretation_id": "INTERP:39ed8d4c85fab2480b8868912225a168",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "RELATIONSHIP_BINDING",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_state": "REJECTED_BY_SPECIALIST",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "MEDIUM",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "disagreement",
+        "source_unit_id": "UNIT:67b0906880054b2ee24193c2f4d0c8c7",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "proposition strengthens hedged/uncertain source language",
+              "severity": "HIGH",
+              "state": "FAIL"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "proposition may overstate uncertain/associational evidence",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": true,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "MODERATE",
+              "state": "WARN",
+              "warnings": [
+                "proposition may overstate uncertain/associational evidence"
+              ]
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "causal wording may overstate associational source language",
+              "severity": "MODERATE",
+              "state": "WARN",
+              "warnings": [
+                "causal wording may overstate associational source language"
+              ]
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": false,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "RELATIONSHIP_SEMANTICS"
+            ],
+            "risk_level": "MODERATE",
+            "risk_reasons": [
+              "semantic relationship or numeric claim",
+              "deterministic specialist failure",
+              "unresolved specialist warning"
+            ]
+          }
+        },
+        "verdict": "NOT_ENTAILED",
+        "verification_event_id": "VERIF:389d19ba7abdf49625f840885d3e65c8",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:389d19ba7abdf49625f840885d3e65c8",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:1a6023c97ed4d0cc0194d0560deea0fd",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "9487cf6529b7480af91d98bb05899ea57a30aa7595cd82fb1f8f5371dafe41f3",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "claim depends on visual semantics but current source unit contains caption text only; image/plot payload has not been independently inspected",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_REVIEW_ENTAILED_WITH_UNRESOLVED_SPECIALIST_WARNINGS",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:e8db502a9a603a787eaa5c21a40ee2b5",
+        "observed_interpretation_id": "INTERP:e8db502a9a603a787eaa5c21a40ee2b5",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "VISUAL_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_state": "SPECIALIST_OR_FRONTIER_REVIEW_REQUIRED",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "figure",
+        "source_unit_id": "UNIT:90b9dbaeed320bf0b6caf199c136da10",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "claim depends on visual semantics but current source unit contains caption text only; image/plot payload has not been independently inspected",
+              "severity": "HIGH",
+              "state": "WARN",
+              "visual_payload_available": false
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": false,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "VISUAL_BINDING"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "table/figure context requires specialist binding",
+              "unresolved specialist warning"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [
+          "VISUAL_BINDING"
+        ],
+        "verdict": "PARTIAL",
+        "verification_event_id": "VERIF:3deefd722b1fe03763fb2a42da9ee811",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:3deefd722b1fe03763fb2a42da9ee811",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:1afc43aa2afe7762f298ff022e97369f",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "7c688b67df4a83f1f0de3dee38733a69581433db07b99b8162722612be2df2d7",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no deterministic relationship contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+        "downstream_semantic_ready": true,
+        "escalation_required": false,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:ca99c0030b511bdda0e48c3d62b42bc5",
+        "observed_interpretation_id": "INTERP:ca99c0030b511bdda0e48c3d62b42bc5",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_state": "BLIND_REVIEW_COMPLETE",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "recall-dose",
+        "source_unit_id": "UNIT:9f953b95d66cdf843e3877c82aca1e89",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [
+                  "IV"
+                ],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no deterministic relationship contradiction detected",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": false,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "high-risk clinical assertion type"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [],
+        "verdict": "ENTAILED",
+        "verification_event_id": "VERIF:824378d407f24ce91d3ebe6d3faa9e50",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:824378d407f24ce91d3ebe6d3faa9e50",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:e5c05305b2b6f0cb5a4bcd170196066b",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "bc7920b523d7a13d4e318e44fea3a5748302d68aea96c3efc15d63ae08d1eb13",
+        "blocking_codes": [
+          "NUMERIC_BINDING"
+        ],
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": true,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "numeric.value 5 absent from cited evidence",
+            "state": "FAIL"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:fde31560c20ba969bbdea956534fccb8",
+        "observed_interpretation_id": "INTERP:fde31560c20ba969bbdea956534fccb8",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION",
+          "COLD_AUDIT"
+        ],
+        "review_state": "REJECTED_BY_SPECIALIST",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "CRITICAL",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "wrong-dose",
+        "source_unit_id": "UNIT:1c3fd8cecb69c7e3f62f0b373623af32",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "numeric.value 5 absent from cited evidence",
+              "failures": [
+                "numeric.value 5 absent from cited evidence"
+              ],
+              "severity": "CRITICAL",
+              "state": "FAIL",
+              "warnings": []
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [
+                  "IV"
+                ],
+                "detected_source_routes": [
+                  "IV"
+                ],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "NUMERIC_BINDING",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "CRITICAL",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "high-risk numeric clinical claim",
+              "deterministic specialist failure"
+            ]
+          }
+        },
+        "verdict": "NOT_ENTAILED",
+        "verification_event_id": "VERIF:8e9a6619005e34a64d49619bd7dacb7c",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:8e9a6619005e34a64d49619bd7dacb7c",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:57746ca64a5a7c2b94a3bdfdc71e3a90",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "afab76d2a38a586c9e461eeb8efb7a9259f7e4025791e9d897686065a9bbcbc1",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "structured numeric value/unit are source-bound",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "numeric table assertion lacks retained row/column header semantics",
+            "state": "WARN"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_REVIEW_ENTAILED_WITH_UNRESOLVED_SPECIALIST_WARNINGS",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:97dfa21871c6fc5c02abc95e147add28",
+        "observed_interpretation_id": "INTERP:97dfa21871c6fc5c02abc95e147add28",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "TABLE_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "CRITICAL",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "table-bare",
+        "source_unit_id": "UNIT:672580acea966c081652e13e8acdd558",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "structured numeric value/unit are source-bound",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "col_index": 1,
+              "detail": "numeric table assertion lacks retained row/column header semantics",
+              "headers": [],
+              "row_index": 1,
+              "severity": "MODERATE",
+              "state": "WARN"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "NUMERIC_BINDING",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "TABLE_BINDING"
+            ],
+            "risk_level": "CRITICAL",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "high-risk numeric clinical claim",
+              "unresolved specialist warning"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [
+          "TABLE_BINDING"
+        ],
+        "verdict": "PARTIAL",
+        "verification_event_id": "VERIF:b069f5cbf634bb47d6a67e4e640ac341",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:b069f5cbf634bb47d6a67e4e640ac341",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:84a5a835c8711741488556ac2df4a511",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "98c405008a85f86fbcf6b15c582a606890a39677de88ef6eaffabca4494d3e68",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "no literal numeric claim detected",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "source unit is not a table cell",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no deterministic relationship contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+        "downstream_semantic_ready": true,
+        "escalation_required": false,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:b338ec0ddaaf38ffa252b05ddc873ec0",
+        "observed_interpretation_id": "INTERP:b338ec0ddaaf38ffa252b05ddc873ec0",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "QUALIFIER_SCOPE",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW"
+        ],
+        "review_state": "BLIND_REVIEW_COMPLETE",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "HIGH",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "exact",
+        "source_unit_id": "UNIT:f8c2a594c0d911194b5c16671274a136",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "no literal numeric claim detected",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": true,
+                "proposition_negation": false,
+                "proposition_uncertainty": true
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "detail": "source unit is not a table cell",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no deterministic relationship contradiction detected",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": false,
+            "required_specialists": [
+              "ATOMICITY",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE"
+            ],
+            "risk_level": "HIGH",
+            "risk_reasons": [
+              "high-risk clinical assertion type"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [],
+        "verdict": "ENTAILED",
+        "verification_event_id": "VERIF:fa4dd57313beb5fe8cca7622af01ca7b",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:fa4dd57313beb5fe8cca7622af01ca7b",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      },
+      {
+        "09d_comparison_performed": false,
+        "09d_mutation_performed": false,
+        "assertion_id": "ASSERT:17470b5dde30d433404896082ac10340",
+        "automatic_selection_allowed": false,
+        "blind_independent_review": true,
+        "blind_request_sha256": "516cf8c800194fecc22c18918b439e35fdc5be5bdc58c810e00dc9125d46723d",
+        "candidate_resolution_performed": false,
+        "canonical_authority": false,
+        "canonical_internal_eligible": false,
+        "checks": [
+          {
+            "blocking": false,
+            "check_code": "PROVENANCE_CONTRACT",
+            "detail": "assertion is cryptographically bound to a validated source unit",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NUMERIC_BINDING",
+            "detail": "structured numeric value/unit are source-bound",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "NEGATION_PRESERVATION",
+            "detail": "negation/polarity preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CERTAINTY_MODALITY",
+            "detail": "certainty/modality not strengthened",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "CONDITIONALITY",
+            "detail": "conditionality preserved",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "QUALIFIER_SCOPE",
+            "detail": "no deterministic qualifier contradiction detected",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "TABLE_BINDING",
+            "detail": "table cell is position-bound with retained header context",
+            "state": "PASS"
+          },
+          {
+            "blocking": false,
+            "check_code": "VISUAL_BINDING",
+            "detail": "source unit is not figure evidence",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "RELATIONSHIP_BINDING",
+            "detail": "no relationship semantics routed",
+            "state": "NOT_APPLICABLE"
+          },
+          {
+            "blocking": false,
+            "check_code": "ATOMICITY",
+            "detail": "no obvious compound-claim signal",
+            "state": "PASS"
+          }
+        ],
+        "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+        "downstream_semantic_ready": false,
+        "escalation_required": true,
+        "extractor_provenance_visible_to_semantic_provider": false,
+        "generation_eligible": false,
+        "interpretation_id": "INTERP:e045e2340fca8d2fe1a582b90f495d6b",
+        "observed_interpretation_id": "INTERP:e045e2340fca8d2fe1a582b90f495d6b",
+        "public_eligible": false,
+        "required_review_lanes": [
+          "NUMERIC_BINDING",
+          "QUALIFIER_SCOPE",
+          "TABLE_BINDING",
+          "BLIND_ENTAILMENT",
+          "PRECISION_REVIEW",
+          "FRONTIER_ADJUDICATION"
+        ],
+        "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+        "reviewer_error": null,
+        "reviewer_response": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "risk_tier": "CRITICAL",
+        "semantic_provider_result": {
+          "confidence": "HIGH",
+          "rationale": "Controlled overconfident reviewer for semantic-specialist demonstration.",
+          "resolved_warning_codes": [],
+          "verdict": "ENTAILED"
+        },
+        "semantic_provider_used": true,
+        "source_record_key": "table-bound",
+        "source_unit_id": "UNIT:682e507cfad8a0c6dcaee8ddca75f9f8",
+        "specialist_capsules": {
+          "capsule_schema_version": "frontier-semantic-capsules-1.1",
+          "findings": [
+            {
+              "code": "PROVENANCE_CLOSURE",
+              "detail": "assertion is cryptographically bound to a validated source unit",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NUMERIC_BINDING",
+              "detail": "structured numeric value/unit are source-bound",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "NEGATION_PRESERVATION",
+              "detail": "negation/polarity preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CERTAINTY_MODALITY",
+              "detail": "certainty/modality not strengthened",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "CONDITIONALITY",
+              "detail": "conditionality preserved",
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "QUALIFIER_SCOPE",
+              "detail": "no deterministic qualifier contradiction detected",
+              "observed": {
+                "declared_negated": false,
+                "detected_proposition_routes": [],
+                "detected_source_routes": [],
+                "evidence_negation": false,
+                "evidence_uncertainty": false,
+                "proposition_negation": false,
+                "proposition_uncertainty": false
+              },
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "TABLE_BINDING",
+              "col_index": 2,
+              "detail": "table cell is position-bound with retained header context",
+              "headers": [
+                "Dose"
+              ],
+              "row_index": 2,
+              "severity": "INFO",
+              "state": "PASS"
+            },
+            {
+              "code": "VISUAL_BINDING",
+              "detail": "source unit is not figure evidence",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "RELATIONSHIP_SEMANTICS",
+              "detail": "no relationship semantics routed",
+              "severity": "INFO",
+              "state": "NOT_APPLICABLE"
+            },
+            {
+              "code": "ATOMICITY",
+              "detail": "no obvious compound-claim signal",
+              "severity": "INFO",
+              "state": "PASS"
+            }
+          ],
+          "risk_route": {
+            "automatic_selection_allowed": false,
+            "blind_semantic_reviewer_required": true,
+            "frontier_adjudication_required": true,
+            "required_specialists": [
+              "ATOMICITY",
+              "NUMERIC_BINDING",
+              "PROVENANCE_CLOSURE",
+              "QUALIFIER_SCOPE",
+              "TABLE_BINDING"
+            ],
+            "risk_level": "CRITICAL",
+            "risk_reasons": [
+              "high-risk clinical assertion type",
+              "high-risk numeric clinical claim"
+            ]
+          }
+        },
+        "unresolved_warning_codes": [],
+        "verdict": "ENTAILED",
+        "verification_event_id": "VERIF:fbc25d1b8e918d0c0f2ad53993ac43d9",
+        "verification_event_schema_version": "frontier-assertion-verification-event-1.0",
+        "verification_id": "VERIF:fbc25d1b8e918d0c0f2ad53993ac43d9",
+        "verification_schema_version": "frontier-assertion-verification-event-1.0",
+        "verifier_provenance": {
+          "blind_to_extractor": true,
+          "canonical_mode": "MODEL_ASSISTED",
+          "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+          "engine": "frontier-independent-verifier",
+          "engine_version": "2.1",
+          "mode": "MODEL_ASSISTED",
+          "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+          "model_revision": "turn5-final-demo",
+          "policy_version": "09d-blind-semantic-review-v1",
+          "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      }
+    ],
+    "verifier_engine_schema_version": "frontier-assertion-verifier-1.0",
+    "verifier_provenance": {
+      "blind_to_extractor": true,
+      "canonical_mode": "MODEL_ASSISTED",
+      "code_manifest_sha256": "6404f12057c79af88a894fbd02100aef4956682fb6e13ff12c1503a61241c6c6",
+      "engine": "frontier-independent-verifier",
+      "engine_version": "2.1",
+      "mode": "MODEL_ASSISTED",
+      "model": "CONTROLLED_OVERCONFIDENT_REVIEWER",
+      "model_revision": "turn5-final-demo",
+      "policy_version": "09d-blind-semantic-review-v1",
+      "prompt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "bytes": 430,
+  "content_type": "application/json",
+  "kind": "studies_page",
+  "path": "raw/transport/00000003_studies_page.json",
+  "request": {
+    "countTotal": "true",
+    "format": "json",
+    "pageSize": 2,
+    "pageToken": "p2"
+  },
+  "retrieved_at": "2026-08-30T02:12:40.833531Z",
+  "sha256": "ede0274a61e66c6b296375adad44cf0067d2c24a657e2d9dee03065c25329ab8",
+  "source": "clinicaltrials.gov",
+  "status_code": 200,
+  "transport_schema_version": "frontier-http-transport-1.0",
+  "url": "http://127.0.0.1:43611/ctg/studies"
+}

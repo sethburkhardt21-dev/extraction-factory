@@ -1,0 +1,24 @@
+{
+  "authority_granted": false,
+  "automatic_merge_allowed": false,
+  "automatic_repair_allowed": false,
+  "blind_recall_schema_version": "frontier-blind-recall-1.0",
+  "counts": {
+    "PRIMARY_AND_RECALL_EXACT": 1,
+    "RECALL_ONLY_CANDIDATE": 1
+  },
+  "rows": [
+    {
+      "assertion_id": "ASSERT:24df3cf99b27281e30e67b3bb1ff047a",
+      "automatic_action": false,
+      "reconciliation_state": "PRIMARY_AND_RECALL_EXACT",
+      "source_unit_id": "UNIT:0b60885a46d7cf13f7323c56dad09679"
+    },
+    {
+      "automatic_action": false,
+      "recall_assertion_id": "ASSERT:2885141dacf8840236ad2f493d16b69b",
+      "reconciliation_state": "RECALL_ONLY_CANDIDATE",
+      "source_unit_id": "UNIT:0b60885a46d7cf13f7323c56dad09679"
+    }
+  ]
+}

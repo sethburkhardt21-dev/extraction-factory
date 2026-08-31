@@ -1,0 +1,9 @@
+{
+  "09d_comparison_performed": true,
+  "09d_mutation_performed": false,
+  "actual_09d_database_bound": false,
+  "candidate_resolution_performed": true,
+  "candidate_to_canonical_assignment_performed": false,
+  "direct_09d_insert_allowed": false,
+  "status": "PASS_TURN6_READONLY_COMPARATOR"
+}

@@ -1,0 +1,21 @@
+{
+  "status": "READY_TO_EXECUTE_AFTER_PRIMARY_AND_RECALL",
+  "inputs": [
+    "W2_PRIMARY/candidates.jsonl",
+    "W2_BLIND_RECALL/recall_candidates.jsonl"
+  ],
+  "allowed_deterministic_actions": [
+    "exact dedupe",
+    "evidence hash match",
+    "source-unit grouping",
+    "provenance accumulation",
+    "unique addition identification",
+    "typed disagreement family creation"
+  ],
+  "forbidden": [
+    "majority truth",
+    "semantic lexical merge",
+    "qualifier deletion",
+    "reject unique assertion because only one worker found it"
+  ]
+}

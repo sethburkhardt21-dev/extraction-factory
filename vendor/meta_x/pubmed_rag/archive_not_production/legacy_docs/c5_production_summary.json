@@ -1,0 +1,48 @@
+{
+  "agent": "C5 Embedding Eval Developer",
+  "focus": "recall@k, MRR, NDCG for anesthesia queries, benchmark queries",
+  "files": [
+    "/mnt/data/embedding_eval_metrics.py",
+    "/mnt/data/anesthesia_embedding_evaluator.py",
+    "/mnt/data/anesthesia_benchmark_queries.jsonl",
+    "/mnt/data/c5_embedding_eval_pipeline_fixed.py",
+    "/mnt/data/c5_validation_tests.py",
+    "/mnt/data/C5_PRODUCTION_README.md",
+    "/mnt/data/pubmed_extraction_pipeline_fixed.py"
+  ],
+  "validation": "All 6 tests PASS - see c5_validation_tests.py output",
+  "metrics_implemented": [
+    "Recall@K (1,3,5,10,20,100)",
+    "Precision@K",
+    "MRR",
+    "NDCG@K primary (method 1 exponential gain)",
+    "MAP",
+    "Hit@K",
+    "Bootstrap 95% CI",
+    "Paired significance test"
+  ],
+  "benchmark": {
+    "n_queries": 50,
+    "n_with_qrels": 33,
+    "subdomains": 16,
+    "graded": "0/1/2/3",
+    "k_values": [
+      1,
+      3,
+      5,
+      10,
+      20,
+      100
+    ]
+  },
+  "audit_fixes": [
+    "rate_limit token bucket + backoff Retry-After + jitter + circuit breaker",
+    "dedup multi-stage PMID->DOI normalized->title fuzzy Jaccard>0.9 + year + author -> Bramer",
+    "classification FP word boundaries + MeSH major boost + anesthesia context gating + TAP requires transversus abdominis",
+    "MedlineDate fallback regex Fall/Spring/Jan-Feb/Dec 12",
+    "month/day parsing",
+    "ORCID extraction",
+    "structured abstract Label+NlmCategory mapping"
+  ],
+  "primary_metric": "NDCG@10 graded relevance"
+}

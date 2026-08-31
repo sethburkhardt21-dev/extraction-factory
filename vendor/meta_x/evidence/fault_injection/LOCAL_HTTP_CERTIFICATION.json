@@ -1,0 +1,76 @@
+{
+  "base": "http://127.0.0.1:41759",
+  "evidence_schema_version": "frontier-local-http-certification-1.0",
+  "gates": [
+    {
+      "detail": "page 0 durable; checkpoint retained after injected 503",
+      "gate": "ctg_forced_interruption_after_page1",
+      "passed": true
+    },
+    {
+      "detail": "{'api_version_start': '2.0.5', 'checkpoint_schema_version': 'ctg-checkpoint-2.0', 'data_timestamp_start': '2026-08-28T09:00:06', 'expected_total': 3, 'next_page_index': 1, 'next_page_token': 'p2', 'observed_records': 2, 'quarantined_records': 0, 'query_fingerprint': 'ad2f8d5fd47fde87e3882840e74c0a863c96e86bd96104962754308d4e684b03', 'run_id': '4bf5b0c9-c8c3-41ff-a153-17d332061505', 'started_at': '2026-08-30T02:02:27.961654Z', 'unique_records': 2, 'updated_at': '2026-08-30T02:02:28.006485Z', 'valid_records': 2}",
+      "gate": "ctg_checkpoint_points_to_page2",
+      "passed": true
+    },
+    {
+      "detail": "records=3 ids=['NCT04368728', 'NCT00000002', 'NCT00000003']",
+      "gate": "ctg_resume_exactly_once",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "gate": "ctg_warehouse_projection_after_resume",
+      "passed": true
+    },
+    {
+      "detail": "5 successful HTTP responses captured by client hook",
+      "gate": "ctg_http_transport_hook_exercised",
+      "passed": true
+    },
+    {
+      "detail": "observed=35",
+      "gate": "preprint_short_page_not_eof",
+      "passed": true
+    },
+    {
+      "detail": "attempts=2",
+      "gate": "preprint_429_retry_exercised",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "gate": "preprint_warehouse_projection",
+      "passed": true
+    },
+    {
+      "detail": "esearch attempts=3 (count + retrieval with one injected 429)",
+      "gate": "pubmed_429_retry_exercised",
+      "passed": true
+    },
+    {
+      "detail": "valid=1 complete=True",
+      "gate": "pubmed_esearch_efetch_reconciled",
+      "passed": true
+    },
+    {
+      "detail": "raw XML + source SHA retained",
+      "gate": "pubmed_raw_xml_hash_present",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "gate": "pubmed_warehouse_projection",
+      "passed": true
+    }
+  ],
+  "mass_unlock_eligible": false,
+  "notes": [
+    "All HTTP calls in this certification used the production requests-based clients against a controlled localhost fault-injection server.",
+    "This is empirical network/retry/resume certification, but it is NOT a public-host native canary and cannot unlock mass extraction.",
+    "Public-host native canaries remain blocked by runtime DNS."
+  ],
+  "production_code_manifest_sha256": "afbcb997f8f3454c890fa01661c7a1a0ec16b00379b43266a31993e96b39824f",
+  "public_source_native_canary": false,
+  "request_count": 14,
+  "status": "PASS"
+}

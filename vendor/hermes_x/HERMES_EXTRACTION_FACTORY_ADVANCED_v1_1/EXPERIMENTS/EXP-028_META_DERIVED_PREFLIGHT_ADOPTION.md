@@ -1,0 +1,4 @@
+# EXP-028 — Meta-Derived Preflight Adoption
+Status: OFFLINE_CERTIFIED_REFERENCE_IMPLEMENTATION
+
+Run VERIFY.sh.

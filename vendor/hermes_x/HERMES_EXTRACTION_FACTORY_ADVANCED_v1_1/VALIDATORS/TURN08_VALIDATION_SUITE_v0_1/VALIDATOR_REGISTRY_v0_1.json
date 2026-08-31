@@ -1,0 +1,120 @@
+{
+  "schema_version": "0.1",
+  "validators": [
+    {
+      "id": "VAL-SOURCE-SHA",
+      "class": "V0",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-PARENT-SHA",
+      "class": "V0",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-PAGE-MAP",
+      "class": "V0/V2",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-SCHEMA",
+      "class": "V1",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-ID-UNIQUE",
+      "class": "V1",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-STATUS",
+      "class": "V1",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-EVIDENCE-HASH",
+      "class": "V2",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-SPAN-PRESENCE",
+      "class": "V2",
+      "failure": "BLOCKING_OR_REVIEW"
+    },
+    {
+      "id": "VAL-VISUAL-ASSET",
+      "class": "V2",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-LINEAGE",
+      "class": "V2/V3",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-FAMILY-REF",
+      "class": "V3",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-QUEUE-REF",
+      "class": "V3",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-INDEPENDENCE",
+      "class": "V3",
+      "failure": "BLOCKING_FOR_INDEPENDENCE"
+    },
+    {
+      "id": "VAL-BLINDNESS",
+      "class": "V3",
+      "failure": "INVALIDATE_BLINDNESS"
+    },
+    {
+      "id": "VAL-CAS-VERSION",
+      "class": "V3",
+      "failure": "BLOCKING_COMMIT"
+    },
+    {
+      "id": "VAL-UNION-PROVENANCE",
+      "class": "V3",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-NUMERIC-CENSUS",
+      "class": "V4",
+      "failure": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "VAL-QUALIFIER-CENSUS",
+      "class": "V4",
+      "failure": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "VAL-RESIDUAL-CENSUS",
+      "class": "V4",
+      "failure": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "VAL-VISUAL-CENSUS",
+      "class": "V4",
+      "failure": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "VAL-SEMANTIC-RECEIPT",
+      "class": "V5",
+      "failure": "BLOCKING"
+    },
+    {
+      "id": "VAL-COLD-AUDIT-RECEIPT",
+      "class": "V5",
+      "failure": "BLOCKING_WHERE_REQUIRED"
+    },
+    {
+      "id": "VAL-PACKAGE-CLAIMS",
+      "class": "V0/V1/V3",
+      "failure": "BLOCKING"
+    }
+  ]
+}

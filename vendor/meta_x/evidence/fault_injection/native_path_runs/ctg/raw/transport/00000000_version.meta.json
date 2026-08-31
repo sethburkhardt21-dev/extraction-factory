@@ -1,0 +1,13 @@
+{
+  "bytes": 63,
+  "content_type": "application/json",
+  "kind": "version",
+  "path": "raw/transport/00000000_version.json",
+  "request": {},
+  "retrieved_at": "2026-08-30T02:12:40.700232Z",
+  "sha256": "57d6615ed4c2f9c662ecb1eeddeda69bb123dfb3b0c4eeb767b21fc564b739fe",
+  "source": "clinicaltrials.gov",
+  "status_code": 200,
+  "transport_schema_version": "frontier-http-transport-1.0",
+  "url": "http://127.0.0.1:43611/ctg/version"
+}

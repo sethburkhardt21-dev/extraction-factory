@@ -1,0 +1,28 @@
+while True:
+    state = ledger.reconstruct_current_state()
+    incidents = integrity_checks(state)
+    if incidents.has_global_authority_risk():
+        pause_canonical_commits()
+        emit_incident(incidents)
+        continue
+
+    reap_or_recover_expired_leases()
+    collect_completed_workers()
+    enqueue_validation()
+    validate_and_commit_with_compare_and_swap()
+
+    for pool in worker_pools:
+        while pool.has_capacity():
+            capsule = scheduler.next_eligible_capsule(
+                pool=pool,
+                certification_required=True,
+                independence_aware=True,
+                budget_aware=True,
+            )
+            if capsule is None:
+                break
+            lease = issue_lease(capsule, pool)
+            provider_adapter.launch(capsule, lease)
+
+    checkpoint_scheduler_metrics()
+    sleep(poll_interval)

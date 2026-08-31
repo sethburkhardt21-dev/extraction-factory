@@ -1,0 +1,35 @@
+{
+  "capsule_id": "CAP-FRONTIER_ADJUDICATION_CAPSULE-EXAMPLE-R001",
+  "capsule_type": "FRONTIER_ADJUDICATION_CAPSULE",
+  "schema_version": "0.1",
+  "parent_estate_id": "",
+  "parent_artifact_sha256": [],
+  "source_id": "",
+  "source_sha256": "",
+  "primary_scope": {
+    "pages": [],
+    "regions": [],
+    "families": []
+  },
+  "boundary_context_scope": {
+    "pages": []
+  },
+  "work_class": "W4",
+  "source_class": "S0|S1|S2|S3",
+  "blindness_class": "ADJUDICATION_BOUND",
+  "task_contract_version": "0.1",
+  "input_hashes": {},
+  "expected_outputs": [
+    "adjudication_decisions.jsonl",
+    "worker_receipt.json"
+  ],
+  "required_validators": [],
+  "retry_generation": 1,
+  "parent_capsule_id": null,
+  "prohibited_actions": [
+    "modify SOURCE",
+    "overwrite parent",
+    "write canonical output directly",
+    "self-certify semantic authority"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "evidence": [
+    "FRONTIER_PREFLIGHT.json",
+    "evidence/fault_injection/NATIVE_PATH_LOCAL_HTTP_CERTIFICATION.json",
+    "evidence/fault_injection/LOCAL_HTTP_CERTIFICATION.json",
+    "evidence/fault_injection/RELATIONAL_SMOKE.json",
+    "evidence/fault_injection/control_plane/CONTROL_PLANE_NEGATIVE_EXECUTION.json",
+    "evidence/native_canary_current/CTG_NATIVE_CANARY_ATTEMPT.json",
+    "evidence/current_code_external_canary/ctg.json",
+    "evidence/current_code_external_canary/medrxiv.json",
+    "evidence/current_code_external_canary/biorxiv.json"
+  ],
+  "gates": {
+    "bigquery_target_execution": "PENDING",
+    "control_plane_negative_execution": "PASS",
+    "external_schema_conformance": "PASS_NON_UNLOCKING",
+    "forced_interruption_resume": "PASS",
+    "mass_extraction": "LOCKED_NOT_RUN",
+    "native_path_local_http": "PASS",
+    "offline_preflight": "PASS",
+    "postgres_target_execution": "BLOCKED_CONNECTOR_ARGUMENT_MAPPING",
+    "public_host_ctg_native_canary": "BLOCKED_ENVIRONMENT_DNS",
+    "relational_smoke": "PASS",
+    "retry_429_503": "PASS",
+    "warehouse_projection": "PASS"
+  },
+  "mass_extraction_performed": false,
+  "mass_unlock_eligible": false,
+  "phase_schema_version": "frontier-empirical-phase-1.0",
+  "production_code_manifest_sha256": "afbcb997f8f3454c890fa01661c7a1a0ec16b00379b43266a31993e96b39824f",
+  "regression_tests_passed": 93,
+  "status": "PASS_WITH_EXTERNAL_BLOCKERS"
+}

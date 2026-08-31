@@ -1,0 +1,35 @@
+{
+  "certified_at": "2026-08-30T01:50:07.934299Z",
+  "evidence_class": "reconstructed_live_shape",
+  "external_canary_schema_version": "frontier-external-canary-1.0",
+  "mass_unlock_eligible": false,
+  "note": "This evidence validates parser/source-shape compatibility only and can never authorize a mass extraction. A same-code native_http canary remains mandatory.",
+  "payload_bytes": 2077,
+  "payload_path": "evidence/external_canary/ctg_NCT04368728_reconstructed_live_shape.json",
+  "payload_sha256": "c01ddb65f0b203dca9959ff348e4e92d8841371a8ce79d2cda87395feeff0665",
+  "preflight_sha256": "6cd17cf3a484d2698e1b1d486f89a4213d9398721cfc1a862dfe995bcc5d689d",
+  "production_code_manifest_sha256": "a32ef209743dbcfc220c91bb3d45bf4e3ac9c7c3ba8813bb91e6e4c65b2a4848",
+  "record_summaries": [
+    {
+      "canonical_schema_version": "ctg-study-3.0",
+      "canonical_sha256": "75790994efb8afa7bd8b34e25112d7fd9737e427a36d0fa397ce2a510467094b",
+      "has_results": true,
+      "overall_status": "COMPLETED",
+      "phase": [
+        "PHASE2",
+        "PHASE3"
+      ],
+      "source_record_id": "NCT04368728"
+    }
+  ],
+  "records_validated": 1,
+  "retrieved_at": "2026-08-30T01:48:47.717755Z",
+  "schema_conformance_status": "PASS",
+  "source": "ctg",
+  "source_record_ids": [
+    "NCT04368728"
+  ],
+  "source_url": "https://clinicaltrials.gov/study/NCT04368728",
+  "status": "PASS_LIVE_SCHEMA_CONFORMANCE",
+  "transport": "external_payload"
+}

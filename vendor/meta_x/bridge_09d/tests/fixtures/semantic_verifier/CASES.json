@@ -1,0 +1,275 @@
+{
+  "cases": [
+    {
+      "assertion_type": "ADVERSE_EFFECT",
+      "evidence": "Propofol may cause hypotension.",
+      "expected_risk": "HIGH",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM001_EXACT_HEDGED",
+      "kind": "text",
+      "proposition": "Propofol may cause hypotension."
+    },
+    {
+      "assertion_type": "ADVERSE_EFFECT",
+      "evidence": "Propofol may cause hypotension.",
+      "expected_risk": "HIGH",
+      "expected_verdict": "AMBIGUOUS",
+      "id": "SEM002_PARAPHRASE_BLIND",
+      "kind": "text",
+      "proposition": "Propofol can lower blood pressure."
+    },
+    {
+      "assertion_type": "DOSING",
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Ondansetron 4 mg IV was administered.",
+      "expected_risk": "CRITICAL",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM003_DOSE_EXACT",
+      "kind": "text",
+      "numeric": {
+        "unit": "mg",
+        "value": 4
+      },
+      "proposition": "Ondansetron 4 mg IV was administered.",
+      "required_lane": "FRONTIER_ADJUDICATION"
+    },
+    {
+      "assertion_type": "DOSING",
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Ondansetron 4 mg IV was administered.",
+      "expected_risk": "CRITICAL",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM004_DOSE_WRONG_NUMBER",
+      "kind": "text",
+      "numeric": {
+        "unit": "mg",
+        "value": 40
+      },
+      "proposition": "Ondansetron 40 mg IV was administered."
+    },
+    {
+      "assertion_type": "NEGATIVE_FINDING",
+      "evidence": "The intervention did not reduce nausea.",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM005_NEGATION_EXACT",
+      "kind": "text",
+      "negated": true,
+      "proposition": "The intervention did not reduce nausea."
+    },
+    {
+      "assertion_type": "TREATMENT_EFFECT",
+      "evidence": "The intervention did not reduce nausea.",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM006_NEGATION_DROPPED",
+      "kind": "text",
+      "proposition": "The intervention reduced nausea."
+    },
+    {
+      "assertion_type": "TREATMENT_EFFECT",
+      "evidence": "The drug may reduce nausea.",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM007_CERTAINTY_STRENGTHENED",
+      "kind": "text",
+      "proposition": "The drug reduces nausea."
+    },
+    {
+      "assertion_type": "DOSING",
+      "evidence": "In patients with renal failure, reduce the dose.",
+      "expected_risk": "HIGH",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM008_CONDITION_DROPPED",
+      "kind": "text",
+      "proposition": "Reduce the dose."
+    },
+    {
+      "assertion_type": "DOSING",
+      "conditional": true,
+      "evidence": "In patients with renal failure, reduce the dose.",
+      "expected_risk": "HIGH",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM009_CONDITION_EXACT",
+      "kind": "text",
+      "proposition": "In patients with renal failure, reduce the dose."
+    },
+    {
+      "assertion_type": "CAUSATION",
+      "evidence": "Exposure was associated with postoperative nausea.",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM010_CAUSAL_OVERCLAIM",
+      "kind": "text",
+      "proposition": "Exposure caused postoperative nausea."
+    },
+    {
+      "assertion_type": "ASSOCIATION",
+      "evidence": "Exposure was associated with postoperative nausea.",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM011_ASSOCIATION_EXACT",
+      "kind": "text",
+      "proposition": "Exposure was associated with postoperative nausea.",
+      "required_lane": "RELATIONSHIP_BINDING"
+    },
+    {
+      "assertion_type": "DOSING",
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Ondansetron 4 mg was administered.",
+      "expected_risk": "CRITICAL",
+      "expected_verdict": "PARTIAL",
+      "id": "SEM012_QUALIFIER_UNSUPPORTED",
+      "kind": "text",
+      "numeric": {
+        "unit": "mg",
+        "value": 4
+      },
+      "proposition": "Ondansetron 4 mg was administered."
+    },
+    {
+      "assertion_type": "ASSOCIATION",
+      "evidence": "Treatment was associated with lower mortality.",
+      "expected_risk": "HIGH",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM013_ABSTRACT_ASSOCIATION",
+      "kind": "text",
+      "proposition": "Treatment was associated with lower mortality.",
+      "required_lane": "PRECISION_REVIEW",
+      "scope": "ABSTRACT_ONLY"
+    },
+    {
+      "assertion_type": "OUTCOME",
+      "evidence": "The drug reduced pain and increased nausea.",
+      "expected_risk": "LOW",
+      "expected_verdict": "PARTIAL",
+      "id": "SEM014_COMPOUND_CLAIM",
+      "kind": "text",
+      "proposition": "The drug reduced pain and increased nausea.",
+      "required_lane": "PRECISION_REVIEW"
+    },
+    {
+      "assertion_type": "STUDY_ENROLLMENT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM015_STRUCT_ENROLLMENT",
+      "kind": "structured",
+      "numeric": {
+        "unit": "participants",
+        "value": 120
+      },
+      "path": "$.protocolSection.designModule.enrollmentInfo.count",
+      "proposition": "The study enrollment was 120 participants.",
+      "value": 120
+    },
+    {
+      "assertion_type": "TRIAL_PROTOCOL_FACT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM016_STRUCT_WRONG_MEANING",
+      "kind": "structured",
+      "path": "$.protocolSection.designModule.enrollmentInfo.count",
+      "proposition": "The study dose was 120 mg.",
+      "value": 120
+    },
+    {
+      "assertion_type": "TRIAL_PROTOCOL_FACT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "AMBIGUOUS",
+      "id": "SEM017_STRUCT_UNKNOWN_PATH",
+      "kind": "structured",
+      "path": "$.arbitrary.color",
+      "proposition": "The sky was blue.",
+      "value": "blue"
+    },
+    {
+      "assertion_type": "TRIAL_RESULT_FACT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM018_STRUCT_RESULTS_FALSE",
+      "kind": "structured",
+      "negated": true,
+      "path": "$.hasResults",
+      "proposition": "The registry indicated that posted results were not available.",
+      "value": false
+    },
+    {
+      "assertion_type": "TRIAL_RESULT_FACT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM019_STRUCT_RESULTS_TRUE",
+      "kind": "structured",
+      "path": "$.hasResults",
+      "proposition": "The registry indicated that posted results were available.",
+      "value": true
+    },
+    {
+      "assertion_type": "CAUSATION",
+      "evidence": "Hypotension caused renal hypoperfusion.",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM020_CAUSAL_EXACT",
+      "kind": "text",
+      "proposition": "Hypotension caused renal hypoperfusion."
+    },
+    {
+      "assertion_type": "DOSING",
+      "context": {
+        "route": "IV"
+      },
+      "evidence": "Ondansetron 4 mg IV was administered.",
+      "expected_risk": "CRITICAL",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM021_ABSTRACT_DOSE",
+      "kind": "text",
+      "numeric": {
+        "unit": "mg",
+        "value": 4
+      },
+      "proposition": "Ondansetron 4 mg IV was administered.",
+      "required_lane": "FRONTIER_ADJUDICATION",
+      "scope": "ABSTRACT_ONLY"
+    },
+    {
+      "assertion_type": "DOSING",
+      "evidence": "A dose of 4 was administered.",
+      "expected_risk": "CRITICAL",
+      "expected_verdict": "NOT_ENTAILED",
+      "id": "SEM022_UNIT_UNSUPPORTED",
+      "kind": "text",
+      "numeric": {
+        "unit": "mg",
+        "value": 4
+      },
+      "proposition": "A dose of 4 was administered."
+    },
+    {
+      "assertion_type": "TRIAL_PROTOCOL_FACT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM023_PHASE_CONTROLLED",
+      "kind": "structured",
+      "path": "$.protocolSection.designModule.phases[0]",
+      "proposition": "The study phase included Phase2.",
+      "value": "PHASE2"
+    },
+    {
+      "assertion_type": "TRIAL_PROTOCOL_FACT",
+      "expected_risk": "MEDIUM",
+      "expected_verdict": "ENTAILED",
+      "id": "SEM024_STATUS_CONTROLLED",
+      "kind": "structured",
+      "path": "$.protocolSection.statusModule.overallStatus",
+      "proposition": "The study overall status was Completed.",
+      "value": "COMPLETED"
+    }
+  ],
+  "policy_note": "Risk and entailment expectations upgraded in Turn 5: safety assertions route higher; unsupported structured numeric units are hard failures.",
+  "schema_version": "frontier-semantic-verifier-gold-1.1"
+}

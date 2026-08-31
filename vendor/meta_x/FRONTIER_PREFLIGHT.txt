@@ -1,0 +1,94 @@
+FRONTIER PREFLIGHT: PASS
+NETWORK EXTRACTION PERFORMED: FALSE
+LIVE SOURCE CERTIFICATION: PENDING
+DATABASE EXECUTION CERTIFICATION: PENDING
+PRODUCTION MANIFEST FILES: 83
+PRODUCTION CODE/CONTRACT MANIFEST SHA256: d9a3c5087f55913b57d00f5029f71aafd809312f0dc7979b04279ef0d36f4900
+VERIFICATION MANIFEST FILES: 40
+VERIFICATION MANIFEST SHA256: eecc2e1039973428be780f49a353f92fe1ddec0ab66282ac0db43056e396b9b8
+
+PASS | production_python_compile | 58 files
+PASS | no_hardcoded_container_paths | none
+PASS | no_python_hash_identifiers | none
+PASS | no_fake_identifier_or_model_fallbacks | none
+PASS | no_active_shadow_python_variants | none
+PASS | production_python_files_present | 58 production Python files
+PASS | source_runtime_lock | exact runtime match
+PASS | clinicaltrials_network_interlock_symbols_present | structural presence only: clinicaltrials/canonical/run_extraction.py
+PASS | preprint_network_interlock_symbols_present | structural presence only: preprints/src/pipeline.py
+PASS | preprint_sharded_network_interlock_symbols_present | structural presence only: preprints/src/run_all.py
+PASS | pubmed_network_interlock_symbols_present | structural presence only: pubmed_rag/run_pubmed.py
+PASS | pubmed_source_model_agnostic | none
+PASS | clinicaltrials_exact_transport_capture_symbols_present | structural presence only: clinicaltrials/canonical/clinicaltrials/extractor.py
+PASS | preprint_exact_transport_capture_symbols_present | structural presence only: preprints/src/pipeline.py
+PASS | pubmed_exact_transport_capture_symbols_present | structural presence only: pubmed_rag/run_pubmed.py
+PASS | single_active_pubmed_eutils_client | pubmed_rag/pubmed_anesthesia_extraction.py
+PASS | postgres_frontier_schema_tables | complete
+PASS | bigquery_frontier_schema_tables | complete
+PASS | postgres_promotion_view | structural presence only; behavioral release tests run separately
+PASS | immutable_schema_contract | Bronze/Silver/Gold historical semantics documented
+PASS | warehouse_projection_layer | warehouse/project.py
+PASS | frontier_orchestrator_control_plane | code-bound native canary + automatic projection
+PASS | external_canary_never_unlocks_mass | external payload proof is parser-only and never promotable
+PASS | frontier_release_promotion_gate | release refuses non-promotable runs
+PASS | 09d_readonly_boundary | structural boundary markers present; behavioral bridge tests run separately
+PASS | 09d_external_audit_bridge | structural package markers present; behavioral bridge tests run separately
+PASS | 09d_source_unit_assertion_contract | structural contract markers present; behavioral bridge tests run separately
+PASS | 09d_fulltext_source_unit_segmenter | structural segmenter markers present; behavioral/adversarial bridge tests run separately
+PASS | 09d_fulltext_rights_separation | structural rights markers present; behavioral bridge tests run separately
+PASS | 09d_assertion_extraction_engine | structural assertion-engine markers present; behavioral bridge tests run separately
+PASS | 09d_assertion_pipeline_persistence | structural persistence markers present; behavioral bridge tests run separately
+PASS | 09d_independent_semantic_verifier | structural independent-verifier markers present; adversarial and semantic-gold suites run separately
+PASS | 09d_semantic_specialist_capsules | structural specialist-capsule markers present; behavioral semantic suites run separately
+PASS | 09d_blind_recall_lane | structural blind-recall markers present; behavioral recall suite runs separately
+PASS | 09d_blind_recall_pipeline | structural blind-recall persistence markers present; behavioral recall-pipeline suite runs separately
+PASS | 09d_semantic_review_router | structural semantic-review routing markers present; behavioral router suite runs separately
+PASS | 09d_semantic_factory | structural semantic-factory composition markers present; behavioral factory suite runs separately
+PASS | 09d_provisional_identity_resolution | structural provisional-identity markers present; behavioral Turn-6 suite runs separately
+PASS | 09d_readonly_comparator | structural read-only comparator markers present; behavioral Turn-6 suite runs separately
+PASS | 09d_turn6_audit_prep_factory | structural Turn-6 composition markers present; behavioral Turn-6 suite runs separately
+PASS | 09d_single_verifier_authority | legacy Turn-5 import surfaces are shims; one canonical verifier/pipeline
+PASS | 09d_verifier_pipeline_persistence | structural verifier persistence markers present; behavioral bridge tests run separately
+PASS | 09d_semantic_verifier_gold_contract | semantic verifier gold contract present; executable gold suite runs separately
+PASS | 09d_semantic_gold_gate_contract | Turn-5 semantic gold contract present
+PASS | 09d_gold_evidence_gate_contract | gold evidence gate contract present; executable gold suites run separately
+PASS | no_premature_drug_canonical_authority | drug extraction emits candidates only
+PASS | clinicaltrials_regression_suite | ...................                                                      [100%]
+19 passed in 1.70s
+PASS | preprint_regression_suite | .........                                                                [100%]
+9 passed in 0.06s
+PASS | drug_regression_suite | ................                                                         [100%]
+16 passed in 0.08s
+PASS | pubmed_regression_suite | .....................                                                    [100%]
+21 passed in 0.09s
+PASS | pubmed_source_validator | PASS canonical PubMed source-path validation
+PASS | bigquery_schema_validator | PASS frontier BigQuery structural validation
+PASS | warehouse_projection_suite | .........                                                                [100%]
+9 passed in 0.10s
+PASS | schema_coverage_contract | SCHEMA COVERAGE: PASS
+clinicaltrials: 62 fields/contracts; unaccounted=0
+pubmed: 42 fields/contracts; unaccounted=0
+preprints: 19 fields/contracts; unaccounted=0
+drug_references: 3 fields/contracts; unaccounted=0
+PASS | physical_projection_contract | PHYSICAL PROJECTION CONTRACT: PASS
+PROJECTED TABLES: 31
+POSTGRES missing tables: none
+POSTGRES missing columns: none
+BIGQUERY missing tables: none
+BIGQUERY missing columns: none
+PASS | 09d_alignment_contract | 09D ALIGNMENT: PASS
+DIRECT 09D INSERT: FALSE
+09D REPO WRITE: FALSE
+PASS | 09d_bridge_core_suite | ............................................                             [100%]
+44 passed in 0.33s
+PASS | evidence_substrate_adversarial_suite | ....................................                                     [100%]
+36 passed in 0.61s
+PASS | gold_evidence_acceptance_suite | .............................................                            [100%]
+45 passed in 0.09s
+PASS | turn5_semantic_verification_suite | ........................................................................ [ 83%]
+..............                                                           [100%]
+86 passed in 0.30s
+PASS | turn6_identity_readonly_comparator_suite | .............                                                            [100%]
+13 passed in 0.07s
+PASS | frontier_control_plane_suite | ......................                                                   [100%]
+22 passed in 0.10s

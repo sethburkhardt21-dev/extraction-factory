@@ -1,0 +1,149 @@
+{
+  "schema_version": "0.1",
+  "fields": [
+    {
+      "produced_field": "assertion_text",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.assertion_text",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "candidate_id",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.candidate_id",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "canonicality",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.canonicality",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "capsule_id",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.capsule_id",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "evidence_sha256",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.evidence_sha256",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "evidence_text",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.evidence_text",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "lease_id",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.lease_id",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "model_lineage",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.model_lineage",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "numeric_bindings",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.numeric_bindings",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "priority",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.priority",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "process_metadata",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.process_metadata",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "qualifiers",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.qualifiers",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "relationships",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.relationships",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "review_receipts",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.review_receipts",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "rights_metadata",
+      "disposition": "EXTENSION_FIELD",
+      "target": "source_or_candidate.rights_metadata",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "router_receipt",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.router_receipt",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "run_id",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.run_id",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "source_class",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.source_class",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "source_unit_id",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.source_unit_id",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "status",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.status",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "uncertainty",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.uncertainty",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "visual_refs",
+      "disposition": "LOGICAL_SCHEMA",
+      "target": "assertion_candidate.visual_refs",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "work_class",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.work_class",
+      "drop_reason": null
+    },
+    {
+      "produced_field": "worker_receipt",
+      "disposition": "PROCESS_METADATA",
+      "target": "process.worker_receipt",
+      "drop_reason": null
+    }
+  ]
+}

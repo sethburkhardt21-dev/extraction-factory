@@ -1,0 +1,197 @@
+{
+  "certification_id": "CERT-37a078672d274bcbb6c1beaa82faaa5e",
+  "certification_scope": "OFFLINE_MECHANICAL_BUILD",
+  "claim_boundary": "Certifies exact offline mechanical build identity and tests only; does not certify semantic model quality.",
+  "created_at_epoch": 1788121422.9279103,
+  "parent_certification_id": "CERT-4acb617d2bd94dd5803517542be9abc7",
+  "production_code_manifest_sha256": "ddecb7523bd1a62aaa8635fc521cf7979f3da51aebeba8bf7189a3c650597294",
+  "production_files": [
+    {
+      "bytes": 645,
+      "path": "CURRENT/MODEL_CERTIFICATION_REGISTRY.json",
+      "sha256": "80c504364b35564c0a81c0f2293e9f93e92cf0d7c1e5403fc869a0fe4f13c351"
+    },
+    {
+      "bytes": 122,
+      "path": "RUN_FACTORY.sh",
+      "sha256": "b1757c4e32349e725c297066cdc499d778505bc05767574f31675c4cb0d09596"
+    },
+    {
+      "bytes": 6,
+      "path": "VERSION",
+      "sha256": "1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8"
+    },
+    {
+      "bytes": 72,
+      "path": "hermes_factory/__init__.py",
+      "sha256": "61b70a5df737829a7f32a968e8618819bd8c24b6e72d3ffabbfd4ded76853579"
+    },
+    {
+      "bytes": 47,
+      "path": "hermes_factory/__main__.py",
+      "sha256": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4"
+    },
+    {
+      "bytes": 1287,
+      "path": "hermes_factory/benchmark.py",
+      "sha256": "5a40a87e8d7f3ea38678e952ef4dbb79a674291737cd683150bf2efbe33f933a"
+    },
+    {
+      "bytes": 2407,
+      "path": "hermes_factory/blindness.py",
+      "sha256": "fcbc7167eb76e1ec3b710e4d0a41316d980e12674580d53627d4ac811426f191"
+    },
+    {
+      "bytes": 1225,
+      "path": "hermes_factory/bridge_09d.py",
+      "sha256": "97ddae0999a94c82efb93eaef035926d7b80e2947fb507cf05cb337147b183eb"
+    },
+    {
+      "bytes": 4782,
+      "path": "hermes_factory/build_integrity.py",
+      "sha256": "28c15b13bbda1a77a867dd62484a52f6f7a6862ee1ee71f7e72f04ea9a1fb168"
+    },
+    {
+      "bytes": 10601,
+      "path": "hermes_factory/cli.py",
+      "sha256": "c6c3d8dcdb3d617df4038a9898177ece4217f811c27a19cbcb8a99e99c405b17"
+    },
+    {
+      "bytes": 1741,
+      "path": "hermes_factory/cold_audit.py",
+      "sha256": "10844995321cb61afbc82de50401aafe3452a0ac3ffb578ef603687e7af2e924"
+    },
+    {
+      "bytes": 22363,
+      "path": "hermes_factory/controller.py",
+      "sha256": "d083e97415347271bb6800d9ad3807287a38a8e63457e6349378822c26864fa1"
+    },
+    {
+      "bytes": 704,
+      "path": "hermes_factory/hashing.py",
+      "sha256": "47ff06ab84b6777ad8f30c4c2cb3cd23a755345c38596fcac6216815a84e37f6"
+    },
+    {
+      "bytes": 4875,
+      "path": "hermes_factory/ingest.py",
+      "sha256": "5c20a392abdc7c332e208ef77c7ec7251e7b96426ee1eb22e3ddeee0c56cb15e"
+    },
+    {
+      "bytes": 25368,
+      "path": "hermes_factory/ledger.py",
+      "sha256": "014d9b80714bbc68b43bd9f237c8f4b1fbd51bf6bef215091f22f531b4b87121"
+    },
+    {
+      "bytes": 3847,
+      "path": "hermes_factory/literal.py",
+      "sha256": "b21fcd7c7fc9eacc7781a4958bba5133df07d0b166d1a9b498bb0690a926145b"
+    },
+    {
+      "bytes": 1014,
+      "path": "hermes_factory/model_registry.py",
+      "sha256": "88241d6abebc3dc703f01212da1c044851bc6f6962b935371655695a0133ae77"
+    },
+    {
+      "bytes": 5713,
+      "path": "hermes_factory/models.py",
+      "sha256": "aca2a826dfa9438f13640d3c47a49139ba06514b1a3703a9390c0a05fa070215"
+    },
+    {
+      "bytes": 586,
+      "path": "hermes_factory/network_policy.py",
+      "sha256": "fb06a18b1f0c97d26c6fce2d75db004fd2f779c80f8e089d4ea2dc83b5dacc4e"
+    },
+    {
+      "bytes": 3556,
+      "path": "hermes_factory/package.py",
+      "sha256": "a18f02a32d6e6b2e4ced2f82ca9f47bc53c83cc4b951ffa28412a140dca0867e"
+    },
+    {
+      "bytes": 1180,
+      "path": "hermes_factory/precision.py",
+      "sha256": "39f30d570454164bd4dd1b4126f30d9c575f8774c982424e984feea04fc83ef1"
+    },
+    {
+      "bytes": 2596,
+      "path": "hermes_factory/preflight.py",
+      "sha256": "733420d1c9d06a73645d09595635e99755edec7f17e21849dcc2011af1aa82c1"
+    },
+    {
+      "bytes": 213,
+      "path": "hermes_factory/providers/__init__.py",
+      "sha256": "0b2a6e551c9db01e700d4ed6c3f884ee8c09c2069583e087fa4625b00ac64897"
+    },
+    {
+      "bytes": 817,
+      "path": "hermes_factory/providers/base.py",
+      "sha256": "1009f4cb1debe8db3a2640d0fdb97072e8f93a79290b059b4a046be1c16a3006"
+    },
+    {
+      "bytes": 2393,
+      "path": "hermes_factory/providers/command.py",
+      "sha256": "49c12e78db1e30ebd02f1b311adf9889c4778400c2bd76b1b79615de7cc3b3d8"
+    },
+    {
+      "bytes": 2802,
+      "path": "hermes_factory/providers/fixture.py",
+      "sha256": "80ba902825c55e9eae3270e4f812507ef1800cb7f7ae4de3a49327cde30fab2e"
+    },
+    {
+      "bytes": 1978,
+      "path": "hermes_factory/readiness.py",
+      "sha256": "1dbd35e1453fde8f98a6060e3ea6f162a1dca1a06cd75e15a8364ae515d05d79"
+    },
+    {
+      "bytes": 1183,
+      "path": "hermes_factory/risk.py",
+      "sha256": "ffc132e117e6dbe91af694a45e8f6914c93d8b23becdab9e663d3100dc4f9866"
+    },
+    {
+      "bytes": 1918,
+      "path": "hermes_factory/router.py",
+      "sha256": "25187b70f2875131da80986497e522c22026444499a5d06d4750c2d53027f4e0"
+    },
+    {
+      "bytes": 1537,
+      "path": "hermes_factory/runtime_lock.py",
+      "sha256": "25716c3f2d50f726a17e5ae7300f0e68db0aff7eea33ad0377082ba6095d9d50"
+    },
+    {
+      "bytes": 7479,
+      "path": "hermes_factory/semantic.py",
+      "sha256": "fea9d10b97daa86667a2ce4907db7f6dab9153dde73f7256fcd50813613c8a12"
+    },
+    {
+      "bytes": 1650,
+      "path": "hermes_factory/source.py",
+      "sha256": "4860f452b622d5a61ef928480ba353e4c433f9a98405034973779557286104d0"
+    },
+    {
+      "bytes": 6249,
+      "path": "hermes_factory/specialists.py",
+      "sha256": "e0ad8a7ee86e8de9feb9464b34577efc6224c779fd164727a411b71e0be35154"
+    },
+    {
+      "bytes": 4187,
+      "path": "hermes_factory/staging.py",
+      "sha256": "dc3d4213c42795eee3e4cf24ebdfcc285017cdef8eeffbae478e0112ca6bb0f9"
+    },
+    {
+      "bytes": 1307,
+      "path": "hermes_factory/test_runner.py",
+      "sha256": "7c5d1c20d48f8ea346f2337d808c369384d8993691850b3da4ca3d7264fcfe74"
+    },
+    {
+      "bytes": 3423,
+      "path": "hermes_factory/union.py",
+      "sha256": "e3dd26943074b2d04df983c8c21f67894e6603edbebfeb79ca6c9d28b0167cec"
+    }
+  ],
+  "runtime": {
+    "implementation": "CPython",
+    "python": "3.13.5"
+  },
+  "schema_version": "hermes-certified-build-manifest-1.1",
+  "semantic_model_certification_included": false,
+  "test_report_sha256": "17b4d7bec5da3583132e442086555a88c516e43657fbe0f97ba7e1452a35ab6a"
+}

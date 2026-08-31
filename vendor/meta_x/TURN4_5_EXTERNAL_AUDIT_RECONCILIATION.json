@@ -1,0 +1,116 @@
+{
+  "adversarial_subset_tests_passed": 36,
+  "decision": "REPAIR_EVIDENCE_SUBSTRATE_BEFORE_VERIFIER",
+  "findings": {
+    "C1": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "C2": {
+      "classification": "VALID",
+      "remaining": "exact raw XML byte offsets not implemented",
+      "status": "FIXED_MAIN_SEMANTIC_CORRUPTION"
+    },
+    "C3": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "H1": {
+      "classification": "PARTIALLY_VALID",
+      "status": "FIXED_AT_BASE_CONTRACT"
+    },
+    "H2": {
+      "classification": "VALID",
+      "status": "FIXED_V1_2"
+    },
+    "H3": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "H4": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "H5": {
+      "classification": "PARTIALLY_STALE_PARTIALLY_VALID",
+      "status": "FIXED_RIGHTS_GRANULARITY"
+    },
+    "H6": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "H7": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M1": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M10": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M11": {
+      "classification": "VALID",
+      "status": "FIXED_NO_CALIBRATED_CONFIDENCE_CLAIM"
+    },
+    "M2": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M3": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M4": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M5": {
+      "classification": "PARTIALLY_VALID",
+      "status": "EMPTY_CONTAINERS_FIXED"
+    },
+    "M6": {
+      "classification": "VALID",
+      "status": "FIXED_BASIC_TABLE_CONTEXT"
+    },
+    "M7": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M8": {
+      "classification": "VALID",
+      "status": "FIXED"
+    },
+    "M9": {
+      "classification": "VALID_PARTIAL",
+      "status": "PORTABLE_LOCATOR_ADDED_RUNTIME_PATH_RETAINED"
+    },
+    "P1": {
+      "classification": "VALID",
+      "status": "FIXED_CERTIFICATION_LANGUAGE"
+    },
+    "P2": {
+      "classification": "VALID",
+      "status": "FIXED_VERIFICATION_MANIFEST"
+    },
+    "P3": {
+      "classification": "VALID",
+      "status": "FIXED_MATERIAL_EVIDENCE_GUARDS"
+    },
+    "P4": {
+      "classification": "VALID_PARTIAL",
+      "status": "ADVERSARIAL_FIXTURE_ADDED_REAL_GOLD_CORPUS_OPEN"
+    }
+  },
+  "frontier_preflight": "PASS",
+  "mass_extraction_authorized": false,
+  "next_gate": "HETEROGENEOUS_EVIDENCE_GOLD_CORPUS_BEFORE_SEMANTIC_VERIFIER_CERTIFICATION",
+  "production_code_manifest_sha256": "751e9b25f715b0b6fabc5470d4b83bce7df086ebd9649ae26e3eb965e94a930d",
+  "project_09d_write_performed": false,
+  "report_schema_version": "frontier-external-audit-reconciliation-1.0",
+  "turn": "4.5",
+  "unique_regression_tests_passed": 155,
+  "verification_manifest_sha256": "c71f3a784663c74db255cc42f5a2b3eeb03ebe648fbceec18f5bc6f4fa4c62f9"
+}

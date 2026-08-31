@@ -1,0 +1,137 @@
+{
+  "09d_mutation_performed": false,
+  "all_source_assertions_remain_NOT_VERIFIED": true,
+  "assertions": 7,
+  "audit_package_status": null,
+  "blind_recall_automatic_repair_allowed": false,
+  "blind_recall_reconciliation_counts": {
+    "PRIMARY_AND_RECALL_EXACT": 1,
+    "RECALL_ONLY_CANDIDATE": 1
+  },
+  "canonical_authority": false,
+  "demonstration": "TURN5_SEMANTIC_FACTORY_CONTRACT",
+  "mass_extraction_authorized": false,
+  "note": "Controlled semantic-contract demonstration only. Reviewer and recall providers are fixtures, not production model certifications.",
+  "production_code_manifest_sha256": "99b707213d8f51cb3e779138eddca2e97dadd4974573208cdf2ac09914c41be5",
+  "production_model_certified": false,
+  "risk_counts": {
+    "CRITICAL": 2,
+    "HIGH": 3,
+    "LOW": 0,
+    "MEDIUM": 2
+  },
+  "scenarios": [
+    {
+      "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+      "downstream_semantic_ready": true,
+      "proposition": "Propofol can lower blood pressure.",
+      "required_review_lanes": [
+        "QUALIFIER_SCOPE",
+        "BLIND_ENTAILMENT",
+        "PRECISION_REVIEW"
+      ],
+      "review_state": "BLIND_REVIEW_COMPLETE",
+      "risk_tier": "HIGH",
+      "scenario": "blind_paraphrase",
+      "verdict": "ENTAILED"
+    },
+    {
+      "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+      "downstream_semantic_ready": false,
+      "proposition": "Ondansetron 40 mg IV was administered.",
+      "required_review_lanes": [
+        "NUMERIC_BINDING",
+        "QUALIFIER_SCOPE",
+        "BLIND_ENTAILMENT",
+        "PRECISION_REVIEW",
+        "FRONTIER_ADJUDICATION",
+        "COLD_AUDIT"
+      ],
+      "review_state": "REJECTED_BY_SPECIALIST",
+      "risk_tier": "CRITICAL",
+      "scenario": "wrong_dose_optimistic_reviewer_veto",
+      "verdict": "NOT_ENTAILED"
+    },
+    {
+      "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+      "downstream_semantic_ready": true,
+      "proposition": "Propofol may cause hypotension.",
+      "required_review_lanes": [
+        "QUALIFIER_SCOPE",
+        "BLIND_ENTAILMENT",
+        "PRECISION_REVIEW"
+      ],
+      "review_state": "BLIND_REVIEW_COMPLETE",
+      "risk_tier": "HIGH",
+      "scenario": "exact_literal",
+      "verdict": "ENTAILED"
+    },
+    {
+      "decision_basis": "DETERMINISTIC_SPECIALIST_CONTRADICTION",
+      "downstream_semantic_ready": false,
+      "proposition": "Reduce the dose.",
+      "required_review_lanes": [
+        "NUMERIC_BINDING",
+        "QUALIFIER_SCOPE",
+        "BLIND_ENTAILMENT",
+        "PRECISION_REVIEW",
+        "FRONTIER_ADJUDICATION",
+        "COLD_AUDIT"
+      ],
+      "review_state": "REJECTED_BY_SPECIALIST",
+      "risk_tier": "HIGH",
+      "scenario": "dropped_condition_optimistic_reviewer_veto",
+      "verdict": "NOT_ENTAILED"
+    },
+    {
+      "decision_basis": "DETERMINISTIC_REDERIVATION",
+      "downstream_semantic_ready": true,
+      "proposition": "The study enrollment was 120 participants.",
+      "required_review_lanes": [
+        "NUMERIC_BINDING",
+        "QUALIFIER_SCOPE"
+      ],
+      "review_state": "DETERMINISTIC_REVIEW_COMPLETE",
+      "risk_tier": "MEDIUM",
+      "scenario": "structured_enrollment",
+      "verdict": "ENTAILED"
+    },
+    {
+      "decision_basis": "DETERMINISTIC_REDERIVATION",
+      "downstream_semantic_ready": true,
+      "proposition": "The registry indicated that posted results were not available.",
+      "required_review_lanes": [
+        "QUALIFIER_SCOPE"
+      ],
+      "review_state": "DETERMINISTIC_REVIEW_COMPLETE",
+      "risk_tier": "MEDIUM",
+      "scenario": "structured_false_boolean",
+      "verdict": "ENTAILED"
+    },
+    {
+      "decision_basis": "BLIND_INDEPENDENT_REVIEW",
+      "downstream_semantic_ready": false,
+      "proposition": "Ondansetron 4 mg IV was administered.",
+      "required_review_lanes": [
+        "NUMERIC_BINDING",
+        "QUALIFIER_SCOPE",
+        "BLIND_ENTAILMENT",
+        "PRECISION_REVIEW",
+        "FRONTIER_ADJUDICATION"
+      ],
+      "review_state": "FRONTIER_ADJUDICATION_REQUIRED",
+      "risk_tier": "CRITICAL",
+      "scenario": "correct_critical_dose",
+      "verdict": "ENTAILED"
+    }
+  ],
+  "source_units": 6,
+  "verdict_counts": {
+    "AMBIGUOUS": 0,
+    "ENTAILED": 5,
+    "NOT_ENTAILED": 2,
+    "PARTIAL": 0,
+    "PROVENANCE_INCOMPLETE": 0
+  },
+  "verification_events": 7
+}

@@ -1,0 +1,17 @@
+{
+  "rights_status_values": [
+    "ALLOWED",
+    "DISALLOWED",
+    "UNKNOWN",
+    "NOT_APPLICABLE"
+  ],
+  "fields": [
+    "local_extraction_allowed",
+    "text_data_mining_status",
+    "redistribution_status",
+    "commercial_reuse_status",
+    "derivative_reuse_status",
+    "rights_basis"
+  ],
+  "private_extraction_rule": "UNKNOWN rights metadata does not itself block private extraction; downstream redistribution/release policy remains separate."
+}

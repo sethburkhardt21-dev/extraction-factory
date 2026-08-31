@@ -1,0 +1,824 @@
+{
+  "database_execution_certification": "PENDING",
+  "gates": [
+    {
+      "detail": "58 files",
+      "gate": "production_python_compile",
+      "passed": true
+    },
+    {
+      "detail": "none",
+      "gate": "no_hardcoded_container_paths",
+      "passed": true
+    },
+    {
+      "detail": "none",
+      "gate": "no_python_hash_identifiers",
+      "passed": true
+    },
+    {
+      "detail": "none",
+      "gate": "no_fake_identifier_or_model_fallbacks",
+      "passed": true
+    },
+    {
+      "detail": "none",
+      "gate": "no_active_shadow_python_variants",
+      "passed": true
+    },
+    {
+      "detail": "58 production Python files",
+      "gate": "production_python_files_present",
+      "passed": true
+    },
+    {
+      "detail": "exact runtime match",
+      "gate": "source_runtime_lock",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: clinicaltrials/canonical/run_extraction.py",
+      "gate": "clinicaltrials_network_interlock_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: preprints/src/pipeline.py",
+      "gate": "preprint_network_interlock_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: preprints/src/run_all.py",
+      "gate": "preprint_sharded_network_interlock_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: pubmed_rag/run_pubmed.py",
+      "gate": "pubmed_network_interlock_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "none",
+      "gate": "pubmed_source_model_agnostic",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: clinicaltrials/canonical/clinicaltrials/extractor.py",
+      "gate": "clinicaltrials_exact_transport_capture_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: preprints/src/pipeline.py",
+      "gate": "preprint_exact_transport_capture_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only: pubmed_rag/run_pubmed.py",
+      "gate": "pubmed_exact_transport_capture_symbols_present",
+      "passed": true
+    },
+    {
+      "detail": "pubmed_rag/pubmed_anesthesia_extraction.py",
+      "gate": "single_active_pubmed_eutils_client",
+      "passed": true
+    },
+    {
+      "detail": "complete",
+      "gate": "postgres_frontier_schema_tables",
+      "passed": true
+    },
+    {
+      "detail": "complete",
+      "gate": "bigquery_frontier_schema_tables",
+      "passed": true
+    },
+    {
+      "detail": "structural presence only; behavioral release tests run separately",
+      "gate": "postgres_promotion_view",
+      "passed": true
+    },
+    {
+      "detail": "Bronze/Silver/Gold historical semantics documented",
+      "gate": "immutable_schema_contract",
+      "passed": true
+    },
+    {
+      "detail": "warehouse/project.py",
+      "gate": "warehouse_projection_layer",
+      "passed": true
+    },
+    {
+      "detail": "code-bound native canary + automatic projection",
+      "gate": "frontier_orchestrator_control_plane",
+      "passed": true
+    },
+    {
+      "detail": "external payload proof is parser-only and never promotable",
+      "gate": "external_canary_never_unlocks_mass",
+      "passed": true
+    },
+    {
+      "detail": "release refuses non-promotable runs",
+      "gate": "frontier_release_promotion_gate",
+      "passed": true
+    },
+    {
+      "detail": "structural boundary markers present; behavioral bridge tests run separately",
+      "gate": "09d_readonly_boundary",
+      "passed": true
+    },
+    {
+      "detail": "structural package markers present; behavioral bridge tests run separately",
+      "gate": "09d_external_audit_bridge",
+      "passed": true
+    },
+    {
+      "detail": "structural contract markers present; behavioral bridge tests run separately",
+      "gate": "09d_source_unit_assertion_contract",
+      "passed": true
+    },
+    {
+      "detail": "structural segmenter markers present; behavioral/adversarial bridge tests run separately",
+      "gate": "09d_fulltext_source_unit_segmenter",
+      "passed": true
+    },
+    {
+      "detail": "structural rights markers present; behavioral bridge tests run separately",
+      "gate": "09d_fulltext_rights_separation",
+      "passed": true
+    },
+    {
+      "detail": "structural assertion-engine markers present; behavioral bridge tests run separately",
+      "gate": "09d_assertion_extraction_engine",
+      "passed": true
+    },
+    {
+      "detail": "structural persistence markers present; behavioral bridge tests run separately",
+      "gate": "09d_assertion_pipeline_persistence",
+      "passed": true
+    },
+    {
+      "detail": "structural independent-verifier markers present; adversarial and semantic-gold suites run separately",
+      "gate": "09d_independent_semantic_verifier",
+      "passed": true
+    },
+    {
+      "detail": "structural specialist-capsule markers present; behavioral semantic suites run separately",
+      "gate": "09d_semantic_specialist_capsules",
+      "passed": true
+    },
+    {
+      "detail": "structural blind-recall markers present; behavioral recall suite runs separately",
+      "gate": "09d_blind_recall_lane",
+      "passed": true
+    },
+    {
+      "detail": "structural blind-recall persistence markers present; behavioral recall-pipeline suite runs separately",
+      "gate": "09d_blind_recall_pipeline",
+      "passed": true
+    },
+    {
+      "detail": "structural semantic-review routing markers present; behavioral router suite runs separately",
+      "gate": "09d_semantic_review_router",
+      "passed": true
+    },
+    {
+      "detail": "structural semantic-factory composition markers present; behavioral factory suite runs separately",
+      "gate": "09d_semantic_factory",
+      "passed": true
+    },
+    {
+      "detail": "structural provisional-identity markers present; behavioral Turn-6 suite runs separately",
+      "gate": "09d_provisional_identity_resolution",
+      "passed": true
+    },
+    {
+      "detail": "structural read-only comparator markers present; behavioral Turn-6 suite runs separately",
+      "gate": "09d_readonly_comparator",
+      "passed": true
+    },
+    {
+      "detail": "structural Turn-6 composition markers present; behavioral Turn-6 suite runs separately",
+      "gate": "09d_turn6_audit_prep_factory",
+      "passed": true
+    },
+    {
+      "detail": "legacy Turn-5 import surfaces are shims; one canonical verifier/pipeline",
+      "gate": "09d_single_verifier_authority",
+      "passed": true
+    },
+    {
+      "detail": "structural verifier persistence markers present; behavioral bridge tests run separately",
+      "gate": "09d_verifier_pipeline_persistence",
+      "passed": true
+    },
+    {
+      "detail": "semantic verifier gold contract present; executable gold suite runs separately",
+      "gate": "09d_semantic_verifier_gold_contract",
+      "passed": true
+    },
+    {
+      "detail": "Turn-5 semantic gold contract present",
+      "gate": "09d_semantic_gold_gate_contract",
+      "passed": true
+    },
+    {
+      "detail": "gold evidence gate contract present; executable gold suites run separately",
+      "gate": "09d_gold_evidence_gate_contract",
+      "passed": true
+    },
+    {
+      "detail": "drug extraction emits candidates only",
+      "gate": "no_premature_drug_canonical_authority",
+      "passed": true
+    },
+    {
+      "detail": "...................                                                      [100%]\n19 passed in 1.70s",
+      "gate": "clinicaltrials_regression_suite",
+      "passed": true
+    },
+    {
+      "detail": ".........                                                                [100%]\n9 passed in 0.06s",
+      "gate": "preprint_regression_suite",
+      "passed": true
+    },
+    {
+      "detail": "................                                                         [100%]\n16 passed in 0.08s",
+      "gate": "drug_regression_suite",
+      "passed": true
+    },
+    {
+      "detail": ".....................                                                    [100%]\n21 passed in 0.09s",
+      "gate": "pubmed_regression_suite",
+      "passed": true
+    },
+    {
+      "detail": "PASS canonical PubMed source-path validation",
+      "gate": "pubmed_source_validator",
+      "passed": true
+    },
+    {
+      "detail": "PASS frontier BigQuery structural validation",
+      "gate": "bigquery_schema_validator",
+      "passed": true
+    },
+    {
+      "detail": ".........                                                                [100%]\n9 passed in 0.10s",
+      "gate": "warehouse_projection_suite",
+      "passed": true
+    },
+    {
+      "detail": "SCHEMA COVERAGE: PASS\nclinicaltrials: 62 fields/contracts; unaccounted=0\npubmed: 42 fields/contracts; unaccounted=0\npreprints: 19 fields/contracts; unaccounted=0\ndrug_references: 3 fields/contracts; unaccounted=0",
+      "gate": "schema_coverage_contract",
+      "passed": true
+    },
+    {
+      "detail": "PHYSICAL PROJECTION CONTRACT: PASS\nPROJECTED TABLES: 31\nPOSTGRES missing tables: none\nPOSTGRES missing columns: none\nBIGQUERY missing tables: none\nBIGQUERY missing columns: none",
+      "gate": "physical_projection_contract",
+      "passed": true
+    },
+    {
+      "detail": "09D ALIGNMENT: PASS\nDIRECT 09D INSERT: FALSE\n09D REPO WRITE: FALSE",
+      "gate": "09d_alignment_contract",
+      "passed": true
+    },
+    {
+      "detail": "............................................                             [100%]\n44 passed in 0.33s",
+      "gate": "09d_bridge_core_suite",
+      "passed": true
+    },
+    {
+      "detail": "....................................                                     [100%]\n36 passed in 0.61s",
+      "gate": "evidence_substrate_adversarial_suite",
+      "passed": true
+    },
+    {
+      "detail": ".............................................                            [100%]\n45 passed in 0.09s",
+      "gate": "gold_evidence_acceptance_suite",
+      "passed": true
+    },
+    {
+      "detail": "........................................................................ [ 83%]\n..............                                                           [100%]\n86 passed in 0.30s",
+      "gate": "turn5_semantic_verification_suite",
+      "passed": true
+    },
+    {
+      "detail": ".............                                                            [100%]\n13 passed in 0.07s",
+      "gate": "turn6_identity_readonly_comparator_suite",
+      "passed": true
+    },
+    {
+      "detail": "......................                                                   [100%]\n22 passed in 0.10s",
+      "gate": "frontier_control_plane_suite",
+      "passed": true
+    }
+  ],
+  "live_source_certification": "PENDING",
+  "model_enrichment_certification": "OUT_OF_SCOPE_FOR_SOURCE_EXTRACTION",
+  "network_extraction_performed": false,
+  "preflight_schema_version": "frontier-preflight-1.0",
+  "production_code_manifest": {
+    "count": 83,
+    "files": [
+      {
+        "path": "09D_EXTRACTION_BOUNDARY_CONTRACT.md",
+        "sha256": "4c0cf336ac8eb05a6bfda34be7103519c42cb905f6002bb933fb2f2c75c75e65"
+      },
+      {
+        "path": "09D_READONLY_AUTHORITY.json",
+        "sha256": "b91a4c946c3c81941b6531bb1dac6ca059d865990f37086cdea27cc549054b6e"
+      },
+      {
+        "path": "bridge_09d/__init__.py",
+        "sha256": "35b8f4e8a80d3e167b71a7ee25aecbb26ebfe91614976f05fe3b57de8cc7953e"
+      },
+      {
+        "path": "bridge_09d/assertion_engine.py",
+        "sha256": "e4a638548f3310b759fd78bccbeb42c7e4d4e06500cdb85a99f678a8118f9e91"
+      },
+      {
+        "path": "bridge_09d/assertion_pipeline.py",
+        "sha256": "9033f979bbd31ad1c8337e014af9ad82c6de599aaee96cd26d622c9307149279"
+      },
+      {
+        "path": "bridge_09d/assertion_verifier.py",
+        "sha256": "0d8cf50523c61711ea958ac492645dc276a64e93ae91dbae9311c6dab77b32f1"
+      },
+      {
+        "path": "bridge_09d/assertions.py",
+        "sha256": "1683202b8ed1d346398702ec62bde2c1c88402ec4d09df9b70b0a0aee33a7255"
+      },
+      {
+        "path": "bridge_09d/blind_recall.py",
+        "sha256": "17d7322c9f3d2f3263042d467b20a1c5ec2bdb826fa22f1c4e0d92317fa26bfa"
+      },
+      {
+        "path": "bridge_09d/blind_recall_pipeline.py",
+        "sha256": "7653535d8b28db59fe1835dbfc23f0c898abb96951c90b59d9a196c74868d6ba"
+      },
+      {
+        "path": "bridge_09d/comparator_09d.py",
+        "sha256": "189da4ab722b2ae7500c6a458a1fc463f37b6b55058401747bbed3ee66424a00"
+      },
+      {
+        "path": "bridge_09d/contracts/09D_READONLY_COMPARATOR_CONTRACT.md",
+        "sha256": "380b0c2c91ddaf90d927685f8bf1a87cdaf41fa6d1c757de33e89c5d40ca7a81"
+      },
+      {
+        "path": "bridge_09d/contracts/ASSERTION_EXTRACTION_ENGINE_CONTRACT.md",
+        "sha256": "83a26b15811c326189c25f5dbaefd247aea9bee95585fd81a239483371e4093b"
+      },
+      {
+        "path": "bridge_09d/contracts/ATOMIC_ASSERTION_CONTRACT.md",
+        "sha256": "5b78e8cc49d173d4f0eb160b62cd68c9e23e2c45cb961611f0d61b922fc03000"
+      },
+      {
+        "path": "bridge_09d/contracts/BLIND_RECALL_CONTRACT.md",
+        "sha256": "ac599044f84bb6538f287cd82f47cfc52ccbe0eecf23fbe24ad13051b405ee1a"
+      },
+      {
+        "path": "bridge_09d/contracts/FULLTEXT_SEGMENTATION_CONTRACT.md",
+        "sha256": "9439ba28f5d76c942834210e23df599c8e6d7abf37f0026b36982c0ad734a2e6"
+      },
+      {
+        "path": "bridge_09d/contracts/GOLD_EVIDENCE_GATE_CONTRACT.md",
+        "sha256": "b2438d069d0316cb46f554146468829f71ae83257af417d31e817b6273f51339"
+      },
+      {
+        "path": "bridge_09d/contracts/IDENTITY_RESOLUTION_CONTRACT.md",
+        "sha256": "ca6546221a75ad6d8689797427210c28c9cb61822a41caccaf79fa74dfa4decd"
+      },
+      {
+        "path": "bridge_09d/contracts/INDEPENDENT_ASSERTION_VERIFIER_CONTRACT.md",
+        "sha256": "11a4cbbe64783302900aa97d1ff128f9ddb4d68c8a2e97b23272fd5cbdf33ddd"
+      },
+      {
+        "path": "bridge_09d/contracts/SEMANTIC_FACTORY_CONTRACT.md",
+        "sha256": "02296b3aa678422286fb45a5469b8c640a53c0f27f9873ae0b36cb0da9872142"
+      },
+      {
+        "path": "bridge_09d/contracts/SEMANTIC_GOLD_GATE_CONTRACT.md",
+        "sha256": "03974b4552822b4c397aae9ba8350b0d4c91f6fd28ede05fb86f5b4cb8d802e2"
+      },
+      {
+        "path": "bridge_09d/contracts/SEMANTIC_REVIEW_ROUTER_CONTRACT.md",
+        "sha256": "604aa22e83a2777e5fece56c3ff1d3d575bcd6ef12c737d9ef20f58a51f47c04"
+      },
+      {
+        "path": "bridge_09d/contracts/SEMANTIC_SPECIALIST_CAPSULES_CONTRACT.md",
+        "sha256": "4ddba53c4274c56dd5edec15251b8441f3ba36bb28ad38e08dce837ef7b62361"
+      },
+      {
+        "path": "bridge_09d/contracts/SEMANTIC_VERIFIER_GOLD_CONTRACT.md",
+        "sha256": "1eabeafdfe1c80c5e7dd2c5f2cac51d16b75df6d62e2abe30d58986a1a10849d"
+      },
+      {
+        "path": "bridge_09d/contracts/SOURCE_UNIT_CONTRACT.md",
+        "sha256": "25703e42786f6f754acbb6ede2bdd78516924182cfa155925c3aaba449ab7169"
+      },
+      {
+        "path": "bridge_09d/contracts/TURN6_AUDIT_PREP_CONTRACT.md",
+        "sha256": "5c63d3635773d5838dd0895e59dbf22647f86799ec4d064cccee26ca8f8d5351"
+      },
+      {
+        "path": "bridge_09d/identity_resolution.py",
+        "sha256": "384212cd329e275e7011dc5e90a0b2ede2571ab1b2d7de20debca10acd9c7253"
+      },
+      {
+        "path": "bridge_09d/package.py",
+        "sha256": "dc39e00828c927831d20d77413134c50c109caa5acffc1de6d747a34e626fded"
+      },
+      {
+        "path": "bridge_09d/semantic_capsules.py",
+        "sha256": "325898c2a80009d0a7fd0d3369f2702bec11ceaa399f60773cf37769ec2e4291"
+      },
+      {
+        "path": "bridge_09d/semantic_factory.py",
+        "sha256": "b50cf4850ffe8c9c2bcccaf2517065bcdb4740d75040f248fafd0421c21fb9a5"
+      },
+      {
+        "path": "bridge_09d/semantic_router.py",
+        "sha256": "e8758051a921fd9486767cdace43f58df65ee3e0d64d26bba0d19e1814e9ba9c"
+      },
+      {
+        "path": "bridge_09d/source_units.py",
+        "sha256": "c615a75bced8ffa78db26ecd3ac49cd58ef1a348ec4694b658a1d68bd9a2732f"
+      },
+      {
+        "path": "bridge_09d/turn6_factory.py",
+        "sha256": "ecce78d7519728f88837903a52b119a3f24281e43fb6322ff4431ec77591e24a"
+      },
+      {
+        "path": "bridge_09d/validate_alignment.py",
+        "sha256": "63d6da0cab3bd7bf8d60a1d2e344a5249dde48a0f6bf47568918e632c6d7b387"
+      },
+      {
+        "path": "bridge_09d/verification_pipeline.py",
+        "sha256": "bc5f41f30b90aa6ec55ff7f4770da08420e45cbf96a5903d3b19b04eb8d180b2"
+      },
+      {
+        "path": "bridge_09d/verifier.py",
+        "sha256": "5467603760599ced8ed408b0233bd90d7ef73ba959e291899335c6c8bbafa2d6"
+      },
+      {
+        "path": "bridge_09d/verifier_pipeline.py",
+        "sha256": "aa5ac373c7605768a136d9834f01f245f48f58fb5fd1f4a038a1f3895c68f248"
+      },
+      {
+        "path": "clinicaltrials/canonical/__init__.py",
+        "sha256": "21dcc899d8ccb3fe9287742dea02c8982c4bef4ccd38a4d42daa790de1e7f793"
+      },
+      {
+        "path": "clinicaltrials/canonical/clinicaltrials/__init__.py",
+        "sha256": "31de3f6651c66f8a556b33042dbcce25cbe0a2d308dd0b75102347eddf201e58"
+      },
+      {
+        "path": "clinicaltrials/canonical/clinicaltrials/client.py",
+        "sha256": "508a1b85c6cd2c5737fd6da0663a8b4924d681d30615fcdf8c2abb51be432467"
+      },
+      {
+        "path": "clinicaltrials/canonical/clinicaltrials/extractor.py",
+        "sha256": "e3a32987fee153d01fcbd064d136092e4a89fa606213eea7a4c8c9573549415b"
+      },
+      {
+        "path": "clinicaltrials/canonical/clinicaltrials/models.py",
+        "sha256": "dcbe5a00177f198d3503f7224b339bf68bf672f9df94fad1eb4f00618c897d22"
+      },
+      {
+        "path": "clinicaltrials/canonical/clinicaltrials/parser.py",
+        "sha256": "6f64c11c7b03dc68c5e3ee15e6ac8fa6a2cd6eeecbf7694538f899564853031e"
+      },
+      {
+        "path": "clinicaltrials/canonical/clinicaltrials/storage.py",
+        "sha256": "691a02cc141522f8fc7f09fbf49bfe0a395e8a3eca052972bb255f2424574c41"
+      },
+      {
+        "path": "clinicaltrials/canonical/config.py",
+        "sha256": "1b0506c81ced16e595c2e3427a27a15395067ef9cc669221015898ae8ac4f5b0"
+      },
+      {
+        "path": "clinicaltrials/canonical/run_extraction.py",
+        "sha256": "9d3e3ff96e54dc74ba2525ef103adeaea6d3d74acb5f5960b0b117db083af007"
+      },
+      {
+        "path": "clinicaltrials/canonical/utils/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "clinicaltrials/canonical/utils/rate_limiter.py",
+        "sha256": "f80cef6c3ea57674252c714f3e72c845ddea94bb55ebd58529e89e46b7a6bb4d"
+      },
+      {
+        "path": "drug_reference/drugref/__init__.py",
+        "sha256": "c36f2d8e036b205a02383bd764a03135c1944f0cbfd3ccfb88209f8500339433"
+      },
+      {
+        "path": "drug_reference/drugref/common.py",
+        "sha256": "d0841dc7c0e21af789734659dc8b35dc03aa9f09affb58895f127ddc120ce94d"
+      },
+      {
+        "path": "drug_reference/drugref/drugbank.py",
+        "sha256": "c09b065d42fd94573829ccb7ba266fb4e9fec6035c4a499e806bb16298da501b"
+      },
+      {
+        "path": "drug_reference/drugref/linker.py",
+        "sha256": "a8af693b371c9e01fac6b71fc1218b33efda1c8fc74bc9579d6f72119fe22c60"
+      },
+      {
+        "path": "drug_reference/drugref/livertox.py",
+        "sha256": "ada7dfba80906a7dbe07659cd152744983adf8cb6edb2531e22cb2d4e7913157"
+      },
+      {
+        "path": "drug_reference/drugref/pipeline.py",
+        "sha256": "c879d96763f9798c70039f3a7faf19fcd0db6ae86deacf0ba46f490c62073f57"
+      },
+      {
+        "path": "drug_reference/drugref/rxnorm.py",
+        "sha256": "ceab92f2d384f8d5f592e119c62a67e1fe29a489e89e89b30b24db506dc94c1c"
+      },
+      {
+        "path": "frontier_core/__init__.py",
+        "sha256": "92fcdd222815603a8785063c1d692d6e50d7daa94e103a9c0a2370985e4ac38d"
+      },
+      {
+        "path": "frontier_core/contracts.py",
+        "sha256": "4e35d76075bbed8152d4f7af0806869484bb4070a1a38363f9324ed83d3d348a"
+      },
+      {
+        "path": "frontier_core/gate.py",
+        "sha256": "b4b08241ebe0e651467dbf7a4682a053b7155d6f0836ae40516edaea738c3ccf"
+      },
+      {
+        "path": "frontier_core/readiness.py",
+        "sha256": "ca5436cfdcf17fce444860c5afe9d18353d4795fa2a2547388db26fb17663f78"
+      },
+      {
+        "path": "frontier_external_canary.py",
+        "sha256": "f7bfb67b2d30a63994af3f8b2726afc6cef3d81a471181ccf034a7fd0dd72e06"
+      },
+      {
+        "path": "frontier_orchestrator.py",
+        "sha256": "c77fcb06b380fa3a0c5c61d64d102c6597a9d0f4809c1efcc1a172dce40aac46"
+      },
+      {
+        "path": "frontier_preflight.py",
+        "sha256": "80cb1cbd6669a44aa9da2dbecf7f4578375a269f192c97c6a0ceec17cc64aec2"
+      },
+      {
+        "path": "frontier_release.py",
+        "sha256": "190cf07dd3a6fc02767cd2e54363af45b824f68a393d4781b6e8a120a7941acb"
+      },
+      {
+        "path": "preprints/src/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "preprints/src/medrxiv_biorxiv/__init__.py",
+        "sha256": "f2f25fd458fb1ba776a193d5b8d5e3ff9108ca1b0442e13275998413f1adae23"
+      },
+      {
+        "path": "preprints/src/medrxiv_biorxiv/client.py",
+        "sha256": "0f9d08de188563b1f55ca5ee8f804c81d7677cac1f6f1e9580909ad6dee7dc88"
+      },
+      {
+        "path": "preprints/src/medrxiv_biorxiv/parser.py",
+        "sha256": "41c52bd9b44c6f3c402d0e893bf859ebdb20023e72652158e9eb8f0c89419726"
+      },
+      {
+        "path": "preprints/src/medrxiv_biorxiv/storage.py",
+        "sha256": "1f0d06401a2ebec07a2062bcd19bfb8fca95281dfc7ca604030ade7a9b35cf5f"
+      },
+      {
+        "path": "preprints/src/pipeline.py",
+        "sha256": "f2d6ca1860f22945cc997a84916ed60271fe845e7bdf7490600825dc60c4dc38"
+      },
+      {
+        "path": "preprints/src/run_all.py",
+        "sha256": "5d74d46a5d18d29682fa8a5066d2a62af460aa7ef8bc7ec44ce9d2d2b9917da1"
+      },
+      {
+        "path": "pubmed_rag/__init__.py",
+        "sha256": "3a339ddad584e9399d13f1e551affdc5f6a923755096730c043f7d011b77f246"
+      },
+      {
+        "path": "pubmed_rag/metadata_schema.py",
+        "sha256": "c0df2fa3f7354f0234ae8c04f36937d8a558b8792760a89ea95f2f7d3d7b9325"
+      },
+      {
+        "path": "pubmed_rag/pubmed_anesthesia_extraction.py",
+        "sha256": "201764a485f8c705d320af4b04af8a9d29104fe0236e874b19c5c1b059a2e9cb"
+      },
+      {
+        "path": "pubmed_rag/run_pubmed.py",
+        "sha256": "712d2a24759462faa578421004c68b7a42345519207771715d4b6f0be08bcf76"
+      },
+      {
+        "path": "requirements-source.lock.txt",
+        "sha256": "9ac67f0bcd76d8bdab1695b873c45375e5b1ebfefb2e0e83c95e34dad858e939"
+      },
+      {
+        "path": "schema/PHYSICAL_PROJECTION_CONTRACT.json",
+        "sha256": "4aae19cbb5aa438e93e2ed56be0c9e3000be259599ebc71c303405809cb2febd"
+      },
+      {
+        "path": "schema/SCHEMA_CONTRACT.md",
+        "sha256": "b2059544722fd8c9ac01901336443acbcc8643cb2469f8a1dfd416e8c69eb4c9"
+      },
+      {
+        "path": "schema/frontier_bigquery.sql",
+        "sha256": "ec518fa1d2db88122a67c38d24cdd753814383ae9cffdb174c8c13f572431b2d"
+      },
+      {
+        "path": "schema/frontier_postgres.sql",
+        "sha256": "d35c13bdf113957bcb81000c2f0a360bec4d7083e68335e9a1e624ed3c35c9b0"
+      },
+      {
+        "path": "schema/validate_coverage.py",
+        "sha256": "41cd79e4d346c2056404f087339d937e04d61ba320fbc6f2d77ebae52c1e585b"
+      },
+      {
+        "path": "schema/validate_physical_projection.py",
+        "sha256": "11ee88d5cfb39467ac04abd44f639e2597760a9d127868ab837c3d866627ed88"
+      },
+      {
+        "path": "source-runtime.lock.json",
+        "sha256": "248388acce657cbe9a98e2e4604e52d1faed0267ffd9868e8dce876f1e66666c"
+      },
+      {
+        "path": "warehouse/__init__.py",
+        "sha256": "fa19055585ae1971f37ca342b6a0aeca194e34d56920ff4356c67cb659869dc9"
+      },
+      {
+        "path": "warehouse/project.py",
+        "sha256": "eaa1d306c405fc42b7529b21c1caee4d7f7a3842f90520bb09d2ba755044332b"
+      }
+    ],
+    "sha256": "d9a3c5087f55913b57d00f5029f71aafd809312f0dc7979b04279ef0d36f4900"
+  },
+  "status": "PASS",
+  "verification_manifest": {
+    "count": 40,
+    "files": [
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/EXPECTED.json",
+        "sha256": "7d52d59878c0e84e96487e6d8d2afbc60b53d5271a4da56f173e98cf1b3a8e3a"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/clinical_numeric_markup.xml",
+        "sha256": "5adbfc4adbc30501b3f46bb7986c44cec2b8261c2dbb8cd501fd354c3cca0e9b"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/clinicaltrials_edge.json",
+        "sha256": "973e94077498bc758e5e1b7bc8e6e995e988044fdd93d59c36ba4185553b19bd"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/context_structure.xml",
+        "sha256": "1cbcda7d6c5722e0b1f26d8b4a57ebff3b0c5dd08026bb970d399584b8b62e2c"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/inline_boundaries.xml",
+        "sha256": "de98d6ca96664935d8b35217ab6c949afaf607e560c0114364e9296a13a6a73e"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/monograph_crlf.txt",
+        "sha256": "c367e7d10fe4813aec81f72d596771dd15bc1d1cee44d60ba342914037cd8e3c"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/pubmed_abstract.json",
+        "sha256": "b146f42864ad5ea606b9dfb17d035960f913c1773cde12756b54180d30a440e1"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/structured_odd_keys.json",
+        "sha256": "3aa65babf27d6af3c479f7db13e7b4ca628344b7d6b1a11bf910dfd63ae31dde"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/gold_evidence/tables_figures.xml",
+        "sha256": "0284ad7fb46ab04e6e21463b38585a296d0d4253b18766f79b0318c6c8a259e8"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/semantic_gold/CASES.json",
+        "sha256": "e69ef553d04293b8a46bc3cfad2b1af134c3bf005aa3f67b95b4d8b4b43cc2cc"
+      },
+      {
+        "path": "bridge_09d/tests/fixtures/semantic_verifier/CASES.json",
+        "sha256": "0367e1c7520551b541925adc876c24614a5e01f561af78f0e1961bbdcdc7957e"
+      },
+      {
+        "path": "bridge_09d/tests/test_09d_comparator.py",
+        "sha256": "c5882bda269d003246b0da61f9e725b0880732fadde175e9fcd8eafed28025ba"
+      },
+      {
+        "path": "bridge_09d/tests/test_09d_contract.py",
+        "sha256": "a738e661585f641160fc25a4f87430d5297191ed4c8e716fa1e35fff287d7cbc"
+      },
+      {
+        "path": "bridge_09d/tests/test_assertion_contract.py",
+        "sha256": "2d54895f5db73efa1bc9e427a2602973c8b8062fa4364d7494b7947960382b16"
+      },
+      {
+        "path": "bridge_09d/tests/test_assertion_engine.py",
+        "sha256": "0a4ea39fe5e74f11fd08634f8165bdc98fcc8bf52a162d1b8e5fa5f549a591c7"
+      },
+      {
+        "path": "bridge_09d/tests/test_assertion_verifier.py",
+        "sha256": "adfad33937064f237d0e6e068a2b14e90a2450463b365eb78c2e81c0725cf5b1"
+      },
+      {
+        "path": "bridge_09d/tests/test_blind_recall.py",
+        "sha256": "479e300238c6133ba038739a97c51e3210e6445cf5487ebf8d732ee64aba5c3b"
+      },
+      {
+        "path": "bridge_09d/tests/test_blind_recall_pipeline.py",
+        "sha256": "08554b7c08174db14b733147e23835586b6f3fba21bededc2fdc5f724edb9213"
+      },
+      {
+        "path": "bridge_09d/tests/test_gold_evidence_corpus.py",
+        "sha256": "53d24cf2d42d90dd4f880faa0174ad014316b35b20f895fc3361597fc7bedd8f"
+      },
+      {
+        "path": "bridge_09d/tests/test_gold_fixture_bundle.py",
+        "sha256": "51efc7bc3869dc4bcb887f9dbd51c9431360d5ead2f3eda5400087e264df80ed"
+      },
+      {
+        "path": "bridge_09d/tests/test_identity_resolution.py",
+        "sha256": "33f7b9dea033cb4c3f4344331855f172f6f43aa3cd81e3e2ca7d3ecf7eab0310"
+      },
+      {
+        "path": "bridge_09d/tests/test_independent_verifier.py",
+        "sha256": "ed840a220eed7ac7cf7faf33cba56da28502e094fb0f7ac4aa53cfeeb18fe400"
+      },
+      {
+        "path": "bridge_09d/tests/test_semantic_factory.py",
+        "sha256": "cd7bbdfa724279fbec368876e37a393374d1ac59f5daa9f4be8aa6293789b598"
+      },
+      {
+        "path": "bridge_09d/tests/test_semantic_gold.py",
+        "sha256": "f16127283a8c2ba0e1e8ee15379618bf54c998fabbcff0c51be337203de3b691"
+      },
+      {
+        "path": "bridge_09d/tests/test_semantic_router.py",
+        "sha256": "e65cc5ee96cc312afeb7d9838a486daa15033f03b602485c9f7cde467363e4cf"
+      },
+      {
+        "path": "bridge_09d/tests/test_semantic_verifier_gold.py",
+        "sha256": "3bc68ae41579abc3b8f7ffae07c1844cd3408ce309e1fc3e35bb45959cea86b3"
+      },
+      {
+        "path": "bridge_09d/tests/test_source_unit_segmenter.py",
+        "sha256": "39a6fac266136bb42ca2c1d0224fba56db11df235deb6a2bbb1192241b260313"
+      },
+      {
+        "path": "bridge_09d/tests/test_turn6_factory.py",
+        "sha256": "aa9e0dcbf378067d146f69c77eddf603a86967c4a9d9de8542fe58ca8ac98fb5"
+      },
+      {
+        "path": "bridge_09d/tests/test_verifier_pipeline.py",
+        "sha256": "a9abebe32c802e1dae03fe8e30fea35ca717883485883956df6fb6b7dd76c83a"
+      },
+      {
+        "path": "bridge_09d/validate_alignment.py",
+        "sha256": "63d6da0cab3bd7bf8d60a1d2e344a5249dde48a0f6bf47568918e632c6d7b387"
+      },
+      {
+        "path": "clinicaltrials/tests/test_offline.py",
+        "sha256": "563700276c32013ccbd1856f95ebb46e19646b20dc49672e862b67f70e39c842"
+      },
+      {
+        "path": "drug_reference/tests/test_offline.py",
+        "sha256": "7b59d821a9ff7c09c70fa3e3b07debf9e4e7a9d162c1cbc6ec82e6a9c26576ad"
+      },
+      {
+        "path": "frontier_tests/test_control_plane.py",
+        "sha256": "4391019a381f2485e9d6e46aee657310126b9fca1ea3be9973624dc2475b4ee1"
+      },
+      {
+        "path": "preprints/tests/test_offline.py",
+        "sha256": "b5650dd99a8ac68fcc3f56541a33e00bae12113d074c36449efca2fca063969a"
+      },
+      {
+        "path": "pubmed_rag/bigquery_validation_test.py",
+        "sha256": "6c2cc0e0bb3b5c29d0afc3e823c4744afd15b7c87c878e71b712e3213fe2c525"
+      },
+      {
+        "path": "pubmed_rag/tests/test_repaired_invariants.py",
+        "sha256": "739b664b050ee55c8553cca9f68ebbe43d7b32d5567a6c17fe5c4b3af45e99c6"
+      },
+      {
+        "path": "pubmed_rag/validate.py",
+        "sha256": "16f3f30bfbd12a637c3002a8f61094fc4fef0131b3ebd97ce1f5eb09cff96644"
+      },
+      {
+        "path": "schema/validate_coverage.py",
+        "sha256": "41cd79e4d346c2056404f087339d937e04d61ba320fbc6f2d77ebae52c1e585b"
+      },
+      {
+        "path": "schema/validate_physical_projection.py",
+        "sha256": "11ee88d5cfb39467ac04abd44f639e2597760a9d127868ab837c3d866627ed88"
+      },
+      {
+        "path": "warehouse/tests/test_project.py",
+        "sha256": "a2b257859b2bedd16fda63b87a7a281f2bfa871109754fc4dcdd9a715dcb6d6b"
+      }
+    ],
+    "sha256": "eecc2e1039973428be780f49a353f92fe1ddec0ab66282ac0db43056e396b9b8"
+  }
+}

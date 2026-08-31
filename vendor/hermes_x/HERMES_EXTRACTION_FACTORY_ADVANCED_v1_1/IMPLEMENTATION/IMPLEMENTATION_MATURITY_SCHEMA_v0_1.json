@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1",
+  "allowed_states": [
+    "NOT_IMPLEMENTED",
+    "SKELETON_ONLY",
+    "IMPLEMENTED_UNTESTED",
+    "OFFLINE_CERTIFIED",
+    "EMPIRICALLY_CERTIFIED",
+    "LIVE_CERTIFIED",
+    "EXPERIMENTAL",
+    "BLOCKED"
+  ],
+  "component_fields": [
+    "component",
+    "design_status",
+    "code_status",
+    "test_status",
+    "real_source_status",
+    "production_status",
+    "blocker",
+    "next_proof"
+  ]
+}

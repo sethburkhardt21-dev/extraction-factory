@@ -1,0 +1,15 @@
+{
+  "transition_id": "",
+  "entity_type": "CAPSULE|ESTATE",
+  "entity_id": "",
+  "from_state": "",
+  "to_state": "",
+  "from_version": 0,
+  "to_version": 1,
+  "controller_identity": "",
+  "triggering_capsule_id": "",
+  "triggering_run_id": "",
+  "validator_receipts": [],
+  "reason": "",
+  "timestamp": ""
+}

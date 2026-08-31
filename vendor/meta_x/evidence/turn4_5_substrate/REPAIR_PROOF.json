@@ -1,0 +1,58 @@
+{
+  "jats_units": [
+    {
+      "kind": "TEXT",
+      "scope": "ABSTRACT_WITHIN_FULLTEXT",
+      "section_path": [],
+      "text": "Abstract 10^6 cells.",
+      "xpath": "/article[1]/front[1]/article-meta[1]/abstract[1]/p[1]"
+    },
+    {
+      "kind": "TEXT",
+      "scope": "FULL_TEXT",
+      "section_path": [
+        "Contraindications"
+      ],
+      "text": "Contraindications",
+      "xpath": "/article[1]/body[1]/sec[1]/title[1]"
+    },
+    {
+      "kind": "TEXT",
+      "scope": "FULL_TEXT",
+      "section_path": [
+        "Contraindications"
+      ],
+      "text": "Give 10^6 CFU and H_2O.",
+      "xpath": "/article[1]/body[1]/sec[1]/p[1]"
+    },
+    {
+      "kind": "TEXT",
+      "scope": "FULL_TEXT",
+      "section_path": [
+        "Contraindications"
+      ],
+      "text": "Math 10^6 cells.",
+      "xpath": "/article[1]/body[1]/sec[1]/p[2]"
+    },
+    {
+      "kind": "TEXT",
+      "scope": "METADATA",
+      "section_path": [],
+      "text": "Thanks.",
+      "xpath": "/article[1]/back[1]/ack[1]/p[1]"
+    }
+  ],
+  "numeric_normalization": {
+    "10⁶ cells/mL": "10⁶ cells/mL",
+    "10⁻⁶ M": "10⁻⁶ M",
+    "dose 2½ tablets": "dose 2½ tablets",
+    "⅓ dose": "⅓ dose"
+  },
+  "out_of_range_validation_errors": [
+    "evidence span outside source unit content"
+  ],
+  "proof_schema_version": "frontier-evidence-substrate-repair-proof-1.0",
+  "unbound_validation_errors": [
+    "unbound assertion: source unit not supplied"
+  ]
+}

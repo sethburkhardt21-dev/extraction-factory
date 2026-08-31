@@ -1,0 +1,48 @@
+{
+  "09d_comparator_status": "IMPLEMENTED_OFFLINE_CERTIFIED_REAL_DATABASE_PENDING",
+  "09d_mutation_performed": false,
+  "09d_repo_write_performed": false,
+  "actual_09d_database_expected_sha256": "11f9e3150e5775f452cd90be7aa33dcb6c3a8df4fc9c3810f41b45248f6d4aee",
+  "actual_09d_database_present": false,
+  "candidate_resolution_status": "IMPLEMENTED_OFFLINE_CERTIFIED_NONAUTHORITATIVE",
+  "candidate_to_canonical_assignment_performed": false,
+  "demo": {
+    "09d_mutation_performed": false,
+    "actual_09d_database_expected_sha256": "11f9e3150e5775f452cd90be7aa33dcb6c3a8df4fc9c3810f41b45248f6d4aee",
+    "actual_09d_database_present": false,
+    "candidate_records": 4,
+    "canonical_assignments_performed": 0,
+    "comparison_classifications": {
+      "CONTEXT_DIFFERENT": 1,
+      "CONTRADICTORY": 1,
+      "EXACT_EXISTING": 1,
+      "IDENTITY_NOT_FOUND": 1
+    },
+    "downstream_semantic_ready": 2,
+    "identity_lookup_states": {
+      "EXACT_NAME_SINGLE_CANONICAL_TARGET": 3,
+      "NO_MATCH": 1
+    },
+    "mass_extraction_authorized": false,
+    "production_code_manifest_sha256": "d9a3c5087f55913b57d00f5029f71aafd809312f0dc7979b04279ef0d36f4900",
+    "semantic_verdicts": {
+      "AMBIGUOUS": 0,
+      "ENTAILED": 4,
+      "NOT_ENTAILED": 0,
+      "PARTIAL": 0,
+      "PROVENANCE_INCOMPLETE": 0
+    },
+    "snapshot_source_kind": "SYNTHETIC_CONTRACT_FIXTURE",
+    "status": "PASS_OFFLINE_TURN6_CONTRACT"
+  },
+  "mass_extraction_authorized": false,
+  "next_highest_value": "Run actual hash-pinned 09D read-only comparator when frozen SQLite is available; in parallel implement cross-source support/conflict graph and real-source semantic benchmark.",
+  "production_code_manifest_sha256": "d9a3c5087f55913b57d00f5029f71aafd809312f0dc7979b04279ef0d36f4900",
+  "production_manifest_files": 83,
+  "status": "PASS_OFFLINE_CONTRACT_ACTUAL_09D_DATABASE_PENDING",
+  "targeted_turn6_tests": 13,
+  "turn": "TURN_6",
+  "unique_pytest_regressions": 320,
+  "verification_manifest_files": 40,
+  "verification_manifest_sha256": "eecc2e1039973428be780f49a353f92fe1ddec0ab66282ac0db43056e396b9b8"
+}

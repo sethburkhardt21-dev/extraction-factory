@@ -1,0 +1,24 @@
+{
+  "turn": 4,
+  "status": "PASS",
+  "mass_extraction_authorized": false,
+  "09d_repo_write_performed": false,
+  "production_code_contract_sha256": "faf1b6bb5b48f4d44015a55d27f200439af65661371fc807f1e4b14e24d059c6",
+  "production_manifest_files": 60,
+  "production_python_files": 46,
+  "regression_tests_passed": 141,
+  "assertion_engine_status": "IMPLEMENTED_OFFLINE_CERTIFIED_UNVERIFIED_OUTPUT",
+  "assertion_verifier_status": "NOT_IMPLEMENTED",
+  "general_text_assertion_provider_status": "INTERFACE_IMPLEMENTED_BACKEND_NOT_CERTIFIED",
+  "deterministic_structured_assertion_provider_status": "IMPLEMENTED_OFFLINE_CERTIFIED",
+  "controlled_demonstration": {
+    "source_units": 13,
+    "assertions_emitted": 4,
+    "assertions_quarantined": 0,
+    "verification_status": "NOT_VERIFIED_ONLY",
+    "candidate_ids_resolved": 0,
+    "09d_comparison_performed": false
+  },
+  "next_highest_value_turn": "Turn 5 - independent assertion verifier",
+  "early_stop_eligible": false
+}

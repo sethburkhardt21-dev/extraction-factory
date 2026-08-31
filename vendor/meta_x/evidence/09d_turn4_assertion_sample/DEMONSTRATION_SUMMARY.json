@@ -1,0 +1,27 @@
+{
+  "09d_comparison_performed": false,
+  "assertion_types": {
+    "ADMINISTRATION": 1,
+    "STUDY_ENROLLMENT": 1,
+    "TREATMENT_EFFECT": 1,
+    "TRIAL_PROTOCOL_FACT": 1
+  },
+  "assertions_emitted": 4,
+  "assertions_quarantined": 0,
+  "candidate_ids_resolved": 0,
+  "demonstration": "TURN4_CONTROLLED_ASSERTION_EXTRACTION",
+  "frontier_ready": false,
+  "general_text_assertion_provider_status": "INTERFACE_IMPLEMENTED_BACKEND_NOT_CERTIFIED",
+  "mass_extraction_authorized": false,
+  "note": "Controlled deterministic provider demonstration. Not a clinical-model quality, precision, recall, or entailment evaluation.",
+  "production_code_manifest_sha256": "faf1b6bb5b48f4d44015a55d27f200439af65661371fc807f1e4b14e24d059c6",
+  "semantic_verification_performed": false,
+  "source_scopes_with_assertions": {
+    "FULL_TEXT": 2,
+    "REGISTRY_STRUCTURED": 2
+  },
+  "source_units": 13,
+  "verification_status_counts": {
+    "NOT_VERIFIED": 4
+  }
+}

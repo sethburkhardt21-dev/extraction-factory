@@ -1,0 +1,16 @@
+LOCAL HTTP FAULT-INJECTION CERTIFICATION: PASS
+PRODUCTION CODE SHA256: afbcb997f8f3454c890fa01661c7a1a0ec16b00379b43266a31993e96b39824f
+MASS UNLOCK ELIGIBLE: FALSE
+
+PASS | ctg_forced_interruption_after_page1 | page 0 durable; checkpoint retained after injected 503
+PASS | ctg_checkpoint_points_to_page2 | {'api_version_start': '2.0.5', 'checkpoint_schema_version': 'ctg-checkpoint-2.0', 'data_timestamp_start': '2026-08-28T09:00:06', 'expected_total': 3, 'next_page_index': 1, 'next_page_token': 'p2', 'observed_records': 2, 'quarantined_records': 0, 'query_fingerprint': 'ad2f8d5fd47fde87e3882840e74c0a863c96e86bd96104962754308d4e684b03', 'run_id': '4bf5b0c9-c8c3-41ff-a153-17d332061505', 'started_at': '2026-08-30T02:02:27.961654Z', 'unique_records': 2, 'updated_at': '2026-08-30T02:02:28.006485Z', 'valid_records': 2}
+PASS | ctg_resume_exactly_once | records=3 ids=['NCT04368728', 'NCT00000002', 'NCT00000003']
+PASS | ctg_warehouse_projection_after_resume | None
+PASS | ctg_http_transport_hook_exercised | 5 successful HTTP responses captured by client hook
+PASS | preprint_short_page_not_eof | observed=35
+PASS | preprint_429_retry_exercised | attempts=2
+PASS | preprint_warehouse_projection | None
+PASS | pubmed_429_retry_exercised | esearch attempts=3 (count + retrieval with one injected 429)
+PASS | pubmed_esearch_efetch_reconciled | valid=1 complete=True
+PASS | pubmed_raw_xml_hash_present | raw XML + source SHA retained
+PASS | pubmed_warehouse_projection | None

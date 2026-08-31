@@ -1,0 +1,3 @@
+# ADR-074 — NOT_RUN Is Not PASS
+Status: ACCEPTED
+Turn: TURN_08

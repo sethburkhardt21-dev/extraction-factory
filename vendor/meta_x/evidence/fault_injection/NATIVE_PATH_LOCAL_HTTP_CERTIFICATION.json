@@ -1,0 +1,58 @@
+{
+  "evidence_schema_version": "frontier-native-path-local-http-1.0",
+  "gates": [
+    {
+      "detail": "native transport files + checkpoint durable",
+      "gate": "ctg_native_capture_crash_checkpoint",
+      "passed": true
+    },
+    {
+      "detail": "PASS PASS_EXACT_HTTP_RESPONSES records=3",
+      "gate": "ctg_native_capture_resume_pass",
+      "passed": true
+    },
+    {
+      "detail": "PASS",
+      "gate": "ctg_native_path_projection",
+      "passed": true
+    },
+    {
+      "detail": "PASS responses=3",
+      "gate": "preprint_native_capture_pass",
+      "passed": true
+    },
+    {
+      "detail": "attempts=2",
+      "gate": "preprint_native_retry_429",
+      "passed": true
+    },
+    {
+      "detail": "PASS",
+      "gate": "preprint_native_path_projection",
+      "passed": true
+    },
+    {
+      "detail": "PASS responses=3",
+      "gate": "pubmed_native_capture_pass",
+      "passed": true
+    },
+    {
+      "detail": "esearch attempts=3",
+      "gate": "pubmed_native_retry_429",
+      "passed": true
+    },
+    {
+      "detail": "PASS",
+      "gate": "pubmed_native_path_projection",
+      "passed": true
+    }
+  ],
+  "mass_unlock_eligible": false,
+  "notes": [
+    "Production native-capture branches were executed over real localhost HTTP with only endpoint/session routing patched to the controlled server.",
+    "This proves exact transport capture, retry, resume and warehouse projection mechanics, but cannot unlock mass extraction because the hosts were not the public sources."
+  ],
+  "production_code_manifest_sha256": "afbcb997f8f3454c890fa01661c7a1a0ec16b00379b43266a31993e96b39824f",
+  "public_host_canary": false,
+  "status": "PASS"
+}

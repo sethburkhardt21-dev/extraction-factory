@@ -1,0 +1,112 @@
+{
+  "register_version": "0.1",
+  "turn": "TURN_09",
+  "meta_runtime_dependency": false,
+  "meta_reference_pack_sha256": "a01228e5fb17c6f1d1e9699ffa861441563c4565200a32f1eac74c9a375c9e6a",
+  "patterns": [
+    {
+      "id": "META-A",
+      "pattern": "Immutable evidence substrate",
+      "decision": "ADOPT",
+      "hermes_implementation": "Formalize TEXTBOOK_SOURCE -> SOURCE_VERSION -> PAGE_ARTIFACT -> SOURCE_UNIT -> ASSERTION_CANDIDATE. SOURCE_UNIT is evidence, not interpretation.",
+      "rationale": "Directly reduces provenance ambiguity and semantic workers reconstructing evidence after the fact.",
+      "status": "IMPLEMENTED_FOR_PILOT"
+    },
+    {
+      "id": "META-B",
+      "pattern": "Typed content representation",
+      "decision": "ADAPT",
+      "hermes_implementation": "Use TEXT, TABLE, FIGURE, EQUATION, IMAGE_REGION, MIXED_LAYOUT. STRUCTURED_JSON remains available for non-textbook structured sources but is not forced into textbook flow.",
+      "rationale": "Preserves meaning-bearing layout without creating irrelevant source types.",
+      "status": "IMPLEMENTED_FOR_PILOT"
+    },
+    {
+      "id": "META-C",
+      "pattern": "Provenance before semantics",
+      "decision": "ADOPT",
+      "hermes_implementation": "Capsule generator supplies source/version/page/source-unit lineage and hashes before model execution.",
+      "rationale": "Semantic workers should not invent provenance.",
+      "status": "IMPLEMENTED_FOR_PILOT"
+    },
+    {
+      "id": "META-D",
+      "pattern": "Rights / usage metadata dimensions",
+      "decision": "ADAPT",
+      "hermes_implementation": "Add governed rights_metadata object with UNKNOWN allowed; do not block private extraction solely because rights are unresolved.",
+      "rationale": "Useful for downstream release discipline but must not derail private extraction.",
+      "status": "SCHEMA_IMPLEMENTED_POLICY_DEFERRED"
+    },
+    {
+      "id": "META-E",
+      "pattern": "Read-only downstream authority boundary",
+      "decision": "ADOPT",
+      "hermes_implementation": "09D bridge defaults direct_insert=false, automatic_canonicalization=false, automatic_release=false.",
+      "rationale": "Preserves candidate-vs-authority separation.",
+      "status": "CONTRACT_IMPLEMENTED"
+    },
+    {
+      "id": "META-F",
+      "pattern": "Explicit implementation/certification state",
+      "decision": "ADOPT",
+      "hermes_implementation": "Controlled maturity states: NOT_IMPLEMENTED, SKELETON_ONLY, IMPLEMENTED_UNTESTED, OFFLINE_CERTIFIED, EMPIRICALLY_CERTIFIED, LIVE_CERTIFIED, EXPERIMENTAL, BLOCKED.",
+      "rationale": "Prevents designed/implemented/certified from collapsing into one claim.",
+      "status": "IMPLEMENTED"
+    },
+    {
+      "id": "META-G",
+      "pattern": "Schema coverage contract",
+      "decision": "ADOPT",
+      "hermes_implementation": "Every produced field maps to logical schema, extension/process metadata, quarantine, or explicit drop reason; deterministic validator supplied.",
+      "rationale": "Prevents silent field disappearance.",
+      "status": "IMPLEMENTED_OFFLINE_CERTIFIED"
+    },
+    {
+      "id": "META-H",
+      "pattern": "Logical vs physical projection contract",
+      "decision": "ADAPT",
+      "hermes_implementation": "Keep logical contracts backend-neutral; initial physical projection uses files/JSONL + optional SQLite later.",
+      "rationale": "Avoids premature warehouse complexity while preserving portability.",
+      "status": "CONTRACT_IMPLEMENTED"
+    },
+    {
+      "id": "META-I",
+      "pattern": "Canonical preflight / release certification",
+      "decision": "ADOPT",
+      "hermes_implementation": "One generated PREFLIGHT.json + PREFLIGHT.txt from executable verifier; never manually maintain duplicate current-state claims.",
+      "rationale": "Directly addresses stale-report failure mode.",
+      "status": "IMPLEMENTED_OFFLINE_CERTIFIED"
+    },
+    {
+      "id": "META-J",
+      "pattern": "Empirical certification ladder",
+      "decision": "ADOPT",
+      "hermes_implementation": "Separate UNIT_VERIFIED, OFFLINE_INTEGRATION_VERIFIED, MUTATION_VERIFIED, EMPIRICALLY_VERIFIED_ON_REAL_SOURCE, LIVE_VERIFIED.",
+      "rationale": "Tests alone do not prove semantic extraction quality.",
+      "status": "IMPLEMENTED_AS_POLICY"
+    },
+    {
+      "id": "META-K",
+      "pattern": "External/adversarial canaries",
+      "decision": "ADOPT",
+      "hermes_implementation": "Retain Turn08 canaries and link provider/model regression to certification suspension.",
+      "rationale": "Catches silent model/provider drift.",
+      "status": "POLICY_IMPLEMENTED"
+    },
+    {
+      "id": "META-L",
+      "pattern": "Single canonical verification entrypoint",
+      "decision": "ADOPT",
+      "hermes_implementation": "Provide VERIFY.sh -> verify_factory.py; current reports are generated from the verifier.",
+      "rationale": "Prevents stale commands and contradictory totals.",
+      "status": "IMPLEMENTED_OFFLINE_CERTIFIED"
+    },
+    {
+      "id": "META-M",
+      "pattern": "Root-level test isolation",
+      "decision": "ADOPT",
+      "hermes_implementation": "Reference implementation uses one root verifier and non-colliding direct test entrypoints.",
+      "rationale": "Prevents fragmented suite invocation and import collisions.",
+      "status": "IMPLEMENTED_FOR_REFERENCE_PACK"
+    }
+  ]
+}

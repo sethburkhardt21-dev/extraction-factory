@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "chain": [
+    "TEXTBOOK_SOURCE",
+    "SOURCE_VERSION",
+    "PAGE_ARTIFACT",
+    "SOURCE_UNIT",
+    "ASSERTION_CANDIDATE"
+  ],
+  "content_representations": [
+    "TEXT",
+    "TABLE",
+    "FIGURE",
+    "EQUATION",
+    "IMAGE_REGION",
+    "MIXED_LAYOUT",
+    "STRUCTURED_JSON"
+  ],
+  "rules": {
+    "source_unit_is_evidence_not_interpretation": true,
+    "assertion_candidate_noncanonical_by_default": true,
+    "source_units_deterministically_identified_where_possible": true,
+    "exact_evidence_immutable": true
+  }
+}

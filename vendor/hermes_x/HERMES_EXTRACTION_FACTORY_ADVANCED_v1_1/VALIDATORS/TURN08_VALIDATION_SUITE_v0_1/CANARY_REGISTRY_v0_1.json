@@ -1,0 +1,25 @@
+{
+  "canaries": [
+    {
+      "id": "CAN-NUM-BIND",
+      "type": "numeric_binding_trap"
+    },
+    {
+      "id": "CAN-QUAL-SCOPE",
+      "type": "shared_qualifier_scope_trap"
+    },
+    {
+      "id": "CAN-REL-DIR",
+      "type": "reversed_relationship_trap"
+    },
+    {
+      "id": "CAN-VIS-TABLE",
+      "type": "table_semantic_binding_trap"
+    },
+    {
+      "id": "CAN-EVIDENCE",
+      "type": "fabricated_source_span_trap"
+    }
+  ],
+  "visibility": "hidden_from_workers_where_possible"
+}

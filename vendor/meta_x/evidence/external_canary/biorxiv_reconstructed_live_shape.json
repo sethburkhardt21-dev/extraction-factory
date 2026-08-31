@@ -1,0 +1,31 @@
+{
+  "messages": [
+    {
+      "status": "ok",
+      "category": "all",
+      "interval": "2018-08-21:2018-08-28",
+      "cursor": "45",
+      "count": 30,
+      "total": "629"
+    }
+  ],
+  "collection": [
+    {
+      "title": "Screening of antimicrobial activity and polyketide synthase gene identification from the Actinomycetes isolates",
+      "authors": "SRIVASTAV, A. V.",
+      "author_corresponding": "ASHU Srivastav",
+      "author_corresponding_institution": "INSTITUTE OF CHEMICAL TECHONOLOGY",
+      "doi": "10.1101/396846",
+      "date": "2018-08-21",
+      "version": "1",
+      "type": "confirmatory results",
+      "license": "cc_no",
+      "category": "microbiology",
+      "jatsxml": "https://www.biorxiv.org/content/early/2018/08/21/396846.source.xml",
+      "abstract": "The Streptomyces genus is well studied owing to its capacity in producing more than 70% of antibiotics.",
+      "funder": "NA",
+      "published": "10.4172/1948-5948.1000404",
+      "server": "bioRxiv"
+    }
+  ]
+}

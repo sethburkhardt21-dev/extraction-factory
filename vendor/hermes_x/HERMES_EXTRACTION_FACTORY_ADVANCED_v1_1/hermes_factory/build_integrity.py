@@ -1,0 +1,111 @@
+from __future__ import annotations
+import json
+import platform
+import sys
+import time
+import uuid
+from pathlib import Path
+from typing import Any, Dict, Iterable
+from .hashing import sha256_file, sha256_json
+
+PRODUCTION_GLOBS = [
+    "hermes_factory/**/*.py",
+    "VERSION",
+    "RUN_FACTORY.sh",
+    "CURRENT/MODEL_CERTIFICATION_REGISTRY.json",
+]
+
+
+def production_files(root: Path) -> list[Path]:
+    root = Path(root)
+    found: set[Path] = set()
+    for pattern in PRODUCTION_GLOBS:
+        for p in root.glob(pattern):
+            if p.is_file() and "__pycache__" not in p.parts:
+                found.add(p)
+    return sorted(found, key=lambda p: str(p.relative_to(root)))
+
+
+def build_manifest(root: Path) -> Dict[str, Any]:
+    root = Path(root)
+    files = []
+    for p in production_files(root):
+        files.append({
+            "path": str(p.relative_to(root)).replace("\\", "/"),
+            "bytes": p.stat().st_size,
+            "sha256": sha256_file(p),
+        })
+    content = {
+        "schema_version": "hermes-current-build-manifest-1.1",
+        "production_globs": PRODUCTION_GLOBS,
+        "files": files,
+        "python": platform.python_version(),
+        "implementation": platform.python_implementation(),
+    }
+    content["production_code_manifest_sha256"] = sha256_json({"files": files})
+    return content
+
+
+def write_current_manifest(root: Path, out: Path) -> Dict[str, Any]:
+    manifest = build_manifest(root)
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+    return manifest
+
+
+def certify_build(root: Path, certificate_path: Path, *, test_report_path: Path, parent_certification_id: str | None = None) -> Dict[str, Any]:
+    test_report_path = Path(test_report_path)
+    if not test_report_path.exists():
+        raise RuntimeError("missing_test_report")
+    try:
+        report = json.loads(test_report_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError(f"test_report_not_json:{exc}")
+    if report.get("overall") != "PASS":
+        raise RuntimeError("test_report_not_pass")
+    current = build_manifest(root)
+    cert = {
+        "schema_version": "hermes-certified-build-manifest-1.1",
+        "certification_id": "CERT-" + uuid.uuid4().hex,
+        "parent_certification_id": parent_certification_id,
+        "created_at_epoch": time.time(),
+        "certification_scope": "OFFLINE_MECHANICAL_BUILD",
+        "semantic_model_certification_included": False,
+        "production_code_manifest_sha256": current["production_code_manifest_sha256"],
+        "production_files": current["files"],
+        "runtime": {
+            "python": current["python"],
+            "implementation": current["implementation"],
+        },
+        "test_report_sha256": sha256_file(test_report_path),
+        "claim_boundary": "Certifies exact offline mechanical build identity and tests only; does not certify semantic model quality.",
+    }
+    certificate_path = Path(certificate_path)
+    if certificate_path.exists():
+        raise FileExistsError("certificate_already_exists; create a new versioned certificate instead of overwriting")
+    certificate_path.parent.mkdir(parents=True, exist_ok=True)
+    certificate_path.write_text(json.dumps(cert, indent=2, sort_keys=True), encoding="utf-8")
+    return cert
+
+
+def verify_build(root: Path, certificate_path: Path) -> Dict[str, Any]:
+    current = build_manifest(root)
+    certificate_path = Path(certificate_path)
+    if not certificate_path.exists():
+        return {"ok": False, "result": "NOT_RUN", "errors": ["certified_build_manifest_missing"], "current": current}
+    cert = json.loads(certificate_path.read_text(encoding="utf-8"))
+    errors = []
+    if current["production_code_manifest_sha256"] != cert.get("production_code_manifest_sha256"):
+        errors.append("production_code_changed_since_certification")
+    cert_files = {x["path"]: (x["bytes"], x["sha256"]) for x in cert.get("production_files", [])}
+    cur_files = {x["path"]: (x["bytes"], x["sha256"]) for x in current.get("files", [])}
+    if cert_files != cur_files:
+        missing = sorted(set(cert_files) - set(cur_files))
+        added = sorted(set(cur_files) - set(cert_files))
+        changed = sorted(k for k in set(cert_files) & set(cur_files) if cert_files[k] != cur_files[k])
+        if missing: errors.append("certified_files_missing:" + ",".join(missing))
+        if added: errors.append("uncertified_files_added:" + ",".join(added))
+        if changed: errors.append("certified_files_changed:" + ",".join(changed))
+    return {"ok": not errors, "result": "PASS" if not errors else "FAIL_BLOCKING", "errors": errors,
+            "current": current, "certification": cert}

@@ -1,0 +1,112 @@
+{
+  "fixtures": {
+    "clinical_numeric_markup.xml": {
+      "bytes": 557,
+      "required_scopes": [
+        "ABSTRACT_WITHIN_FULLTEXT",
+        "FULL_TEXT"
+      ],
+      "required_text": [
+        "Abstract concentration 10^3 cells/mL.",
+        "Administer 2½ tablets and 5 µg/kg.",
+        "Concentration was 10^6 cells/mL and affinity 10^-6 M.",
+        "H_2O and PaCO_2 were measured.",
+        "Ratio (1)/(3)."
+      ],
+      "sha256": "5adbfc4adbc30501b3f46bb7986c44cec2b8261c2dbb8cd501fd354c3cca0e9b"
+    },
+    "clinicaltrials_edge.json": {
+      "bytes": 184,
+      "required_paths": {
+        "$.emptyArray": [],
+        "$.emptyObject": {},
+        "$.hasResults": false,
+        "$.protocolSection.designModule.enrollmentInfo.count": 0,
+        "$.protocolSection.statusModule.whyStopped": null
+      },
+      "sha256": "973e94077498bc758e5e1b7bc8e6e995e988044fdd93d59c36ba4185553b19bd"
+    },
+    "context_structure.xml": {
+      "bytes": 407,
+      "max_occurrences": {
+        "Give 4 mg IV.": 1,
+        "Repeat in 8 h.": 1
+      },
+      "required_scope_by_text": {
+        "Abstract-only summary inside full text.": "ABSTRACT_WITHIN_FULLTEXT",
+        "We thank the nursing staff.": "METADATA"
+      },
+      "required_text": [
+        "Results",
+        "Hemodynamics",
+        "MAP decreased.",
+        "Steps:Give 4 mg IV.Repeat in 8 h.",
+        "We thank the nursing staff."
+      ],
+      "sha256": "1cbcda7d6c5722e0b1f26d8b4a57ebff3b0c5dd08026bb970d399584b8b62e2c"
+    },
+    "inline_boundaries.xml": {
+      "bytes": 261,
+      "forbidden_text": [
+        "Table 1see",
+        "sourcefor"
+      ],
+      "required_text": [
+        "Doses: Table 1 see below.",
+        "Read source for details."
+      ],
+      "sha256": "de98d6ca96664935d8b35217ab6c949afaf607e560c0114364e9296a13a6a73e"
+    },
+    "monograph_crlf.txt": {
+      "bytes": 57,
+      "paragraphs": [
+        "First paragraph.",
+        "Second paragraph.",
+        "Dose 5 µg/kg."
+      ],
+      "sha256": "c367e7d10fe4813aec81f72d596771dd15bc1d1cee44d60ba342914037cd8e3c"
+    },
+    "pubmed_abstract.json": {
+      "bytes": 276,
+      "labels": [
+        "BACKGROUND",
+        "RESULTS"
+      ],
+      "publication_year": 2024,
+      "scope": "ABSTRACT_ONLY",
+      "sha256": "b146f42864ad5ea606b9dfb17d035960f913c1773cde12756b54180d30a440e1"
+    },
+    "structured_odd_keys.json": {
+      "bytes": 72,
+      "required_paths": {
+        "$.empty": "",
+        "$.false": false,
+        "$.zero": 0,
+        "$[\"a.b\"][\"x y\"]": 7,
+        "$[\"literal.null\"]": null
+      },
+      "sha256": "3aa65babf27d6af3c479f7db13e7b4ca628344b7d6b1a11bf910dfd63ae31dde"
+    },
+    "tables_figures.xml": {
+      "bytes": 412,
+      "required_scope_by_text": {
+        "140 mg": "TABLE",
+        "Kaplan-Meier survival curve.": "FIGURE",
+        "Primary outcomes.": "TABLE"
+      },
+      "sha256": "0284ad7fb46ab04e6e21463b38585a296d0d4253b18766f79b0318c6c8a259e8",
+      "table_expectations": {
+        "140 mg": {
+          "col_index": 0,
+          "header": "Dose",
+          "row_index": 0
+        },
+        "Combined cell": {
+          "colspan": 2,
+          "rowspan": 2
+        }
+      }
+    }
+  },
+  "schema_version": "frontier-gold-fixture-bundle-1.0"
+}

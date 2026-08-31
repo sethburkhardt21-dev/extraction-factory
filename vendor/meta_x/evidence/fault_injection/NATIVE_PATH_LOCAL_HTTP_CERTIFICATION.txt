@@ -1,0 +1,14 @@
+NATIVE-PATH LOCAL HTTP CERTIFICATION: PASS
+CODE SHA256: afbcb997f8f3454c890fa01661c7a1a0ec16b00379b43266a31993e96b39824f
+PUBLIC-HOST CANARY: FALSE
+MASS UNLOCK ELIGIBLE: FALSE
+
+PASS | ctg_native_capture_crash_checkpoint | native transport files + checkpoint durable
+PASS | ctg_native_capture_resume_pass | PASS PASS_EXACT_HTTP_RESPONSES records=3
+PASS | ctg_native_path_projection | PASS
+PASS | preprint_native_capture_pass | PASS responses=3
+PASS | preprint_native_retry_429 | attempts=2
+PASS | preprint_native_path_projection | PASS
+PASS | pubmed_native_capture_pass | PASS responses=3
+PASS | pubmed_native_retry_429 | esearch attempts=3
+PASS | pubmed_native_path_projection | PASS

@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/mnt/data/v4_work/frontier_release.py", line 58, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/mnt/data/v4_work/frontier_release.py", line 57, in main
+    a=p.parse_args(); print(json.dumps(create_release(a.projection,a.output,a.label,a.require_source),indent=2,sort_keys=True))
+                                       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/v4_work/frontier_release.py", line 41, in create_release
+    m,r,sha,e,evidence_sha=verify_projection(d); checked.append({'source':r['source'],'run_id':r['run_id'],'projection_manifest_sha256':sha,'source_manifest_sha256':m.get('source_manifest_sha256'),'orchestration_evidence_sha256':evidence_sha,'production_code_manifest_sha256':e.get('production_code_manifest_sha256')})
+                           ~~~~~~~~~~~~~~~~~^^^
+  File "/mnt/data/v4_work/frontier_release.py", line 18, in verify_projection
+    if not ep.is_file(): raise RuntimeError(f'orchestration evidence missing: {ep}')
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: orchestration evidence missing: evidence/fault_injection/runs/ctg/warehouse/orchestration_evidence.json

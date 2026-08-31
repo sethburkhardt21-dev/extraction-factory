@@ -1,0 +1,15 @@
+{
+  "evidence_schema_version": "frontier-control-negative-execution-1.0",
+  "mass_extraction_performed": false,
+  "mass_full_without_canary": {
+    "blocked": true,
+    "exit_code": 1,
+    "stderr_tail": "Traceback (most recent call last):\n  File \"/mnt/data/v4_work/frontier_orchestrator.py\", line 132, in <module>\n    if __name__=='__main__': main()\n                             ~~~~^^\n  File \"/mnt/data/v4_work/frontier_orchestrator.py\", line 131, in main\n    a=p.parse_args(); print(json.dumps(run_orchestration(a),indent=2,sort_keys=True))\n                                       ~~~~~~~~~~~~~~~~~^^^\n  File \"/mnt/data/v4_work/frontier_orchestrator.py\", line 81, in run_orchestration\n    if not a.canary_cert: raise RuntimeError('--canary-cert required for full extraction')\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: --canary-cert required for full extraction\n"
+  },
+  "release_from_injected_projection": {
+    "blocked": true,
+    "exit_code": 1,
+    "stderr_tail": "(create_release(a.projection,a.output,a.label,a.require_source),indent=2,sort_keys=True))\n                                       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/data/v4_work/frontier_release.py\", line 41, in create_release\n    m,r,sha,e,evidence_sha=verify_projection(d); checked.append({'source':r['source'],'run_id':r['run_id'],'projection_manifest_sha256':sha,'source_manifest_sha256':m.get('source_manifest_sha256'),'orchestration_evidence_sha256':evidence_sha,'production_code_manifest_sha256':e.get('production_code_manifest_sha256')})\n                           ~~~~~~~~~~~~~~~~~^^^\n  File \"/mnt/data/v4_work/frontier_release.py\", line 18, in verify_projection\n    if not ep.is_file(): raise RuntimeError(f'orchestration evidence missing: {ep}')\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: orchestration evidence missing: evidence/fault_injection/runs/ctg/warehouse/orchestration_evidence.json\n"
+  },
+  "status": "PASS"
+}

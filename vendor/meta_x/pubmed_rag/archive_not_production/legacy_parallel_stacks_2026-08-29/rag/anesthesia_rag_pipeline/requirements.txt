@@ -1,0 +1,32 @@
+"""
+Production Requirements for Anesthesia RAG Pipeline
+"""
+# Core
+requests>=2.31.0
+urllib3>=2.0.0
+lxml>=4.9.0
+
+# Embedding - domain-tuned
+sentence-transformers>=2.2.2
+transformers>=4.36.0
+torch>=2.0.0
+faiss-cpu>=1.7.4  # or faiss-gpu for prod
+chromadb>=0.4.0  # alternative vector store
+
+# Hybrid retrieval
+rank-bm25>=0.2.2
+
+# LLM (choose one)
+openai>=1.0.0
+anthropic>=0.8.0
+
+# Utilities
+python-dateutil>=2.8.2
+tqdm>=4.66.0
+pydantic>=2.5.0
+
+# Optional for local LLM
+# accelerate, bitsandbytes
+
+# For validation script to run without heavy deps, core only needed:
+# requests, python-dateutil

@@ -1,0 +1,14 @@
+{
+  "types": [
+    "UNIQUE_PRIMARY",
+    "UNIQUE_RECALL",
+    "SEMANTIC_CONFLICT",
+    "QUALIFIER_CONFLICT",
+    "NUMERIC_CONFLICT",
+    "RELATIONSHIP_CONFLICT",
+    "VISUAL_CONFLICT",
+    "ATOMICITY_CONFLICT",
+    "SOURCE_SCOPE_CONFLICT"
+  ],
+  "rule": "conflicts route by semantic type; vote count alone cannot close them"
+}

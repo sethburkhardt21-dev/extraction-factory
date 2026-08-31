@@ -1,0 +1,60 @@
+{
+  "artifacts": {
+    "canonical_record": {
+      "path": "canonical_record.jsonl",
+      "records": 1,
+      "sha256": "eaac85bce9acda562502010aa12b1d2944ea5528eea8f9ae5961b8c497d5aa2c"
+    },
+    "ingestion_run": {
+      "path": "ingestion_run.jsonl",
+      "records": 1,
+      "sha256": "c5472450ee5ed7e96988bf94320c78901abcbe6b763a8543b7b86d4805b9ab4d"
+    },
+    "pubmed_author": {
+      "path": "pubmed_author.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "pubmed_mesh_heading": {
+      "path": "pubmed_mesh_heading.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "pubmed_record": {
+      "path": "pubmed_record.jsonl",
+      "records": 1,
+      "sha256": "83dcc99ffa111c0992c058e2ef276cce1fc2e6d3d1ceb12e73def8e75da15b11"
+    },
+    "pubmed_snapshot": {
+      "path": "pubmed_snapshot.jsonl",
+      "records": 1,
+      "sha256": "7e3bd535311e5448ed0cfd843d6cc66985839fa032ef46eaf5fa69766e230a59"
+    },
+    "quarantine_record": {
+      "path": "quarantine_record.jsonl",
+      "records": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run_artifact": {
+      "path": "run_artifact.jsonl",
+      "records": 8,
+      "sha256": "dfa393663caf38e56f5748036a9fa3b6e1e1c95564583833a803c00e3113145c"
+    },
+    "source_observation": {
+      "path": "source_observation.jsonl",
+      "records": 1,
+      "sha256": "0877a7709a15c698f199a4f0bfc1ec11f5240a430261c37cc0e5015c55298abe"
+    },
+    "source_record": {
+      "path": "source_record.jsonl",
+      "records": 1,
+      "sha256": "be91849691fb65aa9939555285d4391ed9274afd8ec5a08b6dd7a4126da6aa53"
+    }
+  },
+  "created_at": "2026-08-30T02:12:42.046429Z",
+  "projection_version": "frontier-warehouse-projection-1.0",
+  "referential_errors": [],
+  "source": "pubmed",
+  "source_manifest_sha256": "b7597745d97fc13387d1db746feaf17fdb5df049c8a65312ce31a429c1220d37",
+  "validation_status": "PASS"
+}

@@ -1,0 +1,9 @@
+{
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "dim": 384,
+  "total_embedded": 150,
+  "input_path": "/mnt/data/anesthesia_corpus.jsonl",
+  "output_path": "/mnt/data/anesthesia_corpus_embedded.jsonl",
+  "vector_store": "/mnt/data/vector_store.npz",
+  "timestamp": "2026-08-28T18:45:42.088142"
+}

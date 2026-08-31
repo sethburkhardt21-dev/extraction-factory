@@ -1,0 +1,13 @@
+{
+  "unique_count": 6,
+  "decisions_count": 1,
+  "decisions": [
+    {
+      "pmid_primary": "39769238",
+      "pmid_duplicate": "99999999",
+      "method": "DOI_normalized",
+      "similarity": 100,
+      "reason": "DOI normalized duplicate 10.3390/xxx"
+    }
+  ]
+}
