@@ -52,9 +52,11 @@ def parse_spec(value: str) -> tuple[str, str]:
     return backend, model
 
 
-def call_wrapper(backend: str, model: str, request: dict, timeout: int) -> dict:
+def call_wrapper(backend: str, model: str, request: dict, timeout: int,
+                 extra_args: list[str] | None = None) -> dict:
     proc = subprocess.run(
-        [sys.executable, "-B", str(WRAPPER), "--backend", backend, "--model", model, "--timeout", str(timeout)],
+        [sys.executable, "-B", str(WRAPPER), "--backend", backend, "--model", model,
+         "--timeout", str(timeout)] + list(extra_args or []),
         input=json.dumps(request, ensure_ascii=False), capture_output=True, text=True,
         encoding="utf-8", timeout=timeout + 90,
     )
@@ -64,12 +66,12 @@ def call_wrapper(backend: str, model: str, request: dict, timeout: int) -> dict:
 
 
 def build_pass(name: str, backend: str, model: str, units: list[SourceUnit], timeout: int,
-               parallel: int, out_dir: Path) -> list[dict]:
+               parallel: int, out_dir: Path, extra_args: list[str] | None = None) -> list[dict]:
     rows: list[dict] = []
 
     def one(unit: SourceUnit) -> list[dict]:
         request = build_primary_request(unit, f"GOLD-{name}", f"GOLDRUN-{name}")
-        response = call_wrapper(backend, model, request, timeout)
+        response = call_wrapper(backend, model, request, timeout, extra_args)
         out = []
         for a in response.get("assertions", []):
             out.append({
@@ -100,7 +102,8 @@ def cue_count(row: dict) -> int:
     return len(row.get("numeric_values") or []) + len(row.get("qualifiers") or [])
 
 
-def adjudicate(backend: str, model: str, unit: SourceUnit, row: dict, timeout: int) -> tuple[bool, str]:
+def adjudicate(backend: str, model: str, unit: SourceUnit, row: dict, timeout: int,
+               extra_args: list[str] | None = None) -> tuple[bool, str]:
     request = {
         "request_schema_version": "hermes-worker-request-1.1",
         "task_role": "COLD_AUDIT",
@@ -117,7 +120,7 @@ def adjudicate(backend: str, model: str, unit: SourceUnit, row: dict, timeout: i
         ),
         "output_schema": {"type": "object", "required": ["verdict"]},
     }
-    response = call_wrapper(backend, model, request, timeout)
+    response = call_wrapper(backend, model, request, timeout, extra_args)
     verdict = response["verdict"]
     return bool(verdict["supported"]), str(verdict.get("rationale") or "")[:400]
 
@@ -132,6 +135,10 @@ def main(argv=None) -> int:
     parser.add_argument("--challenge-dir", help="directory of historical candidate JSONL files for the v2 challenge pass")
     parser.add_argument("--phase", choices=["build-a", "build-b", "finalize", "all"], default="all",
                         help="run one phase; build phases persist raw_builder_X.jsonl, finalize reuses them")
+    parser.add_argument("--b-think", choices=["false", "low", "medium", "high"],
+                        help="--ollama-think for builder B (reasoning models like gpt-oss)")
+    parser.add_argument("--adjudicator-think", choices=["false", "low", "medium", "high"],
+                        help="--ollama-think for the adjudicator")
     args = parser.parse_args(argv)
 
     out_dir = Path(args.out)
@@ -159,7 +166,9 @@ def main(argv=None) -> int:
     else:
         rows_a = load_raw("A")
     if args.phase in ("build-b", "all"):
-        rows_b = build_pass("B", bb, bm, units, args.timeout, parallel=4 if bb == "claude" else 1, out_dir=out_dir)
+        b_extra = ["--ollama-think", args.b_think] if (args.b_think and bb == "ollama") else None
+        rows_b = build_pass("B", bb, bm, units, args.timeout, parallel=4 if bb == "claude" else 1,
+                            out_dir=out_dir, extra_args=b_extra)
         if args.phase == "build-b":
             print(json.dumps({"phase": "build-b", "assertions": len(rows_b)}))
             return 0
@@ -189,10 +198,11 @@ def main(argv=None) -> int:
 
     print(f"[gold] agreed={len(reference)} disagreements={len(disagreements)} — adjudicating with {jm}", flush=True)
     adjudication_log: list[dict] = []
+    j_extra = ["--ollama-think", args.adjudicator_think] if (args.adjudicator_think and jb == "ollama") else None
     for row in disagreements:
         unit = units_by_id[row["source_unit_id"]]
         try:
-            keep, rationale = adjudicate(jb, jm, unit, row, args.timeout)
+            keep, rationale = adjudicate(jb, jm, unit, row, args.timeout, j_extra)
         except Exception as exc:  # noqa: BLE001 — an unadjudicable item is excluded, and recorded
             keep, rationale = False, f"ADJUDICATION_ERROR:{type(exc).__name__}"
         adjudication_log.append({"builder": row["builder"], "source_unit_id": row["source_unit_id"],
