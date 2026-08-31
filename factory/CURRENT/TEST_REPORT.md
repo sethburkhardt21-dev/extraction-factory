@@ -2,7 +2,7 @@
 
 - Overall: **PASS**
 - Return code: `0`
-- Duration: `3.652` seconds
+- Duration: `3.243` seconds
 
 ```text
 test_all_known_leakage_keys_removed (test_adversarial_mutations.BlindInjectionTests.test_all_known_leakage_keys_removed) ... ok
@@ -73,7 +73,7 @@ test_local_only_rejects_network_provider (test_provider_and_pipeline.NetworkPoli
 test_one_unit_fixture_pipeline_outputs_package_and_blocks_semantic_certification (test_provider_and_pipeline.PipelineTests.test_one_unit_fixture_pipeline_outputs_package_and_blocks_semantic_certification) ... ok
 
 ----------------------------------------------------------------------
-Ran 66 tests in 3.175s
+Ran 66 tests in 2.689s
 
 OK (skipped=1)
 ```
