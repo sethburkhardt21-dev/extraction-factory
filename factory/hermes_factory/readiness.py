@@ -19,9 +19,17 @@ def derive_readiness(gates: Iterable[Gate]) -> Dict:
             continue
         blockers.append({"gate": gate.name, "result": gate.result, "detail": gate.detail})
     frontier_ready = not blockers
+    # Precedence is fail-closed. A hard integrity/runtime failure always dominates
+    # external provider blockers; otherwise READY_FOR_PROVIDER could mask a broken
+    # build simply because a model was also unavailable/unbenchmarked.
+    hard_blocking = any(x["result"] in {GateResult.FAIL_BLOCKING.value, GateResult.NOT_RUN.value} for x in blockers)
+    unbounded_review = any(x["result"] == GateResult.FAIL_REVIEW_REQUIRED.value for x in blockers)
+    external_blocking = any(x["result"] == GateResult.BLOCKED_EXTERNAL.value for x in blockers)
     if frontier_ready:
         status = "FRONTIER_REVIEW_READY"
-    elif any(x["result"] == GateResult.BLOCKED_EXTERNAL.value for x in blockers):
+    elif hard_blocking or unbounded_review:
+        status = "NOT_READY"
+    elif external_blocking:
         status = "READY_FOR_PROVIDER"
     else:
         status = "NOT_READY"
