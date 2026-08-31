@@ -10,6 +10,10 @@ from .hashing import sha256_file, sha256_json
 
 PRODUCTION_GLOBS = [
     "hermes_factory/**/*.py",
+    "providers_ext/**/*.py",
+    "stages_ext/**/*.py",
+    "benchmarks_ext/**/*.py",
+    "run_appliance.py",
     "VERSION",
     "RUN_FACTORY.sh",
     "CURRENT/MODEL_CERTIFICATION_REGISTRY.json",
@@ -36,7 +40,7 @@ def build_manifest(root: Path) -> Dict[str, Any]:
             "sha256": sha256_file(p),
         })
     content = {
-        "schema_version": "hermes-current-build-manifest-1.1",
+        "schema_version": "hermes-current-build-manifest-1.2",
         "production_globs": PRODUCTION_GLOBS,
         "files": files,
         "python": platform.python_version(),
@@ -66,7 +70,7 @@ def certify_build(root: Path, certificate_path: Path, *, test_report_path: Path,
         raise RuntimeError("test_report_not_pass")
     current = build_manifest(root)
     cert = {
-        "schema_version": "hermes-certified-build-manifest-1.1",
+        "schema_version": "hermes-certified-build-manifest-1.2",
         "certification_id": "CERT-" + uuid.uuid4().hex,
         "parent_certification_id": parent_certification_id,
         "created_at_epoch": time.time(),
