@@ -126,9 +126,9 @@
       "sha256": "1009f4cb1debe8db3a2640d0fdb97072e8f93a79290b059b4a046be1c16a3006"
     },
     {
-      "bytes": 2393,
+      "bytes": 2423,
       "path": "hermes_factory/providers/command.py",
-      "sha256": "49c12e78db1e30ebd02f1b311adf9889c4778400c2bd76b1b79615de7cc3b3d8"
+      "sha256": "4144f0e4acda2517ecccc68ff1a0f711812e6dcd1e0eb39741718aeb86073491"
     },
     {
       "bytes": 2802,
@@ -187,7 +187,7 @@
     }
   ],
   "implementation": "CPython",
-  "production_code_manifest_sha256": "98f8e67c0568307dd9cf3ab1282dc1b8b29633e05aefe76f21077f99d2e1d113",
+  "production_code_manifest_sha256": "9afb9523bcd5a7a54c24d06713cf4d16f234cd9f3aa0a928a54427511395ba4c",
   "production_globs": [
     "hermes_factory/**/*.py",
     "VERSION",

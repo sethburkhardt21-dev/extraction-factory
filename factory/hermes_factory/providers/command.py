@@ -41,6 +41,7 @@ class JSONCommandProvider(SemanticProvider):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
             timeout=self.timeout_seconds,
             env=env,
         )

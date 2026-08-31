@@ -2,7 +2,7 @@
 
 - Overall: **PASS**
 - Return code: `0`
-- Duration: `4.765` seconds
+- Duration: `6.305` seconds
 
 ```text
 test_all_known_leakage_keys_removed (test_adversarial_mutations.BlindInjectionTests.test_all_known_leakage_keys_removed) ... ok
@@ -25,6 +25,7 @@ test_non_source_evidence_rejected (test_blindness_semantics.SemanticTests.test_n
 test_family_groups_exact_evidence_only (test_blindness_semantics.UnionTests.test_family_groups_exact_evidence_only) ... ok
 test_table_is_routed_to_specialist_queue (test_blindness_semantics.UnionTests.test_table_is_routed_to_specialist_queue) ... ok
 test_union_preserves_distinct_candidate_origins (test_blindness_semantics.UnionTests.test_union_preserves_distinct_candidate_origins) ... ok
+test_non_cp1252_unit_content_survives_the_command_bridge (test_cold_audit_semantic_and_providers.EchoBackendBridgeTests.test_non_cp1252_unit_content_survives_the_command_bridge) ... ok
 test_wrapper_bridges_through_json_command_provider (test_cold_audit_semantic_and_providers.EchoBackendBridgeTests.test_wrapper_bridges_through_json_command_provider) ... ok
 test_wrapper_cold_audit_role_roundtrip (test_cold_audit_semantic_and_providers.EchoBackendBridgeTests.test_wrapper_cold_audit_role_roundtrip) ... ok
 test_ambiguous_normalized_match_rejected (test_cold_audit_semantic_and_providers.ProviderValidationTests.test_ambiguous_normalized_match_rejected) ... ok
@@ -73,7 +74,7 @@ test_local_only_rejects_network_provider (test_provider_and_pipeline.NetworkPoli
 test_one_unit_fixture_pipeline_outputs_package_and_blocks_semantic_certification (test_provider_and_pipeline.PipelineTests.test_one_unit_fixture_pipeline_outputs_package_and_blocks_semantic_certification) ... ok
 
 ----------------------------------------------------------------------
-Ran 66 tests in 4.206s
+Ran 67 tests in 5.731s
 
 OK (skipped=1)
 ```

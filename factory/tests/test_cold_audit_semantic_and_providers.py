@@ -149,6 +149,24 @@ class ProviderValidationTests(unittest.TestCase):
 
 
 class EchoBackendBridgeTests(unittest.TestCase):
+    def test_non_cp1252_unit_content_survives_the_command_bridge(self):
+        # Regression: the real Machines pilot crashed with UnicodeEncodeError in
+        # JSONCommandProvider.execute because subprocess.run had text=True with
+        # no encoding — Windows defaulted to cp1252, which cannot encode the
+        # source units' '≥' and mojibake 'ยฐ' characters.
+        script = ROOT / "providers_ext" / "llm_provider.py"
+        provider = JSONCommandProvider(
+            [sys.executable, "-B", str(script), "--backend", "echo"],
+            provider="LOCAL_ECHO", model_alias="echo", underlying_family="ECHO",
+            observed_version="1", role="PRIMARY", network_required=False,
+        )
+        unit = _unit("Vapor pressure at 20ยฐC is ≥ 58 mm Hg. It is not affected by ambient pressure.")
+        candidates, receipt = execute_primary(provider, unit, "CAP-TEST", "RUN-TEST")
+        self.assertGreaterEqual(len(candidates), 2)
+        self.assertTrue(any("≥" in c.evidence for c in candidates))
+        for c in candidates:
+            self.assertIn(c.evidence, unit.content)
+
     def test_wrapper_bridges_through_json_command_provider(self):
         script = ROOT / "providers_ext" / "llm_provider.py"
         provider = JSONCommandProvider(
