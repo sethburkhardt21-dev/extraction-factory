@@ -3,16 +3,28 @@ name: Factory tests
 on:
   push:
     branches:
-      - chatgpt-pipeline-optimization-20260901
+      - master
   pull_request:
     paths:
       - 'factory/**'
       - '.github/workflows/factory-tests.yml'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: factory-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-tests:
+    name: unit-tests-py${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12.13', '3.13']
     defaults:
       run:
         working-directory: factory
@@ -23,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: ${{ matrix.python-version }}
           cache: 'pip'
 
       - name: Install runtime dependency
@@ -34,3 +46,39 @@ jobs:
 
       - name: Run governed factory test reporter
         run: python -m hermes_factory test
+
+  e2e-smoke:
+    name: clean-checkout-e2e-py3.12.13
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: factory
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up owner-target Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.13'
+          cache: 'pip'
+
+      - name: Install runtime dependency
+        run: python -m pip install --upgrade pip pypdf==5.9.0
+
+      - name: Execute deterministic end-to-end validation
+        run: python -B validation/e2e_smoke.py --work-dir "${RUNNER_TEMP}/hermes-e2e"
+
+      - name: Upload end-to-end evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hermes-e2e-evidence-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            ${{ runner.temp }}/hermes-e2e/E2E_VALIDATION_REPORT.json
+            ${{ runner.temp }}/hermes-e2e/review_artifacts.zip
+            ${{ runner.temp }}/hermes-e2e/runs/APPLIANCE_*.zip
