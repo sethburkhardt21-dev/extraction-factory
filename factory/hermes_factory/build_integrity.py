@@ -8,12 +8,17 @@ from pathlib import Path
 from typing import Any, Dict, Iterable
 from .hashing import sha256_file, sha256_json
 
+# This is the certified execution-and-verification surface, not merely runtime
+# application code. Tests are intentionally included: a PASS report has no
+# authority if the test code that produced it can change without invalidating
+# the certificate.
 PRODUCTION_GLOBS = [
     "hermes_factory/**/*.py",
     "providers_ext/**/*.py",
     "stages_ext/**/*.py",
     "benchmarks_ext/**/*.py",
     "validation/**/*.py",
+    "tests/**/*.py",
     "run_appliance.py",
     "VERSION",
     "RUN_FACTORY.sh",
@@ -41,7 +46,9 @@ def build_manifest(root: Path) -> Dict[str, Any]:
             "sha256": sha256_file(p),
         })
     content = {
-        "schema_version": "hermes-current-build-manifest-1.2",
+        "schema_version": "hermes-current-build-manifest-1.3",
+        "certified_surface_globs": PRODUCTION_GLOBS,
+        # Backward-compatible key retained for readers that display the old name.
         "production_globs": PRODUCTION_GLOBS,
         "files": files,
         "python": platform.python_version(),
@@ -71,20 +78,24 @@ def certify_build(root: Path, certificate_path: Path, *, test_report_path: Path,
         raise RuntimeError("test_report_not_pass")
     current = build_manifest(root)
     cert = {
-        "schema_version": "hermes-certified-build-manifest-1.2",
+        "schema_version": "hermes-certified-build-manifest-1.3",
         "certification_id": "CERT-" + uuid.uuid4().hex,
         "parent_certification_id": parent_certification_id,
         "created_at_epoch": time.time(),
-        "certification_scope": "OFFLINE_MECHANICAL_BUILD",
+        "certification_scope": "OFFLINE_MECHANICAL_BUILD_AND_TEST_SURFACE",
         "semantic_model_certification_included": False,
         "production_code_manifest_sha256": current["production_code_manifest_sha256"],
         "production_files": current["files"],
+        "certified_surface_globs": current["certified_surface_globs"],
         "runtime": {
             "python": current["python"],
             "implementation": current["implementation"],
         },
         "test_report_sha256": sha256_file(test_report_path),
-        "claim_boundary": "Certifies exact offline mechanical build identity and tests only; does not certify semantic model quality.",
+        "claim_boundary": (
+            "Certifies the exact offline mechanical execution surface, test-suite code, runtime identity, "
+            "and PASS report. It does not certify semantic model quality."
+        ),
     }
     certificate_path = Path(certificate_path)
     if certificate_path.exists():
