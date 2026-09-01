@@ -1,10 +1,9 @@
 """Build a non-writing 09D Motion-2 projection from a completed factory run.
 
-This stage exists to reduce friction for the future governed 09D ingest lane.
-It does NOT insert rows, select canonical identities, merge entities, or promote
-assertions. It introspects the sealed target schema read-only and emits a
-self-contained projection envelope describing what can be mapped mechanically
-and what still requires 09D-side adjudication.
+The projection reduces friction for a future 09D-owned ingest lane. It never
+inserts rows, selects canonical identities, merges entities, or promotes
+assertions. v1.5 additionally requires cycle-safe Motion-1 comparison receipts
+before the handoff can be described as schema-compatible.
 """
 from __future__ import annotations
 
@@ -29,6 +28,13 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
+def _read_json(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    value = json.loads(path.read_text(encoding="utf-8"))
+    return value if isinstance(value, dict) else {}
+
+
 def _write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
@@ -49,17 +55,13 @@ def _required_without_default(columns: list[dict[str, Any]]) -> list[str]:
 
 
 def _schema_mapping_plan(carrier_columns: list[dict[str, Any]], locator_columns: list[dict[str, Any]]) -> dict[str, Any]:
-    """Classify observed target columns by who is allowed to populate them.
-
-    This is descriptive, not executable SQL. Unknown required columns are made
-    explicit so a future 09D-owned loader cannot silently drop them.
-    """
+    """Describe who may populate observed 09D target columns; never emit SQL."""
     carrier_names = {str(c["name"]) for c in carrier_columns}
     locator_names = {str(c["name"]) for c in locator_columns}
 
     carrier_mechanical = {
         "value_text": "factory.proposition",
-        "ingest_locator_id": "projection.projection_locator_id -> 09D loader assigned locator id",
+        "ingest_locator_id": "projection.projection_locator_id -> 09D loader-assigned locator id",
     }
     carrier_must_null = {
         "source_resource_id", "parent_assertion_id", "source_locator_id", "raw_cell_id",
@@ -107,9 +109,10 @@ def _schema_mapping_plan(carrier_columns: list[dict[str, Any]], locator_columns:
     }
 
 
-def _comparison_by_candidate(run_dir: Path) -> dict[str, dict[str, Any]]:
+def _comparison_bundle(run_dir: Path) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     rows = _read_jsonl(run_dir / "09D" / "comparison_09d.jsonl")
-    return {str(r.get("candidate_id")): r for r in rows if r.get("candidate_id")}
+    summary = _read_json(run_dir / "09D" / "comparison_09d_summary.json")
+    return ({str(r.get("candidate_id")): r for r in rows if r.get("candidate_id")}, summary)
 
 
 def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
@@ -117,7 +120,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
     database = Path(database)
     candidates = _read_jsonl(run_dir / "ASSERTIONS" / "union_candidates.jsonl")
     source_units = _read_jsonl(run_dir / "SOURCE" / "source_units.jsonl")
-    comparisons = _comparison_by_candidate(run_dir)
+    comparisons, comparison_summary = _comparison_bundle(run_dir)
 
     schema = inventory_schema_readonly(database)
     capability = motion2_capability_readonly(database)
@@ -126,10 +129,22 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
     locator_columns = table_schema.get("ingest_source_locator", [])
     mapping_plan = _schema_mapping_plan(carrier_columns, locator_columns)
 
+    comparison_scope = comparison_summary.get("carrier_scope")
+    cycle_safe_comparison = comparison_summary.get("cycle_safe_authority_comparison") is True
+
     source_by_id = {str(u.get("source_unit_id")): u for u in source_units}
     locator_rows: list[dict[str, Any]] = []
     locator_id_by_unit: dict[str, str] = {}
     projection_errors: list[dict[str, Any]] = []
+
+    if candidates and not comparisons:
+        projection_errors.append({"code": "09D_COMPARISON_RECEIPTS_MISSING"})
+    elif comparisons and not cycle_safe_comparison:
+        projection_errors.append({
+            "code": "09D_COMPARISON_NOT_CYCLE_SAFE",
+            "carrier_scope": comparison_scope,
+            "required_scope": "MOTION1_AUTHORITY",
+        })
 
     for unit in source_units:
         unit_id = str(unit.get("source_unit_id") or "")
@@ -155,6 +170,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
     projected_candidates: list[dict[str, Any]] = []
     state_counts: dict[str, int] = defaultdict(int)
+    disposition_counts: dict[str, int] = defaultdict(int)
     single_entity_resolution = 0
     exact_predicate_resolution = 0
 
@@ -170,11 +186,17 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         comparison = comparisons.get(cid) or {}
         subject_resolution = comparison.get("subject_resolution") or {}
         resolved_ids = list(subject_resolution.get("resolved_entity_ids") or [])
+        subject_ambiguous = bool(subject_resolution.get("ambiguous")) or len(resolved_ids) > 1
         predicate_resolution = comparison.get("predicate_resolution") or {}
         top_matches = list(comparison.get("top_matches") or [])
-        compatible_top = [m for m in top_matches if m.get("subject_compatible") and m.get("predicate_compatible") and m.get("fact_family_compatible", True)]
+        compatible_top = [
+            m for m in top_matches
+            if m.get("subject_compatible") and m.get("predicate_compatible")
+            and m.get("fact_family_compatible", True)
+            and m.get("witness_kind") == "MOTION1_SOURCE_WITNESSED"
+        ]
 
-        if len(resolved_ids) == 1:
+        if len(resolved_ids) == 1 and not subject_ambiguous:
             single_entity_resolution += 1
         if predicate_resolution.get("mode") == "EXACT_CODE_OR_LABEL":
             exact_predicate_resolution += 1
@@ -182,16 +204,23 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         identity_candidates = []
         seen = set()
         for entity_id in resolved_ids:
-            if entity_id not in seen:
-                seen.add(entity_id)
-                identity_candidates.append({"subject_entity_id": entity_id, "basis": subject_resolution.get("mode"), "selection_authorized": False})
-        for match in compatible_top:
-            entity_id = match.get("subject_entity_id")
-            if entity_id is not None and str(entity_id) not in seen:
-                seen.add(str(entity_id))
+            key = str(entity_id)
+            if key not in seen:
+                seen.add(key)
                 identity_candidates.append({
                     "subject_entity_id": entity_id,
-                    "basis": "COMPARATOR_TOP_MATCH",
+                    "basis": subject_resolution.get("mode"),
+                    "ambiguous_source_resolution": subject_ambiguous,
+                    "selection_authorized": False,
+                })
+        for match in compatible_top:
+            entity_id = match.get("subject_entity_id")
+            key = str(entity_id)
+            if entity_id is not None and key not in seen:
+                seen.add(key)
+                identity_candidates.append({
+                    "subject_entity_id": entity_id,
+                    "basis": "MOTION1_COMPARATOR_TOP_MATCH",
                     "score": match.get("score"),
                     "selection_authorized": False,
                 })
@@ -204,13 +233,27 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
                 seen_pred.add(str(code))
                 predicate_candidates.append({
                     "predicate_code": code,
-                    "basis": predicate_resolution.get("mode") or "COMPARATOR_TOP_MATCH",
+                    "basis": predicate_resolution.get("mode") or "MOTION1_COMPARATOR_TOP_MATCH",
                     "score": match.get("score"),
                     "selection_authorized": False,
                 })
 
+        identity_state = (
+            "UNIQUE_SUGGESTION" if len(identity_candidates) == 1 and not subject_ambiguous
+            else "AMBIGUOUS" if identity_candidates
+            else "UNRESOLVED"
+        )
+        predicate_state = "SUGGESTED" if predicate_candidates else "UNRESOLVED"
         state = comparison.get("state") or "NOT_COMPARED"
         state_counts[state] += 1
+
+        loader_disposition = (
+            "READY_FOR_09D_ADJUDICATION"
+            if evidence_ok and cycle_safe_comparison and comparison
+            else "REVIEW_REQUIRED"
+        )
+        disposition_counts[loader_disposition] += 1
+
         projection_id = _stable_id("09DCAND", cid, str(candidate.get("source_sha256") or ""), str(candidate.get("evidence_sha256") or ""))
         projected_candidates.append({
             "projection_candidate_id": projection_id,
@@ -243,8 +286,13 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "origin_pass": candidate.get("origin_pass"),
             "09d_comparison_state": state,
             "09d_comparison_confidence": comparison.get("comparison_confidence"),
+            "09d_comparison_carrier_scope": comparison_scope,
+            "09d_cycle_safe_authority_comparison": cycle_safe_comparison,
+            "subject_identity_resolution_state": identity_state,
+            "predicate_identity_resolution_state": predicate_state,
             "subject_identity_candidates": identity_candidates,
             "predicate_identity_candidates": predicate_candidates,
+            "loader_disposition": loader_disposition,
             "target_table": "source_assertion_candidate",
             "target_columns_observed": sorted(str(c["name"]) for c in carrier_columns),
             "automatic_identity_merge_allowed": False,
@@ -253,13 +301,19 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         })
 
     required_tables_ok = bool(capability.get("required_tables_present"))
-    witness_ok = bool(capability.get("motion2_witness_columns_present") and capability.get("motion2_witness_constraint_present"))
-    evidence_ok_all = not projection_errors
+    witness_ok = bool(
+        capability.get("motion2_witness_columns_present")
+        and capability.get("motion2_witness_constraint_present")
+        and capability.get("carrier_partition_valid")
+    )
+    evidence_ok_all = not any(e.get("code") == "EVIDENCE_PROJECTION_INTEGRITY_FAILED" for e in projection_errors)
     mapping_gaps = (
         mapping_plan["source_assertion_candidate"]["unclassified_required_columns"]
         or mapping_plan["ingest_source_locator"]["unclassified_required_columns"]
     )
-    if not (required_tables_ok and witness_ok and evidence_ok_all):
+    comparison_ok = not candidates or (bool(comparisons) and cycle_safe_comparison)
+
+    if not (required_tables_ok and witness_ok and evidence_ok_all and comparison_ok):
         projection_status = "PROJECTION_REVIEW_REQUIRED"
     elif mapping_gaps:
         projection_status = "SCHEMA_COMPATIBLE_MAPPING_GAPS"
@@ -268,13 +322,17 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
     summary = {
         "stage": "READ_ONLY_09D_MOTION2_PROJECTION",
+        "projection_schema_version": "09d-motion2-projection-1.5",
         "projection_status": projection_status,
         "database": str(database),
         "database_schema_fingerprint_sha256": capability.get("schema_fingerprint_sha256"),
         "motion2_capability": capability,
+        "comparison_scope": comparison_scope,
+        "cycle_safe_authority_comparison": cycle_safe_comparison,
         "source_unit_count": len(source_units),
         "candidate_count": len(candidates),
         "comparison_state_counts": dict(sorted(state_counts.items())),
+        "loader_disposition_counts": dict(sorted(disposition_counts.items())),
         "single_entity_resolution_candidate_count": single_entity_resolution,
         "exact_predicate_resolution_candidate_count": exact_predicate_resolution,
         "projection_error_count": len(projection_errors),
@@ -290,6 +348,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "automatic_identity_merge_allowed": False,
             "automatic_release_allowed": False,
             "identity_and_predicate_candidates_are_suggestions_only": True,
+            "comparison_authority_must_exclude_prior_motion2_rows": True,
         },
         "claim_boundary": (
             "This projection is a governed handoff envelope, not SQL and not an insertion plan. "
@@ -297,11 +356,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "resolve identities/predicates, and enforce 09D governance before any Motion-2 mutation."
         ),
     }
-    return {
-        "locator_rows": locator_rows,
-        "candidate_rows": projected_candidates,
-        "summary": summary,
-    }
+    return {"locator_rows": locator_rows, "candidate_rows": projected_candidates, "summary": summary}
 
 
 def main(argv=None) -> int:
@@ -321,6 +376,8 @@ def main(argv=None) -> int:
     )
     print(json.dumps({
         "projection_status": projection["summary"]["projection_status"],
+        "comparison_scope": projection["summary"]["comparison_scope"],
+        "cycle_safe_authority_comparison": projection["summary"]["cycle_safe_authority_comparison"],
         "source_unit_count": projection["summary"]["source_unit_count"],
         "candidate_count": projection["summary"]["candidate_count"],
         "projection_error_count": projection["summary"]["projection_error_count"],
