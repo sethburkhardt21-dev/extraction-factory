@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 ALLOWED = {"UNBENCHMARKED", "BENCHMARKING", "CERTIFIED", "CERTIFIED_WITH_LIMITS", "REJECTED", "EXPIRED", "BLOCKED_EXTERNAL", "FIXTURE_NOT_EMPIRICAL"}
+CERTIFIED_STATUSES = {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}
 
 
 def load_registry(path: Path) -> Dict[str, Any]:
@@ -22,7 +23,73 @@ def get_status(registry: Dict[str, Any], key: str) -> str:
 
 
 def is_certified(registry: Dict[str, Any], key: str) -> bool:
-    return get_status(registry, key) in {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}
+    return get_status(registry, key) in CERTIFIED_STATUSES
+
+
+def certification_entry(registry: Dict[str, Any], key: str) -> Dict[str, Any] | None:
+    certs = registry.get("certifications")
+    if certs is None:
+        return None
+    if not isinstance(certs, dict):
+        raise ValueError("registry_certifications_not_object")
+    entry = certs.get(key)
+    if entry is None:
+        return None
+    if not isinstance(entry, dict):
+        raise ValueError(f"certification_entry_not_object:{key}")
+    return entry
+
+
+def is_certified_for_source(
+    registry: Dict[str, Any],
+    key: str,
+    *,
+    source_units_sha256: str,
+    source_unit_id: str,
+    provider: str,
+    model_alias: str,
+) -> bool:
+    """Require role certification to match the exact benchmark source artifact.
+
+    The historical certification key contains work/source *classes* (e.g. W2/S1),
+    not source identity. Runtime therefore must additionally bind certification to
+    the exact source-units artifact and unit scope recorded by verified benchmark
+    certification. This prevents a model certified on the eight-unit Machines
+    pilot from silently becoming certified for unrelated W2/S1 material.
+    """
+    entry = certification_entry(registry, key)
+    if entry is None:
+        return False
+    status = entry.get("status", "UNBENCHMARKED")
+    if status not in ALLOWED:
+        raise ValueError(f"invalid_certification_status:{status}")
+    if status not in CERTIFIED_STATUSES:
+        return False
+    if entry.get("benchmark_inputs_verified") is not True:
+        return False
+
+    expected_source_hash = str(entry.get("source_units_sha256") or "")
+    if not expected_source_hash or expected_source_hash != str(source_units_sha256):
+        return False
+
+    units = entry.get("units_in_scope")
+    if not isinstance(units, list) or not units or source_unit_id not in units:
+        return False
+
+    scored_identity = entry.get("scored_identity")
+    if not isinstance(scored_identity, dict):
+        return False
+    scored_provider = str(scored_identity.get("provider") or "").upper()
+    scored_model = str(scored_identity.get("model_alias") or scored_identity.get("model") or "")
+    if scored_provider != str(provider).upper() or scored_model != str(model_alias):
+        return False
+
+    # Applied benchmark certifications must retain their source/gold evidence chain.
+    for required in ("gold_reference_sha256", "gold_manifest_sha256", "candidate_file_sha256"):
+        value = entry.get(required)
+        if not isinstance(value, str) or len(value) != 64:
+            return False
+    return True
 
 
 def identity_key(provider: str, model_alias: str) -> str:
