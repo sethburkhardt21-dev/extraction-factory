@@ -1,20 +1,10 @@
 """Read-only 09D comparator stage.
 
 Compares a completed factory run's union candidates against the sealed 09D r3
-carrier (`source_assertion_candidate`, the ingestion-boundary object extraction
-output would eventually target) and classifies every candidate into one of six
-REVIEWABLE states:
-
-    SUPPORT · CONTRADICTION · CONTEXT_DIFFERENCE · VARIANT ·
-    MISSING_IN_09D · IDENTITY_UNCERTAIN
-
-Nothing here resolves anything. Agreement with 09D does not make a candidate
-true; disagreement does not make it false. Every output row carries
-review_required=true and the deterministic reasons behind its state.
-
-The database is opened mode=ro&immutable=1 and its SHA-256 is measured and
-compared against the declared comparator target. Meta v11's historical pin
-(the S00 input DB) is recorded alongside, never overwritten.
+carrier and emits reviewable comparison states. Agreement never canonicalizes a
+candidate and disagreement never invalidates one. CONTRADICTION is deliberately
+conservative: subject and predicate compatibility must be established before a
+numeric or polarity conflict is allowed.
 """
 from __future__ import annotations
 
@@ -36,9 +26,9 @@ from hermes_factory.literal import NUM_RE, QUALIFIER_PATTERNS  # noqa: E402
 COMPARATOR_TARGET = {
     "comparator_target_version": "09d-r3-sealed-1.0",
     "expected_db_sha256": "fa7a97313dc5bbd9b2fbb61b9124a4ecef5c318ad5d070eeefe67816a210f4a3",
-    "db_role": "Current 09D chain state: sealed r3 envelope final_s03.sqlite (ledger 542d3052…), carrier holds 71,824 Motion-1 inherited assertions; Motion-2 slot empty.",
+    "db_role": "Current 09D chain state: sealed r3 envelope final_s03.sqlite; carrier holds 71,824 Motion-1 inherited assertions; Motion-2 slot empty.",
     "historical_pins_preserved": {
-        "meta_v11_09d_readonly_authority": "pins the S00 input DB (canonical_anesthesia_knowledge.sqlite, 11f9e315…) — historical identity, intentionally NOT overwritten",
+        "meta_v11_09d_readonly_authority": "historical S00 input DB identity is intentionally not overwritten",
         "hermes_v1_1_bridge_contract": "policy-only contract, pins no database identity",
     },
 }
@@ -82,22 +72,39 @@ def load_carrier(db_path: Path) -> list[dict]:
     try:
         conn.execute("PRAGMA query_only=ON")
         rows = conn.execute(
-            "SELECT candidate_id, subject_entity_id, predicate_code, value_text "
+            "SELECT candidate_id, subject_entity_id, predicate_code, value_text, fact_family "
             "FROM source_assertion_candidate WHERE value_text IS NOT NULL"
         ).fetchall()
+        names: dict[str, set[str]] = defaultdict(set)
+        try:
+            for canonical_id, name_text, normalized_name in conn.execute(
+                "SELECT canonical_id, name_text, normalized_name FROM entity_name WHERE is_searchable=1"
+            ):
+                names[str(canonical_id)].update(_tokens(name_text or ""))
+                names[str(canonical_id)].update(_tokens(normalized_name or ""))
+        except sqlite3.Error:
+            pass
     finally:
         conn.close()
     carrier = []
-    for cid, subject, predicate, value in rows:
-        text = f"{(predicate or '').replace('.', ' ').replace('_', ' ')} {value or ''}"
+    for cid, subject, predicate, value, fact_family in rows:
+        predicate_text = (predicate or "").replace(".", " ").replace("_", " ")
+        value_text = value or ""
+        subject_tokens = set(names.get(str(subject), set()))
+        predicate_tokens = _tokens(predicate_text)
+        value_tokens = _tokens(value_text)
         carrier.append({
             "carrier_candidate_id": cid,
             "subject_entity_id": subject,
             "predicate_code": predicate,
+            "fact_family": fact_family,
             "value_text": value,
-            "tokens": _tokens(text),
-            "numbers": _numbers_with_units(value or ""),
-            "negated": bool(NEGATION_RE.search(value or "")),
+            "subject_tokens": subject_tokens,
+            "predicate_tokens": predicate_tokens,
+            "value_tokens": value_tokens,
+            "tokens": subject_tokens | predicate_tokens | value_tokens,
+            "numbers": _numbers_with_units(value_text),
+            "negated": bool(NEGATION_RE.search(value_text)),
         })
     return carrier
 
@@ -110,14 +117,33 @@ def build_index(carrier: list[dict]) -> dict[str, list[int]]:
     return index
 
 
+def _compatibility(candidate_tokens: set[str], row_tokens: set[str]) -> tuple[bool, float]:
+    if not candidate_tokens or not row_tokens:
+        return False, 0.0
+    shared = len(candidate_tokens & row_tokens)
+    ratio = shared / max(1, len(candidate_tokens))
+    return (shared >= 1 and ratio >= 0.50), ratio
+
+
+def _predicate_compatibility(candidate_tokens: set[str], row_tokens: set[str]) -> tuple[bool, float]:
+    if not candidate_tokens or not row_tokens:
+        return False, 0.0
+    shared = len(candidate_tokens & row_tokens)
+    union = len(candidate_tokens | row_tokens) or 1
+    jaccard = shared / union
+    return (shared >= 1 and jaccard >= 0.60), jaccard
+
+
 def classify(candidate: dict, carrier: list[dict], index: dict[str, list[int]]) -> dict:
     proposition = candidate.get("proposition") or ""
     tokens = _tokens(proposition)
+    cand_subject_tokens = _tokens(candidate.get("subject") or "")
+    cand_predicate_tokens = _tokens(candidate.get("predicate") or "")
     numbers = _numbers_with_units(proposition)
     negated = candidate.get("polarity") == "NEGATIVE" or bool(NEGATION_RE.search(proposition))
     counts: dict[int, int] = defaultdict(int)
     for token in tokens:
-        for i in index.get(token, ()):  # postings capped by df at index build? kept full: carrier rows are short
+        for i in index.get(token, ()):
             counts[i] += 1
     min_shared = 1 if len(tokens) < 4 else 2
     scored = []
@@ -128,61 +154,79 @@ def classify(candidate: dict, carrier: list[dict], index: dict[str, list[int]]) 
         union_size = len(tokens | row["tokens"]) or 1
         jaccard = shared / union_size
         containment = shared / (len(row["tokens"]) or 1)
-        scored.append((max(jaccard, containment * 0.9), jaccard, i))
+        subj_ok, subj_score = _compatibility(cand_subject_tokens, row.get("subject_tokens", set()))
+        pred_ok, pred_score = _predicate_compatibility(cand_predicate_tokens, row.get("predicate_tokens", set()))
+        lexical = max(jaccard, containment * 0.9)
+        structured_bonus = (0.10 if subj_ok else 0.0) + (0.10 if pred_ok else 0.0)
+        scored.append((min(1.0, lexical + structured_bonus), lexical, subj_ok, pred_ok, subj_score, pred_score, i))
     scored.sort(reverse=True)
     top = scored[:5]
     reasons: list[str] = []
     if not top or top[0][0] < 0.30:
         state = "MISSING_IN_09D"
-        reasons.append("no carrier row reaches similarity 0.30; r3 Motion-2 slot is empty so novel source content is expected here")
+        reasons.append("no carrier row reaches conservative retrieval floor 0.30; novel source content is expected because the Motion-2 slot is empty")
     else:
-        best_score, _, best_i = top[0]
+        best_score, lexical_score, subj_ok, pred_ok, subj_score, pred_score, best_i = top[0]
         best = carrier[best_i]
         near = [t for t in top if best_score - t[0] <= 0.05]
-        distinct_subjects = {carrier[i]["subject_entity_id"] for _, _, i in near}
-        polarity_conflict = negated != best["negated"] and best_score >= 0.60
+        distinct_subjects = {carrier[t[-1]]["subject_entity_id"] for t in near}
+        structured_comparable = subj_ok and pred_ok
+        polarity_conflict = structured_comparable and negated != best["negated"] and lexical_score >= 0.50
         numeric_conflict = False
-        for value, unit in numbers:
-            for bvalue, bunit in best["numbers"]:
-                if unit and unit == bunit and value != bvalue:
-                    numeric_conflict = True
-                    reasons.append(f"numeric conflict on unit '{unit}': candidate {value} vs 09D {bvalue}")
+        if structured_comparable:
+            for value, unit in numbers:
+                for bvalue, bunit in best["numbers"]:
+                    if unit and unit == bunit and value != bvalue:
+                        numeric_conflict = True
+                        reasons.append(f"numeric conflict on matched subject+predicate and unit '{unit}': candidate {value} vs 09D {bvalue}")
         if polarity_conflict:
-            reasons.append("negation/polarity differs from best 09D match")
+            reasons.append("negation/polarity differs after subject and predicate compatibility were established")
         if numeric_conflict or polarity_conflict:
             state = "CONTRADICTION"
-        elif len(near) > 1 and len(distinct_subjects) > 1 and best_score >= 0.45:
-            state = "IDENTITY_UNCERTAIN"
-            reasons.append(f"{len(near)} near-equal matches across {len(distinct_subjects)} distinct 09D subjects")
+        elif not structured_comparable:
+            if len(near) > 1 and len(distinct_subjects) > 1:
+                state = "IDENTITY_UNCERTAIN"
+                reasons.append("lexical retrieval found multiple candidate subjects, but subject+predicate identity was not established")
+            else:
+                state = "VARIANT"
+                reasons.append(
+                    f"lexical retrieval only ({lexical_score:.2f}); contradiction/support suppressed because subject compatibility={subj_ok} ({subj_score:.2f}) and predicate compatibility={pred_ok} ({pred_score:.2f})"
+                )
         elif best_score >= 0.75:
             state = "SUPPORT"
-            reasons.append(f"high lexical agreement ({best_score:.2f}) with one carrier row, no detected conflicts")
+            reasons.append(f"subject+predicate compatible with high combined agreement ({best_score:.2f}); no detected conflict")
         else:
             cand_quals = {k for k, p in QUALIFIER_PATTERNS.items() if p.search(proposition)}
             row_quals = {k for k, p in QUALIFIER_PATTERNS.items() if p.search(best["value_text"] or "")}
             if cand_quals != row_quals and best_score >= 0.50:
                 state = "CONTEXT_DIFFERENCE"
-                reasons.append(f"qualifier-cue sets differ (candidate {sorted(cand_quals)} vs 09D {sorted(row_quals)})")
+                reasons.append(f"subject+predicate compatible but qualifier-cue sets differ (candidate {sorted(cand_quals)} vs 09D {sorted(row_quals)})")
             else:
                 state = "VARIANT"
-                reasons.append(f"partial lexical agreement ({best_score:.2f}); phrasing or scope differs")
+                reasons.append(f"subject+predicate compatible with partial agreement ({best_score:.2f}); phrasing/value scope differs")
     return {
         "candidate_id": candidate.get("candidate_id"),
         "source_unit_id": candidate.get("source_unit_id"),
         "origin_pass": candidate.get("origin_pass"),
         "proposition": proposition,
+        "candidate_subject": candidate.get("subject"),
+        "candidate_predicate": candidate.get("predicate"),
         "state": state,
         "reasons": reasons,
         "review_required": True,
         "top_matches": [
             {
                 "score": round(score, 3),
+                "lexical_score": round(lexical, 3),
+                "subject_compatible": subj_ok,
+                "predicate_compatible": pred_ok,
                 "carrier_candidate_id": carrier[i]["carrier_candidate_id"],
                 "subject_entity_id": carrier[i]["subject_entity_id"],
                 "predicate_code": carrier[i]["predicate_code"],
+                "fact_family": carrier[i].get("fact_family"),
                 "value_text": (carrier[i]["value_text"] or "")[:300],
             }
-            for score, _, i in top
+            for score, lexical, subj_ok, pred_ok, _, _, i in top
         ],
     }
 
@@ -192,9 +236,9 @@ def main(argv=None) -> int:
     parser.add_argument("--run-dir", required=True)
     parser.add_argument("--database", required=True)
     parser.add_argument("--allow-target-drift", action="store_true",
-                        help="proceed even if the DB hash differs from the declared comparator target (recorded, never silent)")
+                        help="proceed even if the DB hash differs from the declared comparator target")
     parser.add_argument("--skip-db-hash", action="store_true",
-                        help="skip the full-file hash (comparison output then records hash as NOT_MEASURED)")
+                        help="skip the full-file hash (comparison output records hash as NOT_MEASURED)")
     args = parser.parse_args(argv)
 
     run_dir = Path(args.run_dir)
@@ -211,15 +255,12 @@ def main(argv=None) -> int:
         measured = _sha256_file(db_path)
         target_match = measured == COMPARATOR_TARGET["expected_db_sha256"]
         if not target_match and not args.allow_target_drift:
-            print(f"comparator target drift: measured {measured} != declared "
-                  f"{COMPARATOR_TARGET['expected_db_sha256']}; refusing (use --allow-target-drift to record and proceed)",
-                  file=sys.stderr)
+            print(f"comparator target drift: measured {measured} != declared {COMPARATOR_TARGET['expected_db_sha256']}; refusing", file=sys.stderr)
             return 3
 
     candidates = [json.loads(line) for line in union_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     carrier = load_carrier(db_path)
     index = build_index(carrier)
-
     results = [classify(c, carrier, index) for c in candidates]
     counts: dict[str, int] = defaultdict(int)
     for r in results:
@@ -240,15 +281,14 @@ def main(argv=None) -> int:
         "candidate_count": len(candidates),
         "state_counts": dict(sorted(counts.items())),
         "duration_seconds": round(time.time() - started, 2),
-        "method": "deterministic lexical/numeric/negation comparison; thresholds SUPPORT>=0.75, near-tie IDENTITY window 0.05, floor 0.30",
+        "method": "conservative deterministic retrieval plus governed entity-name/predicate compatibility; CONTRADICTION requires compatible subject+predicate before numeric/polarity conflict is allowed",
         "claim_boundary": (
             "Every state is reviewable. SUPPORT does not canonicalize a candidate; "
             "CONTRADICTION and MISSING_IN_09D do not invalidate one. 09D remained "
             "read-only throughout (mode=ro&immutable=1)."
         ),
     }
-    (out_dir / "comparison_09d_summary.json").write_text(
-        json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+    (out_dir / "comparison_09d_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps({k: summary[k] for k in ("state_counts", "candidate_count", "carrier_rows_compared_against",
                                               "database_matches_declared_target", "duration_seconds")}, indent=2))
     return 0
