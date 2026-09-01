@@ -1,10 +1,13 @@
 from __future__ import annotations
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 ALLOWED = {"UNBENCHMARKED", "BENCHMARKING", "CERTIFIED", "CERTIFIED_WITH_LIMITS", "REJECTED", "EXPIRED", "BLOCKED_EXTERNAL", "FIXTURE_NOT_EMPIRICAL"}
 CERTIFIED_STATUSES = {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}
+VERSION_PLACEHOLDERS = {"", "UNKNOWN", "UNCONFIGURED", "CLI_OBSERVED", "UNOBSERVED"}
+OLLAMA_DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$", re.IGNORECASE)
 
 
 def load_registry(path: Path) -> Dict[str, Any]:
@@ -40,6 +43,28 @@ def certification_entry(registry: Dict[str, Any], key: str) -> Dict[str, Any] | 
     return entry
 
 
+def observed_version_is_certifiable(policy: str, observed_version: str) -> bool:
+    """Return True only for a version identifier strong enough to replay certification.
+
+    Ollama roles must bind to the immutable local model digest. Hosted aliases that
+    can silently retarget are explicitly non-certifiable until an immutable version
+    identifier is supplied by a provider-specific integration.
+    """
+    policy = str(policy or "").strip().upper()
+    version = str(observed_version or "").strip()
+    if version.upper() in VERSION_PLACEHOLDERS or version.upper().startswith("UNPINNED_ALIAS:"):
+        return False
+    if policy == "OLLAMA_DIGEST":
+        return bool(OLLAMA_DIGEST_RE.fullmatch(version))
+    if policy == "UNPINNED_HOSTED_ALIAS":
+        return False
+    if policy in {"EXPLICIT_IMMUTABLE_VERSION", "CLI_OBSERVED"}:
+        return bool(version)
+    if policy == "DETERMINISTIC_FIXTURE":
+        return bool(version)
+    return False
+
+
 def is_certified_for_source(
     registry: Dict[str, Any],
     key: str,
@@ -48,14 +73,16 @@ def is_certified_for_source(
     source_unit_id: str,
     provider: str,
     model_alias: str,
+    observed_version: str,
 ) -> bool:
-    """Require role certification to match the exact benchmark source artifact.
+    """Require role certification to match exact source scope and model version.
 
     The historical certification key contains work/source *classes* (e.g. W2/S1),
-    not source identity. Runtime therefore must additionally bind certification to
-    the exact source-units artifact and unit scope recorded by verified benchmark
-    certification. This prevents a model certified on the eight-unit Machines
-    pilot from silently becoming certified for unrelated W2/S1 material.
+    not source identity or model bytes. Runtime therefore additionally binds the
+    certification to the exact source-units artifact, unit scope, scored provider,
+    model alias, and certifiable observed model version recorded by benchmark
+    scoring. This prevents either source-scope expansion or changed model weights
+    from inheriting a prior certificate.
     """
     entry = certification_entry(registry, key)
     if entry is None:
@@ -84,6 +111,13 @@ def is_certified_for_source(
     if scored_provider != str(provider).upper() or scored_model != str(model_alias):
         return False
 
+    certified_version = str(scored_identity.get("observed_version") or "").strip()
+    version_policy = str(scored_identity.get("observed_version_policy") or "").strip()
+    if not observed_version_is_certifiable(version_policy, certified_version):
+        return False
+    if certified_version != str(observed_version or "").strip():
+        return False
+
     # Applied benchmark certifications must retain their source/gold evidence chain.
     for required in ("gold_reference_sha256", "gold_manifest_sha256", "candidate_file_sha256"):
         value = entry.get(required)
@@ -97,12 +131,7 @@ def identity_key(provider: str, model_alias: str) -> str:
 
 
 def resolve_model_identity(registry: Dict[str, Any], provider: str, model_alias: str) -> Dict[str, Any]:
-    """Resolve one protected model identity with no permissive defaults.
-
-    The registry is an authority boundary. Missing empirical status or missing
-    independence group must fail closed rather than silently treating an
-    incomplete row as an empirical/independent model.
-    """
+    """Resolve one protected model identity with no permissive identity defaults."""
     key = identity_key(provider, model_alias)
     identities = registry.get("model_identities")
     if not isinstance(identities, dict):
