@@ -185,7 +185,7 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
             receipt["attempt"] = attempt
             receipt["controller_duration_seconds"] = round(time.perf_counter() - started, 3)
             payload = "".join(json.dumps(c.to_dict(), ensure_ascii=False, sort_keys=True) + "\n" for c in candidates)
-            staged = stage_artifact(staging_root, work_id=work_id, run_id=run_id,
+            staged = stage_artifact(run_dir if False else staging_root, work_id=work_id, run_id=run_id,
                                     files={"candidates.jsonl": payload, "worker_receipt.json": receipt})
             artifact_id = ledger.register_staged_artifact(work_id, lease_id, run_id, staged["path"], staged["manifest_sha256"])
             ledger.begin_validation(work_id, lease_id, artifact_id)
@@ -429,6 +429,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
                 source_unit_id=u.source_unit_id,
                 provider=ident.provider,
                 model_alias=ident.model_alias,
+                observed_version=ident.observed_version,
             ):
                 return False
         return True
@@ -457,7 +458,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     semantic_provider_gate = Gate(
         "SEMANTIC_PROVIDER_CERTIFICATION",
         GateResult.PASS.value if semantic_empirical and primary_cert and blind_cert else GateResult.BLOCKED_EXTERNAL.value,
-        "Both primary and blind roles require source-bound empirically certified semantic providers; fixture, unbenchmarked, or differently scoped certifications cannot satisfy this gate.",
+        "Both primary and blind roles require source- and model-version-bound empirically certified semantic providers; fixture, unbenchmarked, differently scoped, or changed-version certifications cannot satisfy this gate.",
     )
     independence_gate = Gate(
         "INDEPENDENCE",
@@ -490,12 +491,12 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     elif semantic_cold["status"] == "PASS" and not cold_cert:
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.BLOCKED_EXTERNAL.value,
-            f"Independent semantic cold audit ran cleanly, but auditor role {semantic_cold['auditor_identity']['provider']}|{semantic_cold['auditor_identity']['model_alias']} is not source-bound certified for COLD_AUDIT on this exact benchmark/source scope.",
+            f"Independent semantic cold audit ran cleanly, but auditor role {semantic_cold['auditor_identity']['provider']}|{semantic_cold['auditor_identity']['model_alias']} is not source- and model-version-bound certified for COLD_AUDIT on this exact benchmark/source scope.",
         )
     elif semantic_cold["status"] == "PASS":
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.PASS.value,
-            f"Source-bound certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by independence group {semantic_cold.get('auditor_independence_group')}, zero disagreements/errors.",
+            f"Source- and model-version-bound certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by independence group {semantic_cold.get('auditor_independence_group')}, zero disagreements/errors.",
         )
     else:
         cold_gate = Gate(
@@ -574,7 +575,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         "semantic_empirical": semantic_empirical,
         "semantic_quality_measured": False,
         "claim_boundary": (
-            "Real semantic providers executed, but precision/recall is not certified until scored against frozen source-first gold."
+            "Real semantic providers executed, but precision/recall is not certified until scored against frozen source-first gold with source- and model-version-bound certification."
             if semantic_empirical else
             "Offline fixture execution proves mechanics only; fixture output is not empirical semantic evidence."
         ),
