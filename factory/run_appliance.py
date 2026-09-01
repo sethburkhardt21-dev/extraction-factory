@@ -194,6 +194,33 @@ def main(argv=None) -> int:
                     flush=True,
                 )
 
+    # This summary is written BEFORE packaging so the self-contained archive
+    # records exactly which optional downstream stages ran and what they found.
+    run_summary = {
+        "schema_version": "hermes-appliance-run-summary-1.0",
+        "run_id": result["run_id"],
+        "run_dir_name": run_dir.name,
+        "readiness_status": status,
+        "readiness_blockers": result["readiness"]["blockers"],
+        "bounded_review_queues": result["readiness"]["bounded_review_queues"],
+        "summary": result["summary"],
+        "09d_requested": bool(args.database_09d and not args.skip_compare),
+        "09d_comparison_completed": comparison_ok,
+        "comparison_09d": (comparison_summary or {}).get("state_counts"),
+        "comparison_09d_confidence": (comparison_summary or {}).get("confidence_counts"),
+        "motion2_projection_status": (projection_summary or {}).get("projection_status"),
+        "motion2_projection_errors": (projection_summary or {}).get("projection_error_count"),
+        "motion2_numeric_context_review_count": (context_guard_summary or {}).get("review_required_count"),
+        "motion2_numeric_context_result_counts": (context_guard_summary or {}).get("result_counts"),
+        "claim_boundary": (
+            "This file is packaged before archive construction. Core readiness is factory-derived. "
+            "09D comparison/projection states are downstream read-only handoff evidence and do not write to 09D."
+        ),
+    }
+    (run_dir / "APPLIANCE_RUN_SUMMARY.json").write_text(
+        json.dumps(run_summary, indent=2, sort_keys=True), encoding="utf-8"
+    )
+
     print("[appliance] building final offline review package ...", flush=True)
     final_zip = run_dir.parent / f"APPLIANCE_{status}_{run_dir.name}.zip"
     pkg_proc = subprocess.run(
@@ -208,26 +235,19 @@ def main(argv=None) -> int:
             cwd=FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8")
         verify_ok = ver_proc.returncode == 0
 
-    outcome = {
-        "run_id": result["run_id"],
-        "run_dir": str(run_dir),
-        "readiness_status": status,
-        "readiness_blockers": result["readiness"]["blockers"],
-        "bounded_review_queues": result["readiness"]["bounded_review_queues"],
-        "summary": result["summary"],
-        "comparison_09d": (comparison_summary or {}).get("state_counts"),
-        "comparison_09d_confidence": (comparison_summary or {}).get("confidence_counts"),
-        "motion2_projection_status": (projection_summary or {}).get("projection_status"),
-        "motion2_projection_errors": (projection_summary or {}).get("projection_error_count"),
-        "motion2_numeric_context_review_count": (context_guard_summary or {}).get("review_required_count"),
-        "motion2_numeric_context_result_counts": (context_guard_summary or {}).get("result_counts"),
+    # APPLIANCE_OUTCOME is intentionally external to the archive because it
+    # reports the archive verification result itself. The packaged
+    # APPLIANCE_RUN_SUMMARY above contains all pre-package run/stage outcomes.
+    outcome = dict(run_summary)
+    outcome.update({
+        "schema_version": "hermes-appliance-outcome-1.0",
         "final_package": str(final_zip) if package_ok else None,
         "final_package_verified": verify_ok,
         "wall_seconds": round(time.time() - started, 1),
-    }
+    })
     (run_dir / "APPLIANCE_OUTCOME.json").write_text(json.dumps(outcome, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps(outcome, indent=2, ensure_ascii=False))
-    return 0 if package_ok and (verify_ok is not False) else 1
+    return 0 if package_ok and verify_ok is True else 1
 
 
 if __name__ == "__main__":
