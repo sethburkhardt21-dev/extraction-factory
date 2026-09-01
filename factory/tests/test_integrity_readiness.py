@@ -75,12 +75,22 @@ class ReadOnly09DTests(unittest.TestCase):
 
 
 class PackageTests(unittest.TestCase):
-    def test_package_roundtrip_and_tamper(self):
+    def _run_dir(self, parent: Path, status: str = "NOT_READY") -> Path:
+        root=parent/"RUN";root.mkdir();(root/"a.txt").write_text("abc")
+        (root/"VALIDATION").mkdir();(root/"VALIDATION/readiness.json").write_text(json.dumps({"status": status}))
+        return root
+
+    def test_package_roundtrip(self):
         with tempfile.TemporaryDirectory() as td:
-            root=Path(td)/"RUN";root.mkdir();(root/"a.txt").write_text("abc")
-            z=Path(td)/"x.zip";r=build_offline_package(root,z,package_status="NOT_READY")
+            root=self._run_dir(Path(td));z=Path(td)/"x.zip";r=build_offline_package(root,z,package_status="NOT_READY")
             self.assertTrue(r["verification"]["ok"])
             self.assertTrue(verify_offline_package(z)["ok"])
+
+    def test_package_status_cannot_override_readiness(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=self._run_dir(Path(td), "NOT_READY")
+            with self.assertRaisesRegex(RuntimeError, "package_status_must_match_readiness"):
+                build_offline_package(root, Path(td)/"x.zip", package_status="FRONTIER_REVIEW_READY")
 
 
 if __name__ == "__main__": unittest.main()
