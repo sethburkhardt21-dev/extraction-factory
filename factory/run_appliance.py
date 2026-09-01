@@ -18,9 +18,15 @@ must match the registry or the run is rejected.
 
 For Ollama, the appliance resolves the exact model digest from the same daemon
 used for inference and places that immutable digest in WorkerIdentity.observed_version.
-Hosted aliases without an immutable provider version remain explicitly unpinned:
-they may execute and be descriptively benchmarked but cannot inherit a reusable
-semantic role certificate.
+Each semantic request is delegated through ollama_digest_guard.py, which requires
+the same tag digest immediately before and after the provider request before its
+stdout is released to Hermes. Hosted aliases without an immutable provider version
+remain explicitly unpinned: they may execute and be descriptively benchmarked but
+cannot inherit a reusable semantic role certificate.
+
+The operator experience: start it, leave it, return to a governed review
+package whose readiness status was derived fail-closed by the factory, never
+authored by a model or by this script.
 """
 from __future__ import annotations
 
@@ -107,14 +113,19 @@ def provider_flags(prefix: str, spec: str, timeout: int, *, explicit_version: st
                    ollama_host: str = "http://127.0.0.1:11434") -> list[str]:
     backend, model, family = parse_spec(spec)
     observed_version = resolve_observed_version(backend, model, explicit_version, ollama_host)
-    command = (
-        f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
-        f"--backend {backend} --model {model} --timeout {timeout}"
-    )
-    if backend == "ollama" and ollama_think:
-        command += f" --ollama-think {ollama_think}"
     if backend == "ollama":
-        command += f" --ollama-keep-alive {ollama_keep_alive} --ollama-host {normalize_ollama_host(ollama_host)}"
+        command = (
+            f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "ollama_digest_guard.py"}" '
+            f"--model {model} --expected-digest {observed_version} --timeout {timeout} "
+            f"--ollama-host {normalize_ollama_host(ollama_host)} --ollama-keep-alive {ollama_keep_alive}"
+        )
+        if ollama_think:
+            command += f" --ollama-think {ollama_think}"
+    else:
+        command = (
+            f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
+            f"--backend {backend} --model {model} --timeout {timeout}"
+        )
     flags = [
         f"--{prefix}-command", command,
         f"--{prefix}-provider", backend.upper(),
@@ -271,6 +282,8 @@ def main(argv=None) -> int:
                     flush=True,
                 )
 
+    # This summary is written BEFORE packaging so the self-contained archive
+    # records exactly which optional downstream stages ran and what they found.
     run_summary = {
         "schema_version": "hermes-appliance-run-summary-1.1",
         "run_id": result["run_id"],
@@ -310,6 +323,9 @@ def main(argv=None) -> int:
             cwd=FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8")
         verify_ok = ver_proc.returncode == 0
 
+    # APPLIANCE_OUTCOME is intentionally external to the archive because it
+    # reports the archive verification result itself. The packaged
+    # APPLIANCE_RUN_SUMMARY above contains all pre-package run/stage outcomes.
     outcome = dict(run_summary)
     outcome.update({
         "schema_version": "hermes-appliance-outcome-1.1",
