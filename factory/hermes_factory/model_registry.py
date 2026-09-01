@@ -30,18 +30,45 @@ def identity_key(provider: str, model_alias: str) -> str:
 
 
 def resolve_model_identity(registry: Dict[str, Any], provider: str, model_alias: str) -> Dict[str, Any]:
+    """Resolve one protected model identity with no permissive defaults.
+
+    The registry is an authority boundary. Missing empirical status or missing
+    independence group must fail closed rather than silently treating an
+    incomplete row as an empirical/independent model.
+    """
     key = identity_key(provider, model_alias)
-    row = registry.get("model_identities", {}).get(key)
+    identities = registry.get("model_identities")
+    if not isinstance(identities, dict):
+        raise ValueError("registry_model_identities_not_object")
+    row = identities.get(key)
     if not isinstance(row, dict):
         raise KeyError(f"unregistered_model_identity:{key}")
-    family = str(row.get("underlying_family") or "").strip()
-    if not family:
+
+    family_raw = row.get("underlying_family")
+    if not isinstance(family_raw, str) or not family_raw.strip():
         raise ValueError(f"registered_model_missing_family:{key}")
+    family = family_raw.strip()
+
+    if "empirical_semantic_model" not in row:
+        raise ValueError(f"registered_model_missing_empirical_status:{key}")
+    empirical = row.get("empirical_semantic_model")
+    if type(empirical) is not bool:
+        raise ValueError(f"registered_model_empirical_status_not_boolean:{key}")
+
+    group_raw = row.get("independence_group")
+    if not isinstance(group_raw, str) or not group_raw.strip():
+        raise ValueError(f"registered_model_missing_independence_group:{key}")
+    independence_group = group_raw.strip()
+
+    policy_raw = row.get("observed_version_policy", "CLI_OBSERVED")
+    if not isinstance(policy_raw, str) or not policy_raw.strip():
+        raise ValueError(f"registered_model_observed_version_policy_invalid:{key}")
+
     return {
         "provider": str(provider).upper(),
         "model_alias": model_alias,
         "underlying_family": family,
-        "empirical_semantic_model": bool(row.get("empirical_semantic_model", True)),
-        "independence_group": str(row.get("independence_group") or family),
-        "observed_version_policy": str(row.get("observed_version_policy") or "CLI_OBSERVED"),
+        "empirical_semantic_model": empirical,
+        "independence_group": independence_group,
+        "observed_version_policy": policy_raw.strip(),
     }
