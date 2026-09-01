@@ -21,19 +21,39 @@ class CountingProvider(SemanticProvider):
 
 
 class PredispatchTests(unittest.TestCase):
+    def _fixture(self, td):
+        td=Path(td); source=td/"source.txt"; source.write_text("abc",encoding="utf-8")
+        sha=sha256_file(source)
+        unit=SourceUnit("U","S","V",sha,"PARAGRAPH","TEXT",{"pdf_pages":[1]},sha256_text("abc"),"abc")
+        units=td/"units.jsonl"; write_source_units([unit],units)
+        return td, source, sha, units
+
     def test_build_failure_stops_before_any_provider_call(self):
         with tempfile.TemporaryDirectory() as td:
-            td=Path(td); source=td/"source.txt"; source.write_text("abc",encoding="utf-8")
-            sha=sha256_file(source)
-            unit=SourceUnit("U","S","V",sha,"PARAGRAPH","TEXT",{"pdf_pages":[1]},sha256_text("abc"),"abc")
-            units=td/"units.jsonl"; write_source_units([unit],units)
+            td, source, sha, units = self._fixture(td)
             primary=CountingProvider("PRIMARY"); blind=CountingProvider("BLIND_RECALL")
-            with patch("hermes_factory.controller.verify_build",return_value={"result":"FAIL_BLOCKING","errors":["changed"]}), \
-                 patch("hermes_factory.controller.verify_runtime_lock",return_value={"result":"PASS","errors":[]}):
+            with patch("hermes_factory.controller_v14.verify_build",return_value={"result":"FAIL_BLOCKING","errors":["changed"]}), \
+                 patch("hermes_factory.controller_v14.verify_runtime_lock",return_value={"result":"PASS","errors":[]}):
                 with self.assertRaisesRegex(RuntimeError,"predispatch_gate_failure"):
                     run_factory(project_root=Path(__file__).resolve().parents[1],source_units_path=units,
                                 primary_provider=primary,blind_provider=blind,output_root=td/"out",
                                 source_pdf=source,source_expected_sha256=sha,mode="EXTERNAL_COMMAND",execution_mode="LOCAL_ONLY")
+            self.assertEqual(primary.calls,0); self.assertEqual(blind.calls,0)
+
+    def test_bad_09d_contract_stops_before_any_provider_call(self):
+        with tempfile.TemporaryDirectory() as td:
+            td, source, sha, units = self._fixture(td)
+            db=td/"bad.sqlite"; db.write_bytes(b"not-a-db")
+            primary=CountingProvider("PRIMARY"); blind=CountingProvider("BLIND_RECALL")
+            bad={"ok":False,"result":"FAIL_BLOCKING","errors":["schema_drift"],"target_identity_verified":False}
+            with patch("hermes_factory.controller_v14.verify_build",return_value={"result":"PASS","errors":[]}), \
+                 patch("hermes_factory.controller_v14.verify_runtime_lock",return_value={"result":"PASS","errors":[]}), \
+                 patch("hermes_factory.controller_v14.verify_09d_contract",return_value=bad):
+                with self.assertRaisesRegex(RuntimeError,"predispatch_gate_failure"):
+                    run_factory(project_root=Path(__file__).resolve().parents[1],source_units_path=units,
+                                primary_provider=primary,blind_provider=blind,output_root=td/"out",
+                                source_pdf=source,source_expected_sha256=sha,database_09d=db,
+                                mode="EXTERNAL_COMMAND",execution_mode="LOCAL_ONLY")
             self.assertEqual(primary.calls,0); self.assertEqual(blind.calls,0)
 
 
@@ -49,7 +69,7 @@ class ComparatorSafetyTests(unittest.TestCase):
                   "fact_family":"procedure","value_text":"Partial laryngectomy may reduce airway caliber",
                   "subject_tokens":{"partial","laryngectomy"},"predicate_tokens":{"partial","laryngectomy"},
                   "value_tokens":{"partial","laryngectomy","reduce","airway","caliber"},
-                  "tokens":{"partial","laryngectomy","reduce","airway","caliber","procedure"},"numbers":set(),"negated":False}]
+                  "tokens":{"partial","laryngectomy","reduce","airway","caliber","procedure"},"numbers":set(),"qualifier_cues":set(),"negated":False}]
         c={"candidate_id":"C","source_unit_id":"U","origin_pass":"PRIMARY",
            "proposition":"Partial pressure is not affected by total pressure.","subject":"partial pressure",
            "predicate":"is not affected by","polarity":"NEGATIVE"}
@@ -59,7 +79,7 @@ class ComparatorSafetyTests(unittest.TestCase):
         carrier=[{"carrier_candidate_id":"R1","subject_entity_id":"DES","predicate_code":"mac_reduction",
                   "fact_family":"drug","value_text":"50% MAC reduction","subject_tokens":{"desflurane"},
                   "predicate_tokens":{"mac","reduction"},"value_tokens":{"mac","reduction"},
-                  "tokens":{"desflurane","mac","reduction"},"numbers":{("50","%")},"negated":False}]
+                  "tokens":{"desflurane","mac","reduction"},"numbers":{("50","%")},"qualifier_cues":set(),"negated":False}]
         c={"candidate_id":"C","source_unit_id":"U","origin_pass":"PRIMARY",
            "proposition":"Desflurane MAC is 6.4%.","subject":"Desflurane","predicate":"MAC is","polarity":"AFFIRMATIVE"}
         self.assertNotEqual(classify(c,carrier,build_index(carrier))["state"],"CONTRADICTION")
