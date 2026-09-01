@@ -6,6 +6,11 @@ guessed. E4 is reported as a MECHANICAL PROXY (cue injection: numbers or
 relationship cues present in a proposition but absent from its own evidence);
 true semantic E3/E4 grading requires review and is listed as a limit.
 
+Benchmark contamination is checked before scoring: the candidate provider/model
+identity is resolved through the protected registry and its independence group
+must be disjoint from all gold-construction groups. Blind-recall scoring also
+requires its primary baseline to be disjoint from gold and from the blind model.
+
 Blind-recall metrics follow CERT-BLIND-RECALL with the seeded-omission set
 interpreted as the primary pass's ACTUAL omissions against gold (documented
 interpretation; no synthetic seeding was performed).
@@ -23,10 +28,12 @@ FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
 from hermes_factory.literal import NUM_RE, QUALIFIER_PATTERNS, REL_PATTERNS  # noqa: E402
+from hermes_factory.model_registry import load_registry, resolve_model_identity  # noqa: E402
 from benchmarks_ext.alignlib import greedy_align, multi_match_counts  # noqa: E402
 
 MATCH_THRESHOLD = 0.5
 DUP_THRESHOLD = 0.6
+DEFAULT_REGISTRY = FACTORY_ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"
 
 
 def _load_jsonl(path: Path) -> list[dict]:
@@ -47,6 +54,59 @@ def _qual_cues(text: str) -> set[str]:
 
 def _ratio(num: int, den: int):
     return {"numerator": num, "denominator": den, "value": round(num / den, 4) if den else None}
+
+
+def _candidate_provider_model(candidates: list[dict], *, expected_model: str | None = None,
+                              label: str = "candidate") -> tuple[str, str]:
+    seen: set[tuple[str, str]] = set()
+    incomplete = 0
+    for row in candidates:
+        worker = row.get("worker_identity")
+        if not isinstance(worker, dict):
+            continue
+        provider = str(worker.get("provider") or "").upper().strip()
+        model = str(worker.get("model_alias") or "").strip()
+        if provider or model:
+            if not provider or not model:
+                incomplete += 1
+            else:
+                seen.add((provider, model))
+    if incomplete:
+        raise ValueError(f"{label}_worker_identity_incomplete:{incomplete}")
+    if not seen:
+        raise ValueError(f"{label}_worker_identity_missing")
+    if len(seen) != 1:
+        raise ValueError(f"{label}_worker_identity_mixed:{sorted(seen)}")
+    provider, model = next(iter(seen))
+    if expected_model is not None and model != expected_model:
+        raise ValueError(f"{label}_model_argument_mismatch:{expected_model}!={model}")
+    return provider, model
+
+
+def validate_scoring_independence(candidates: list[dict], manifest: dict, registry: dict,
+                                  *, expected_model: str | None = None,
+                                  label: str = "scored") -> dict:
+    """Bind scored rows to one registered model and refuse gold-family leakage."""
+    groups = manifest.get("gold_construction_independence_groups")
+    if not isinstance(groups, list) or not groups or any(not isinstance(x, str) or not x for x in groups):
+        raise ValueError("gold_manifest_missing_construction_independence_groups")
+    if len(groups) != len(set(groups)):
+        raise ValueError(f"gold_manifest_construction_groups_not_distinct:{groups}")
+
+    provider, model = _candidate_provider_model(candidates, expected_model=expected_model, label=label)
+    blocked_models = set(manifest.get("gold_construction_models_not_scorable") or manifest.get("builders_not_scorable") or [])
+    if model in blocked_models:
+        raise ValueError(f"{label}_model_authored_gold:{model}")
+    try:
+        identity = resolve_model_identity(registry, provider, model)
+    except (KeyError, ValueError) as exc:
+        raise ValueError(f"{label}_model_identity_invalid:{provider}|{model}:{exc}") from exc
+    if not identity.get("empirical_semantic_model"):
+        raise ValueError(f"{label}_model_not_empirical:{provider}|{model}")
+    group = str(identity.get("independence_group") or "")
+    if group in set(groups):
+        raise ValueError(f"{label}_independence_group_authored_gold:{group}")
+    return identity
 
 
 def score(candidates: list[dict], gold: list[dict], units_in_scope: set[str],
@@ -154,34 +214,62 @@ def main(argv=None) -> int:
     parser.add_argument("--candidates", required=True, help="candidates JSONL (run ASSERTIONS file)")
     parser.add_argument("--reference", required=True, help="frozen gold reference JSONL")
     parser.add_argument("--gold-manifest", required=True)
+    parser.add_argument("--registry", default=str(DEFAULT_REGISTRY))
     parser.add_argument("--role", required=True, choices=["PRIMARY", "BLIND_RECALL"])
-    parser.add_argument("--model", required=True, help="model alias being scored")
+    parser.add_argument("--model", required=True, help="model alias being scored; must match candidate worker identity")
     parser.add_argument("--primary-candidates", help="required when scoring BLIND_RECALL")
-    parser.add_argument("--units", help="comma-separated unit ids in scope (default: text/prose units only)")
+    parser.add_argument("--units", help="comma-separated unit ids in scope (default: all gold units)")
     parser.add_argument("--out", required=True)
     args = parser.parse_args(argv)
 
     manifest = json.loads(Path(args.gold_manifest).read_text(encoding="utf-8"))
-    if args.model in manifest.get("builders_not_scorable", []):
-        print(f"refusing: {args.model} authored the gold reference and cannot be scored against it", file=sys.stderr)
-        return 4
     candidates = _load_jsonl(Path(args.candidates))
     gold = _load_jsonl(Path(args.reference))
+    registry = load_registry(Path(args.registry))
+    try:
+        scored_identity = validate_scoring_independence(
+            candidates, manifest, registry, expected_model=args.model, label="scored"
+        )
+    except ValueError as exc:
+        print(f"refusing contaminated/unbound benchmark score: {exc}", file=sys.stderr)
+        return 4
+
     if args.units:
         scope = set(args.units.split(","))
     else:
         scope = {g["source_unit_id"] for g in gold}
     primary = _load_jsonl(Path(args.primary_candidates)) if args.primary_candidates else None
+    primary_identity = None
     if args.role == "BLIND_RECALL" and primary is None:
         print("BLIND_RECALL scoring requires --primary-candidates", file=sys.stderr)
         return 2
+    if primary is not None:
+        try:
+            primary_identity = validate_scoring_independence(
+                primary, manifest, registry, label="primary_baseline"
+            )
+        except ValueError as exc:
+            print(f"refusing contaminated/unbound primary baseline: {exc}", file=sys.stderr)
+            return 4
+        if args.role == "BLIND_RECALL" and (
+            str(primary_identity.get("independence_group")) == str(scored_identity.get("independence_group"))
+        ):
+            print(
+                "refusing non-independent blind benchmark: blind and primary baseline share independence group "
+                f"{scored_identity.get('independence_group')}",
+                file=sys.stderr,
+            )
+            return 4
 
     report = {
         "role": args.role,
         "model": args.model,
+        "scored_identity": scored_identity,
+        "primary_baseline_identity": primary_identity,
+        "gold_construction_independence_groups": manifest.get("gold_construction_independence_groups"),
         "benchmark_version": manifest["benchmark_version"],
         "gold_label": manifest["gold_label"],
-        "reference_sha256": manifest["reference_v1_sha256"],
+        "reference_sha256": manifest.get("scoring_reference_sha256") or manifest["reference_v1_sha256"],
         "units_in_scope": sorted(scope),
         "metrics": score(candidates, gold, scope, primary),
     }
@@ -190,7 +278,12 @@ def main(argv=None) -> int:
                if k in ("semantic_unit_recall", "semantic_unit_precision", "qualifier_preservation",
                         "numeric_preservation", "atomicity_failure_rate", "e4_mechanical_proxy_cue_injection",
                         "blind_omission_recovery", "blind_useful_new_candidate_precision")}
-    print(json.dumps({"role": args.role, "model": args.model, **compact}, indent=2))
+    print(json.dumps({
+        "role": args.role,
+        "model": args.model,
+        "scored_independence_group": scored_identity.get("independence_group"),
+        **compact,
+    }, indent=2))
     return 0
 
 

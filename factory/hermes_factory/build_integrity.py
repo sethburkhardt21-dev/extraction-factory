@@ -13,6 +13,7 @@ PRODUCTION_GLOBS = [
     "providers_ext/**/*.py",
     "stages_ext/**/*.py",
     "benchmarks_ext/**/*.py",
+    "validation/**/*.py",
     "run_appliance.py",
     "VERSION",
     "RUN_FACTORY.sh",
