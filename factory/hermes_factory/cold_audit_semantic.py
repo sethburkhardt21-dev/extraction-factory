@@ -3,8 +3,10 @@
 The auditor is a SemanticProvider whose request role is COLD_AUDIT. Sampling is
 deterministic but risk-stratified so scarce audit calls preferentially cover
 tables/figures, numeric claims, and uncertainty-bearing candidates before the
-remaining hash-selected population. Independence remains mandatory: the auditor
-family must differ from both primary and blind families.
+remaining hash-selected population. Independence remains mandatory and is
+measured by the protected registry independence group, not merely by a display
+or underlying-family label. Family-only arguments remain as a backward-
+compatible fallback for fixture/unit-test callers.
 """
 from __future__ import annotations
 
@@ -98,6 +100,9 @@ def run_semantic_cold_audit(
     run_id: str,
     primary_family: str,
     blind_family: str,
+    primary_independence_group: str | None = None,
+    blind_independence_group: str | None = None,
+    auditor_independence_group: str | None = None,
     max_sample: int = 40,
     concurrency: int = 1,
 ) -> Dict[str, Any]:
@@ -106,10 +111,15 @@ def run_semantic_cold_audit(
     sample, baseline_count = _risk_stratified_sample(candidate_list, units_by_id, rate, max_sample)
     identity = provider.identity()
     auditor_family = identity.underlying_family
+    primary_group = str(primary_independence_group or primary_family or "")
+    blind_group = str(blind_independence_group or blind_family or "")
+    auditor_group = str(auditor_independence_group or auditor_family or "")
     independent = (
-        auditor_family not in ("", "UNCONFIGURED")
-        and auditor_family != primary_family
-        and auditor_family != blind_family
+        auditor_group not in ("", "UNCONFIGURED")
+        and primary_group not in ("", "UNCONFIGURED")
+        and blind_group not in ("", "UNCONFIGURED")
+        and auditor_group != primary_group
+        and auditor_group != blind_group
     )
 
     def audit_one(candidate: AssertionCandidate) -> Dict[str, Any]:
@@ -165,8 +175,12 @@ def run_semantic_cold_audit(
         "semantic_independent_model_used": True,
         "auditor_identity": identity.to_dict(),
         "auditor_independent_family": independent,
+        "auditor_independent_group": independent,
+        "auditor_independence_group": auditor_group,
         "primary_family": primary_family,
         "blind_family": blind_family,
+        "primary_independence_group": primary_group,
+        "blind_independence_group": blind_group,
         "sampling_rate": rate,
         "sampling_seed": SEMANTIC_SEED,
         "sampling_strategy": "DETERMINISTIC_RISK_STRATIFIED_TABLE_VISUAL_NUMERIC_UNCERTAINTY_FIRST",
@@ -183,7 +197,7 @@ def run_semantic_cold_audit(
         "status": status,
         "claim_boundary": (
             "A PASS here means the deterministic risk-stratified sample survived independent same-source "
-            "skeptical review by a different model family. It is not a proof of full-corpus correctness "
-            "and never promotes any candidate to canonical."
+            "skeptical review by a different protected-registry independence group. It is not a proof of "
+            "full-corpus correctness and never promotes any candidate to canonical."
         ),
     }
