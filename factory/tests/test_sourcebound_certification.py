@@ -9,6 +9,8 @@ HASH_A = "a" * 64
 HASH_B = "b" * 64
 HASH_C = "c" * 64
 HASH_D = "d" * 64
+VERSION = "sha256:" + "1" * 64
+OTHER_VERSION = "sha256:" + "2" * 64
 KEY = "OLLAMA|model|PRIMARY|W2|S1|BENCH"
 
 
@@ -18,7 +20,12 @@ def _registry(**overrides):
         "benchmark_inputs_verified": True,
         "source_units_sha256": HASH_A,
         "units_in_scope": ["SU-1", "SU-2"],
-        "scored_identity": {"provider": "OLLAMA", "model_alias": "model"},
+        "scored_identity": {
+            "provider": "OLLAMA",
+            "model_alias": "model",
+            "observed_version": VERSION,
+            "observed_version_policy": "OLLAMA_DIGEST",
+        },
         "gold_reference_sha256": HASH_B,
         "gold_manifest_sha256": HASH_C,
         "candidate_file_sha256": HASH_D,
@@ -28,17 +35,34 @@ def _registry(**overrides):
 
 
 class SourceBoundCertificationTests(unittest.TestCase):
-    def _check(self, registry):
+    def _check(self, registry, observed_version: str = VERSION):
         return is_certified_for_source(
             registry, KEY,
             source_units_sha256=HASH_A,
             source_unit_id="SU-1",
             provider="OLLAMA",
             model_alias="model",
+            observed_version=observed_version,
         )
 
-    def test_exact_verified_source_scope_passes(self):
+    def test_exact_verified_source_scope_and_version_passes(self):
         self.assertTrue(self._check(_registry()))
+
+    def test_same_alias_new_model_digest_does_not_inherit_certification(self):
+        self.assertFalse(self._check(_registry(), OTHER_VERSION))
+
+    def test_missing_certified_model_version_fails(self):
+        self.assertFalse(self._check(_registry(scored_identity={
+            "provider": "OLLAMA", "model_alias": "model",
+            "observed_version_policy": "OLLAMA_DIGEST",
+        })))
+
+    def test_placeholder_certified_model_version_fails(self):
+        self.assertFalse(self._check(_registry(scored_identity={
+            "provider": "OLLAMA", "model_alias": "model",
+            "observed_version": "CLI_OBSERVED",
+            "observed_version_policy": "OLLAMA_DIGEST",
+        })))
 
     def test_same_class_different_source_artifact_does_not_inherit_certification(self):
         self.assertFalse(is_certified_for_source(
@@ -47,6 +71,7 @@ class SourceBoundCertificationTests(unittest.TestCase):
             source_unit_id="SU-1",
             provider="OLLAMA",
             model_alias="model",
+            observed_version=VERSION,
         ))
 
     def test_unit_outside_certified_scope_fails(self):
@@ -56,6 +81,7 @@ class SourceBoundCertificationTests(unittest.TestCase):
             source_unit_id="SU-EXPANSION",
             provider="OLLAMA",
             model_alias="model",
+            observed_version=VERSION,
         ))
 
     def test_unverified_benchmark_inputs_fail(self):
@@ -63,7 +89,10 @@ class SourceBoundCertificationTests(unittest.TestCase):
 
     def test_scored_model_identity_mismatch_fails(self):
         self.assertFalse(self._check(_registry(
-            scored_identity={"provider": "OLLAMA", "model_alias": "other"}
+            scored_identity={
+                "provider": "OLLAMA", "model_alias": "other",
+                "observed_version": VERSION, "observed_version_policy": "OLLAMA_DIGEST",
+            }
         )))
 
     def test_missing_evidence_chain_hash_fails(self):
@@ -80,6 +109,7 @@ class SourceBoundCertificationTests(unittest.TestCase):
                 source_unit_id="SU-1",
                 provider="OLLAMA",
                 model_alias="model",
+                observed_version=VERSION,
             )
 
 
