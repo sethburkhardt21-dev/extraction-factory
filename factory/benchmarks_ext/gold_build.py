@@ -1,6 +1,6 @@
 """Source-first gold construction for the Machines p299-301 benchmark.
 
-Implements BENCHMARKS/BENCHMARK_V0_1/GOLD_CONSTRUCTION_PROTOCOL.md:
+Implements the executable portion of BENCHMARKS/BENCHMARK_V0_1/GOLD_CONSTRUCTION_PROTOCOL.md:
 
   1-3. Builder A and Builder B each receive the frozen source units ONLY,
        independently (neither sees the other, nor any historical output).
@@ -10,15 +10,18 @@ Implements BENCHMARKS/BENCHMARK_V0_1/GOLD_CONSTRUCTION_PROTOCOL.md:
        reputations, and rules keep/drop.
   7.   Mechanical validation: evidence exact-substring, hashes, schema.
   8.   Reference v1 frozen with a manifest hash.
-  9-12. Historical outputs, when supplied via --challenge-dir, become
-       challenges adjudicated the same way into Reference v2. When none are
-       supplied the challenge pass is recorded NOT_RUN and v1 is the scoring
-       reference.
-  13.  Builder models are recorded so they are never scored against units
-       they authored.
+  9.   Historical challenge expansion is NOT implemented in this version.
+       Supplying --challenge-dir therefore fails closed instead of implying the
+       challenge pass ran.
+ 10.   Builder models are recorded so they are never scored against a gold
+       reference they authored.
+
+The rights-safe repository does not bundle textbook source-unit text. Supply
+--source-pdf (the hash-pinned owner copy) or --source-units. The legacy bundled
+path is used only if it genuinely exists in an owner-controlled checkout.
 
 Gold label: MECHANICALLY_CHECKED (per the estate's standing gold-set ruling).
-No prior SOL/Kimi/Gemini/Meta/Hermes output seeds the reference.
+No prior SOL/Kimi/Gemini/Meta/Hermes output seeds Reference v1.
 """
 from __future__ import annotations
 
@@ -27,6 +30,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -34,12 +38,13 @@ from pathlib import Path
 FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
+from hermes_factory.ingest import reconstruct_machines_pilot  # noqa: E402
 from hermes_factory.models import SourceUnit  # noqa: E402
 from hermes_factory.semantic import build_primary_request  # noqa: E402
 from hermes_factory.literal import numeric_inventory, qualifier_inventory  # noqa: E402
 from benchmarks_ext.alignlib import greedy_align  # noqa: E402
 
-UNITS_PATH = FACTORY_ROOT / "PILOTS" / "MACHINES_P0299_P0301_TURN09" / "SOURCE_UNITS" / "source_units.jsonl"
+LEGACY_UNITS_PATH = FACTORY_ROOT / "PILOTS" / "MACHINES_P0299_P0301_TURN09" / "SOURCE_UNITS" / "source_units.jsonl"
 WRAPPER = FACTORY_ROOT / "providers_ext" / "llm_provider.py"
 
 
@@ -48,8 +53,47 @@ def sha256_text(text: str) -> str:
 
 
 def parse_spec(value: str) -> tuple[str, str]:
-    backend, _, model = value.partition(":")
+    backend, sep, model = value.partition(":")
+    if not sep or not backend or not model:
+        raise SystemExit(f"provider spec must be backend:model — got {value!r}")
     return backend, model
+
+
+def load_source_units(*, source_units: str | None, source_pdf: str | None) -> tuple[list[SourceUnit], str, str]:
+    """Load gold-builder source without requiring copyrighted bytes in git."""
+    raw: str
+    origin: str
+    if source_units:
+        path = Path(source_units).resolve()
+        if not path.exists():
+            raise SystemExit(f"source units not found: {path}")
+        raw = path.read_text(encoding="utf-8")
+        origin = f"OWNER_SOURCE_UNITS:{path}"
+    elif LEGACY_UNITS_PATH.exists():
+        raw = LEGACY_UNITS_PATH.read_text(encoding="utf-8")
+        origin = f"OWNER_CHECKOUT_LEGACY_SOURCE_UNITS:{LEGACY_UNITS_PATH}"
+    elif source_pdf:
+        pdf = Path(source_pdf).resolve()
+        if not pdf.exists():
+            raise SystemExit(f"source PDF not found: {pdf}")
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "machines_source_units.jsonl"
+            reconstruct_machines_pilot(pdf, path)
+            raw = path.read_text(encoding="utf-8")
+        origin = f"OWNER_HASH_PINNED_PDF_RECONSTRUCTION:{pdf}"
+    else:
+        raise SystemExit(
+            "rights-safe checkout contains no textbook source units; provide --source-pdf pointing to the "
+            "hash-pinned Machines textbook or --source-units pointing to owner-controlled source units"
+        )
+
+    rows = [SourceUnit.from_dict(json.loads(line)) for line in raw.splitlines() if line.strip()]
+    if not rows:
+        raise SystemExit("source unit input is empty")
+    ids = [u.source_unit_id for u in rows]
+    if len(ids) != len(set(ids)):
+        raise SystemExit("duplicate source_unit_id in gold source input")
+    return rows, sha256_text(raw), origin
 
 
 def call_wrapper(backend: str, model: str, request: dict, timeout: int,
@@ -130,9 +174,11 @@ def main(argv=None) -> int:
     parser.add_argument("--builder-a", default="claude:claude-fable-5")
     parser.add_argument("--builder-b", required=True, help="backend:model — must NOT be a model that will be scored")
     parser.add_argument("--adjudicator", default="ollama:deepseek-r1:14b")
+    parser.add_argument("--source-units", help="owner-controlled source_units.jsonl")
+    parser.add_argument("--source-pdf", help="owner hash-pinned Machines PDF; exact pilot units are reconstructed locally")
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--out", default=str(FACTORY_ROOT / "GOLD" / "MACHINES_P0299_P0301_v1"))
-    parser.add_argument("--challenge-dir", help="directory of historical candidate JSONL files for the v2 challenge pass")
+    parser.add_argument("--challenge-dir", help="reserved for future Reference-v2 challenge pass; currently refused fail-closed")
     parser.add_argument("--phase", choices=["build-a", "build-b", "finalize", "all"], default="all",
                         help="run one phase; build phases persist raw_builder_X.jsonl, finalize reuses them")
     parser.add_argument("--b-think", choices=["false", "low", "medium", "high"],
@@ -141,16 +187,36 @@ def main(argv=None) -> int:
                         help="--ollama-think for the adjudicator")
     args = parser.parse_args(argv)
 
+    if args.challenge_dir:
+        print(
+            "refusing --challenge-dir: Reference-v2 historical challenge adjudication is not implemented in this version; "
+            "do not label it as executed",
+            file=sys.stderr,
+        )
+        return 5
+
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    units = [SourceUnit.from_dict(json.loads(line))
-             for line in UNITS_PATH.read_text(encoding="utf-8").splitlines() if line.strip()]
+    units, source_units_sha256, source_origin = load_source_units(
+        source_units=args.source_units,
+        source_pdf=args.source_pdf,
+    )
     ab, am = parse_spec(args.builder_a)
     bb, bm = parse_spec(args.builder_b)
     jb, jm = parse_spec(args.adjudicator)
+    if (ab.upper(), am) == (bb.upper(), bm):
+        print("builder A and builder B must be different provider/model identities", file=sys.stderr)
+        return 6
+    if (jb.upper(), jm) in {(ab.upper(), am), (bb.upper(), bm)}:
+        print("adjudicator must be a different provider/model identity from both builders", file=sys.stderr)
+        return 6
     started = time.time()
 
-    print(f"[gold] builder A = {ab}:{am}   builder B = {bb}:{bm}   adjudicator = {jb}:{jm}   phase = {args.phase}", flush=True)
+    print(
+        f"[gold] source={source_origin} units={len(units)} builder A={ab}:{am} "
+        f"builder B={bb}:{bm} adjudicator={jb}:{jm} phase={args.phase}",
+        flush=True,
+    )
 
     def load_raw(name: str) -> list[dict]:
         path = out_dir / f"raw_builder_{name}.jsonl"
@@ -161,7 +227,7 @@ def main(argv=None) -> int:
     if args.phase in ("build-a", "all"):
         rows_a = build_pass("A", ab, am, units, args.timeout, parallel=4 if ab == "claude" else 1, out_dir=out_dir)
         if args.phase == "build-a":
-            print(json.dumps({"phase": "build-a", "assertions": len(rows_a)}))
+            print(json.dumps({"phase": "build-a", "assertions": len(rows_a), "source_units_sha256": source_units_sha256}))
             return 0
     else:
         rows_a = load_raw("A")
@@ -170,7 +236,7 @@ def main(argv=None) -> int:
         rows_b = build_pass("B", bb, bm, units, args.timeout, parallel=4 if bb == "claude" else 1,
                             out_dir=out_dir, extra_args=b_extra)
         if args.phase == "build-b":
-            print(json.dumps({"phase": "build-b", "assertions": len(rows_b)}))
+            print(json.dumps({"phase": "build-b", "assertions": len(rows_b), "source_units_sha256": source_units_sha256}))
             return 0
     else:
         rows_b = load_raw("B")
@@ -228,14 +294,12 @@ def main(argv=None) -> int:
     (out_dir / "adjudication_log.jsonl").write_text(
         "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in adjudication_log), encoding="utf-8")
 
-    challenge_state = "NOT_RUN_NO_HISTORICAL_OUTPUTS_SUPPLIED"
-    if args.challenge_dir:
-        challenge_state = f"SUPPLIED_BUT_NOT_IMPLEMENTED_IN_THIS_VERSION:{args.challenge_dir}"
-
     manifest = {
         "benchmark_version": "MACHINES_P0299_P0301_SOURCE_FIRST_v1",
         "gold_label": "MECHANICALLY_CHECKED",
-        "source_units_sha256": sha256_text(UNITS_PATH.read_text(encoding="utf-8")),
+        "source_origin": source_origin,
+        "source_units_sha256": source_units_sha256,
+        "source_unit_count": len(units),
         "builder_a": {"backend": ab, "model": am, "assertions": len(rows_a)},
         "builder_b": {"backend": bb, "model": bm, "assertions": len(rows_b)},
         "adjudicator": {"backend": jb, "model": jm, "items": len(adjudication_log),
@@ -245,18 +309,20 @@ def main(argv=None) -> int:
         "reference_v1_sha256": sha256_text(ref_bytes),
         "mechanically_dropped": len(dropped_mechanical),
         "deterministic_inventories": inventories,
-        "challenge_pass": challenge_state,
+        "challenge_pass": "NOT_RUN_REFERENCE_V2_NOT_IMPLEMENTED",
         "scoring_reference": "reference_v1.jsonl",
+        "scoring_reference_sha256": sha256_text(ref_bytes),
         "builders_not_scorable": [am, bm],
         "duration_seconds": round(time.time() - started, 1),
         "claim_boundary": (
             "AI-authored source-first gold, label MECHANICALLY_CHECKED. Built from source bytes only; "
-            "no historical extraction output seeded it. It bounds benchmark claims, not clinical truth."
+            "no historical extraction output seeded Reference v1. Historical challenge expansion is NOT_RUN. "
+            "This bounds benchmark claims, not clinical truth."
         ),
     }
     (out_dir / "GOLD_MANIFEST.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps({k: manifest[k] for k in ("reference_v1_count", "agreed_count", "adjudicator",
-                                               "reference_v1_sha256", "duration_seconds")}, indent=2))
+                                               "reference_v1_sha256", "source_unit_count", "duration_seconds")}, indent=2))
     return 0
 
 
