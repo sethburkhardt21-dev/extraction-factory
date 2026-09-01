@@ -2,9 +2,9 @@
 
 The projection reduces friction for a future 09D-owned ingest lane. It never
 inserts rows, selects canonical identities, merges entities, or promotes
-assertions. v1.7 emits a focused cryptographic contract for the two Motion-2
-target tables so loader work can distinguish relevant schema drift from
-unrelated 09D evolution.
+assertions. v1.8 binds the exact comparison artifact bytes to the verified 09D
+database hash, focused Motion-2 target contract, schema fingerprint, and
+cycle-safe authority scope before the canonical CLI can call a handoff ready.
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ from hermes_factory.bridge_09d import (  # noqa: E402
     motion2_capability_readonly,
     motion2_target_contract_readonly,
 )
-from hermes_factory.hashing import sha256_text  # noqa: E402
+from hermes_factory.hashing import sha256_file, sha256_text  # noqa: E402
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -45,6 +45,11 @@ def _write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
     with path.open("w", encoding="utf-8") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def _stable_hash(value: Any) -> str:
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def _stable_id(prefix: str, *parts: str) -> str:
@@ -120,7 +125,71 @@ def _comparison_bundle(run_dir: Path) -> tuple[dict[str, dict[str, Any]], dict[s
     return ({str(r.get("candidate_id")): r for r in rows if r.get("candidate_id")}, summary)
 
 
-def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
+def _authority_binding(
+    run_dir: Path,
+    comparison_summary: dict[str, Any],
+    capability: dict[str, Any],
+    target_contract: dict[str, Any],
+) -> dict[str, Any]:
+    """Bind exact comparison bytes to the target identity claimed by its summary."""
+    comparison_path = run_dir / "09D" / "comparison_09d.jsonl"
+    summary_path = run_dir / "09D" / "comparison_09d_summary.json"
+    measured_db_hash = comparison_summary.get("database_sha256_measured")
+    target_match = comparison_summary.get("database_matches_declared_target") is True
+    summary_schema = comparison_summary.get("schema_fingerprint_sha256")
+    current_schema = capability.get("schema_fingerprint_sha256")
+    summary_contract = (comparison_summary.get("motion2_capability") or {}).get("motion2_target_contract_sha256")
+    current_contract = target_contract.get("motion2_target_contract_sha256")
+    scope = comparison_summary.get("carrier_scope")
+    cycle_safe = comparison_summary.get("cycle_safe_authority_comparison") is True
+    comparator_version = (comparison_summary.get("comparator_target") or {}).get("comparator_target_version")
+    declared_expected_hash = (comparison_summary.get("comparator_target") or {}).get("expected_db_sha256")
+
+    checks = {
+        "database_hash_verified": bool(target_match and measured_db_hash and measured_db_hash != "NOT_MEASURED"),
+        "measured_hash_matches_declared_target": bool(
+            measured_db_hash and declared_expected_hash and measured_db_hash == declared_expected_hash
+        ),
+        "schema_fingerprint_matches_current_target": bool(summary_schema and summary_schema == current_schema),
+        "motion2_target_contract_matches_current_target": bool(summary_contract and summary_contract == current_contract),
+        "cycle_safe_motion1_authority_scope": bool(cycle_safe and scope == "MOTION1_AUTHORITY"),
+        "comparison_artifacts_present": comparison_path.exists() and summary_path.exists(),
+    }
+    verified = all(checks.values())
+    context = {
+        "database_sha256": measured_db_hash,
+        "schema_fingerprint_sha256": current_schema,
+        "motion2_target_contract_sha256": current_contract,
+        "carrier_scope": scope,
+        "comparator_target_version": comparator_version,
+        "comparison_jsonl_sha256": sha256_file(comparison_path) if comparison_path.exists() else None,
+        "comparison_summary_sha256": sha256_file(summary_path) if summary_path.exists() else None,
+    }
+    return {
+        "binding_schema_version": "09d-authority-binding-1.0",
+        "verified": verified,
+        "checks": checks,
+        "authority_context": context,
+        "authority_context_id": "09DAUTH-" + _stable_hash(context)[:24],
+        "claim_boundary": (
+            "This binds comparison artifacts to the verified target identity and cycle-safe scope. "
+            "It does not authorize a 09D write, merge, canonicalization, migration, or release."
+        ),
+    }
+
+
+def build_projection(
+    run_dir: Path,
+    database: Path,
+    *,
+    require_verified_target: bool = False,
+) -> dict[str, Any]:
+    """Build the projection. Canonical CLI sets require_verified_target=True.
+
+    The default remains False for synthetic/unit-test callers that intentionally
+    do not possess the pinned r3 bytes; the returned summary records whether the
+    strict authority binding was enforced and verified.
+    """
     run_dir = Path(run_dir)
     database = Path(database)
     candidates = _read_jsonl(run_dir / "ASSERTIONS" / "union_candidates.jsonl")
@@ -130,6 +199,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
     schema = inventory_schema_readonly(database)
     capability = motion2_capability_readonly(database)
     target_contract = motion2_target_contract_readonly(database)
+    authority_binding = _authority_binding(run_dir, comparison_summary, capability, target_contract)
     table_schema = schema.get("schema", {})
     carrier_columns = table_schema.get("source_assertion_candidate", [])
     locator_columns = table_schema.get("ingest_source_locator", [])
@@ -138,6 +208,9 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
     comparison_scope = comparison_summary.get("carrier_scope")
     cycle_safe_comparison = comparison_summary.get("cycle_safe_authority_comparison") is True
     target_contract_sha = target_contract.get("motion2_target_contract_sha256")
+    authority_context_id = authority_binding.get("authority_context_id")
+    strict_target_ok = authority_binding.get("verified") is True
+    trusted_comparison = cycle_safe_comparison and (strict_target_ok or not require_verified_target)
 
     source_by_id = {str(u.get("source_unit_id")): u for u in source_units}
     locator_rows: list[dict[str, Any]] = []
@@ -151,6 +224,11 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "code": "09D_COMPARISON_NOT_CYCLE_SAFE",
             "carrier_scope": comparison_scope,
             "required_scope": "MOTION1_AUTHORITY",
+        })
+    if require_verified_target and not strict_target_ok:
+        projection_errors.append({
+            "code": "09D_COMPARISON_AUTHORITY_BINDING_FAILED",
+            "failed_checks": sorted(k for k, v in authority_binding.get("checks", {}).items() if not v),
         })
 
     for unit in source_units:
@@ -171,6 +249,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "content_representation": unit.get("content_representation"),
             "locator": unit.get("locator") or {},
             "09d_motion2_target_contract_sha256": target_contract_sha,
+            "09d_authority_context_id": authority_context_id,
             "target_table": "ingest_source_locator",
             "target_columns_observed": sorted(str(c["name"]) for c in locator_columns),
             "direct_insert_allowed": False,
@@ -199,30 +278,32 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         top_matches = list(comparison.get("top_matches") or [])
         compatible_top = [
             m for m in top_matches
-            if m.get("subject_compatible") and m.get("predicate_compatible")
+            if trusted_comparison
+            and m.get("subject_compatible") and m.get("predicate_compatible")
             and m.get("fact_family_compatible", True)
             and m.get("witness_kind") == "MOTION1_SOURCE_WITNESSED"
         ]
 
-        if len(resolved_ids) == 1 and not subject_ambiguous:
+        if len(resolved_ids) == 1 and not subject_ambiguous and trusted_comparison:
             single_entity_resolution += 1
         if predicate_resolution.get("mode") in {
             "EXACT_CODE_OR_LABEL", "UNIQUE_FAMILY_PREDICATE_TAIL", "UNIQUE_GLOBAL_PREDICATE_TAIL"
-        }:
+        } and trusted_comparison:
             exact_predicate_resolution += 1
 
         identity_candidates = []
         seen = set()
-        for entity_id in resolved_ids:
-            key = str(entity_id)
-            if key not in seen:
-                seen.add(key)
-                identity_candidates.append({
-                    "subject_entity_id": entity_id,
-                    "basis": subject_resolution.get("mode"),
-                    "ambiguous_source_resolution": subject_ambiguous,
-                    "selection_authorized": False,
-                })
+        if trusted_comparison:
+            for entity_id in resolved_ids:
+                key = str(entity_id)
+                if key not in seen:
+                    seen.add(key)
+                    identity_candidates.append({
+                        "subject_entity_id": entity_id,
+                        "basis": subject_resolution.get("mode"),
+                        "ambiguous_source_resolution": subject_ambiguous,
+                        "selection_authorized": False,
+                    })
         for match in compatible_top:
             entity_id = match.get("subject_entity_id")
             key = str(entity_id)
@@ -259,7 +340,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
         loader_disposition = (
             "READY_FOR_09D_ADJUDICATION"
-            if evidence_ok and cycle_safe_comparison and comparison
+            if evidence_ok and trusted_comparison and comparison
             else "REVIEW_REQUIRED"
         )
         disposition_counts[loader_disposition] += 1
@@ -299,6 +380,8 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "09d_comparison_carrier_scope": comparison_scope,
             "09d_cycle_safe_authority_comparison": cycle_safe_comparison,
             "09d_motion2_target_contract_sha256": target_contract_sha,
+            "09d_authority_context_id": authority_context_id,
+            "09d_authority_binding_verified": strict_target_ok,
             "subject_identity_resolution_state": identity_state,
             "predicate_identity_resolution_state": predicate_state,
             "subject_identity_candidates": identity_candidates,
@@ -322,7 +405,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         mapping_plan["source_assertion_candidate"]["unclassified_required_columns"]
         or mapping_plan["ingest_source_locator"]["unclassified_required_columns"]
     )
-    comparison_ok = not candidates or (bool(comparisons) and cycle_safe_comparison)
+    comparison_ok = not candidates or (bool(comparisons) and trusted_comparison)
 
     if not (required_tables_ok and witness_ok and evidence_ok_all and comparison_ok):
         projection_status = "PROJECTION_REVIEW_REQUIRED"
@@ -333,11 +416,14 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
     summary = {
         "stage": "READ_ONLY_09D_MOTION2_PROJECTION",
-        "projection_schema_version": "09d-motion2-projection-1.7",
+        "projection_schema_version": "09d-motion2-projection-1.8",
         "projection_status": projection_status,
         "database": str(database),
         "database_schema_fingerprint_sha256": capability.get("schema_fingerprint_sha256"),
         "motion2_target_contract_sha256": target_contract_sha,
+        "authority_context_id": authority_context_id,
+        "authority_binding_enforced": require_verified_target,
+        "authority_binding_verified": strict_target_ok,
         "motion2_capability": capability,
         "comparison_scope": comparison_scope,
         "cycle_safe_authority_comparison": cycle_safe_comparison,
@@ -362,17 +448,19 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "automatic_schema_migration_allowed": False,
             "identity_and_predicate_candidates_are_suggestions_only": True,
             "comparison_authority_must_exclude_prior_motion2_rows": True,
+            "canonical_cli_requires_verified_target_hash_and_contract_binding": True,
         },
         "claim_boundary": (
             "This projection is a governed handoff envelope, not SQL and not an insertion plan. "
-            "The target-contract hash fingerprints only the two Motion-2 intake tables and does not replace "
-            "full database/release verification. A 09D-owned loader/adjudicator remains responsible for mutation."
+            "The canonical CLI requires the comparison to have verified the declared database hash and binds "
+            "the exact comparison bytes to the current schema/target contract before exposing identity suggestions."
         ),
     }
     return {
         "locator_rows": locator_rows,
         "candidate_rows": projected_candidates,
         "target_contract": target_contract,
+        "authority_binding": authority_binding,
         "summary": summary,
     }
 
@@ -384,7 +472,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     run_dir = Path(args.run_dir)
-    projection = build_projection(run_dir, Path(args.database))
+    projection = build_projection(run_dir, Path(args.database), require_verified_target=True)
     out_dir = run_dir / "09D"
     out_dir.mkdir(parents=True, exist_ok=True)
     _write_jsonl(out_dir / "motion2_locator_projection.jsonl", projection["locator_rows"])
@@ -392,11 +480,16 @@ def main(argv=None) -> int:
     (out_dir / "motion2_target_contract.json").write_text(
         json.dumps(projection["target_contract"], indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8"
     )
+    (out_dir / "motion2_authority_binding.json").write_text(
+        json.dumps(projection["authority_binding"], indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8"
+    )
     (out_dir / "motion2_projection_summary.json").write_text(
         json.dumps(projection["summary"], indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8"
     )
     print(json.dumps({
         "projection_status": projection["summary"]["projection_status"],
+        "authority_binding_verified": projection["summary"]["authority_binding_verified"],
+        "authority_context_id": projection["summary"]["authority_context_id"],
         "motion2_target_contract_sha256": projection["summary"]["motion2_target_contract_sha256"],
         "comparison_scope": projection["summary"]["comparison_scope"],
         "cycle_safe_authority_comparison": projection["summary"]["cycle_safe_authority_comparison"],
