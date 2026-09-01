@@ -24,6 +24,7 @@ from .providers.base import SemanticProvider
 from .readiness import derive_readiness
 from .risk import classify_source_unit
 from .router import route_families
+from .runtime_identity import resolve_runtime_topology
 from .runtime_lock import verify_runtime_lock
 from .semantic import execute_blind, execute_primary
 from .source import load_source_units
@@ -246,6 +247,20 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     current_manifest = write_current_manifest(project_root, project_root / "CURRENT" / "CURRENT_BUILD_MANIFEST.json")
     build_check = verify_build(project_root, project_root / "CURRENT" / "CERTIFIED_BUILD_MANIFEST.json")
     runtime_check = verify_runtime_lock(project_root / "CURRENT" / "RUNTIME_LOCK.json")
+    runtime_registry = load_registry(project_root / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json")
+    runtime_topology: Dict[str, Dict[str, Any]] | None = None
+    runtime_topology_error: str | None = None
+    if mode != "OFFLINE_FIXTURE":
+        try:
+            runtime_topology = resolve_runtime_topology(
+                runtime_registry,
+                primary_provider,
+                blind_provider,
+                cold_audit_provider,
+                require_empirical=True,
+            )
+        except ValueError as exc:
+            runtime_topology_error = str(exc)
 
     if mode != "OFFLINE_FIXTURE":
         predispatch_failures = []
@@ -255,6 +270,12 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             predispatch_failures.append({"gate": "BUILD_INTEGRITY", "result": build_check.get("result"), "detail": build_check.get("errors", [])})
         if runtime_check.get("result") != GateResult.PASS.value:
             predispatch_failures.append({"gate": "RUNTIME_LOCK", "result": runtime_check.get("result"), "detail": runtime_check.get("errors", [])})
+        if runtime_topology_error is not None:
+            predispatch_failures.append({
+                "gate": "MODEL_IDENTITY_INDEPENDENCE",
+                "result": GateResult.FAIL_BLOCKING.value,
+                "detail": runtime_topology_error,
+            })
         if predispatch_failures:
             failure = {
                 "status": "NOT_READY",
@@ -334,12 +355,30 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     routes = route_families(families, specialists)
     precision = precision_review(union, units)
     cold = deterministic_cold_audit(union, units, rate=cold_audit_rate)
+
+    primary_group = (
+        str(runtime_topology["PRIMARY"]["independence_group"])
+        if runtime_topology is not None else primary_provider.identity().underlying_family
+    )
+    blind_group = (
+        str(runtime_topology["BLIND_RECALL"]["independence_group"])
+        if runtime_topology is not None else blind_provider.identity().underlying_family
+    )
+    cold_group = (
+        str(runtime_topology["COLD_AUDIT"]["independence_group"])
+        if runtime_topology is not None and "COLD_AUDIT" in runtime_topology
+        else (cold_audit_provider.identity().underlying_family if cold_audit_provider is not None else None)
+    )
+
     semantic_cold = None
     if cold_audit_provider is not None and cold_audit_provider.is_empirical_semantic_provider():
         semantic_cold = run_semantic_cold_audit(
             cold_audit_provider, union, units, rate=cold_audit_rate, run_id=run_id,
             primary_family=primary_provider.identity().underlying_family,
             blind_family=blind_provider.identity().underlying_family,
+            primary_independence_group=primary_group,
+            blind_independence_group=blind_group,
+            auditor_independence_group=cold_group,
             concurrency=max(1, cold_concurrency),
         )
 
@@ -371,7 +410,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
 
     integrity = _candidate_integrity(union, units)
     semantic_empirical = primary_provider.is_empirical_semantic_provider() and blind_provider.is_empirical_semantic_provider()
-    registry = load_registry(project_root / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json")
+    registry = runtime_registry
     benchmark_version = registry.get("benchmark_version", "UNKNOWN")
     def role_certified(provider, role):
         ident = provider.identity()
@@ -384,7 +423,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     primary_cert = role_certified(primary_provider, "PRIMARY")
     blind_cert = role_certified(blind_provider, "BLIND_RECALL")
     cold_cert = role_certified(cold_audit_provider, "COLD_AUDIT") if cold_audit_provider is not None else False
-    independent = primary_provider.identity().underlying_family != blind_provider.identity().underlying_family
+    independent = bool(primary_group and blind_group and primary_group != blind_group)
     unresolved = [r for r in routes if r["action"] != "LOCAL_PRECISION_COMPLETE"]
     table_visual_unresolved = [r for r in routes if any(x.startswith(("TABLE_BINDING", "IMAGE_AVAILABLE")) for x in r["unresolved_flags"])]
     cross_unresolved = [r for r in routes if any(x.startswith("CROSS_PAGE") for x in r["unresolved_flags"])]
@@ -410,7 +449,11 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     independence_gate = Gate(
         "INDEPENDENCE",
         GateResult.PASS.value if independent else (GateResult.BLOCKED_EXTERNAL.value if not semantic_empirical else GateResult.FAIL_REVIEW_REQUIRED.value),
-        f"primary_family={primary_provider.identity().underlying_family};blind_family={blind_provider.identity().underlying_family}",
+        (
+            f"primary_group={primary_group};blind_group={blind_group};"
+            f"primary_family={primary_provider.identity().underlying_family};"
+            f"blind_family={blind_provider.identity().underlying_family}"
+        ),
     )
     if not semantic_empirical:
         cold_gate = Gate(
@@ -425,7 +468,11 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     elif semantic_cold["status"] == "FAIL_INDEPENDENCE":
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.FAIL_REVIEW_REQUIRED.value,
-            f"Semantic cold audit ran but auditor family '{semantic_cold['auditor_identity']['underlying_family']}' is not independent of primary/blind families; reduced independence is recorded, not waived.",
+            (
+                f"Semantic cold audit ran but auditor independence group "
+                f"'{semantic_cold.get('auditor_independence_group')}' is not independent of "
+                f"primary/blind groups; reduced independence is recorded, not waived."
+            ),
         )
     elif semantic_cold["status"] == "PASS" and not cold_cert:
         cold_gate = Gate(
@@ -435,7 +482,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     elif semantic_cold["status"] == "PASS":
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.PASS.value,
-            f"Certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by {semantic_cold['auditor_identity']['underlying_family']} auditor, zero disagreements/errors.",
+            f"Certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by independence group {semantic_cold.get('auditor_independence_group')}, zero disagreements/errors.",
         )
     else:
         cold_gate = Gate(
@@ -491,6 +538,11 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         "blind_concurrency": blind_limit,
         "cold_concurrency": max(1, cold_concurrency),
         "provider_telemetry": _provider_telemetry(worker_receipts),
+        "provider_independence": {
+            "primary_group": primary_group,
+            "blind_group": blind_group,
+            "cold_group": cold_group,
+        },
         "source_unit_count": len(units),
         "primary_candidate_count": len(primary_candidates),
         "blind_candidate_count": len(blind_candidates),
