@@ -35,6 +35,17 @@ class BuildIntegrityTests(unittest.TestCase):
             v=verify_build(root,cert)
             self.assertFalse(v["ok"]);self.assertTrue(any("uncertified_files_added" in x for x in v["errors"]))
 
+    def test_validation_harness_mutation_invalidates_certification(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);(root/"hermes_factory").mkdir();(root/"hermes_factory/x.py").write_text("A=1\n");(root/"VERSION").write_text("x\n")
+            (root/"validation").mkdir();harness=root/"validation/owner_real_validation.py";harness.write_text("SAFE=True\n")
+            report=root/"test.json";report.write_text(json.dumps({"overall":"PASS"}));cert=root/"cert.json";certify_build(root,cert,test_report_path=report)
+            self.assertTrue(verify_build(root,cert)["ok"])
+            harness.write_text("SAFE=False\n")
+            v=verify_build(root,cert)
+            self.assertFalse(v["ok"])
+            self.assertTrue(any("certified_files_changed:validation/owner_real_validation.py" in x for x in v["errors"]))
+
 
 class RuntimeLockTests(unittest.TestCase):
     def test_runtime_lock_roundtrip(self):
