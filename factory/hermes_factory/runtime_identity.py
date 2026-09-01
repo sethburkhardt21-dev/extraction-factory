@@ -11,13 +11,14 @@ def resolve_registered_provider_identity(
     provider: SemanticProvider,
     label: str,
     *,
-    require_empirical: bool = True,
+    require_empirical: bool = False,
 ) -> Dict[str, Any]:
     """Resolve one runtime provider through the protected model registry.
 
     Runtime provider self-claims are not authority. Provider/model identity,
     underlying family, empirical status, and independence group must agree with
-    the protected registry before a real semantic call is allowed.
+    the protected registry before dispatch. Non-empirical fixtures may be
+    resolved for mechanical validation, but cannot satisfy semantic readiness.
     """
     observed = provider.identity()
     try:
@@ -54,40 +55,57 @@ def resolve_runtime_topology(
     primary_provider: SemanticProvider,
     blind_provider: SemanticProvider,
     cold_audit_provider: SemanticProvider | None = None,
-    *,
-    require_empirical: bool = True,
 ) -> Dict[str, Dict[str, Any]]:
-    """Resolve and validate runtime model independence before inference.
+    """Resolve and validate runtime model topology before inference.
 
-    PRIMARY and BLIND_RECALL must be from distinct protected independence groups.
-    A configured COLD_AUDIT model must be distinct from both. This intentionally
-    uses `independence_group`, not `underlying_family`: related fine-tunes may use
-    different family labels while still sharing the same benchmark-independence
-    group.
+    Rules:
+    - every configured provider must match protected registry identity metadata;
+    - PRIMARY and BLIND_RECALL must either both be non-empirical fixtures (mechanical
+      validation only) or both be empirical semantic providers;
+    - empirical PRIMARY and BLIND_RECALL must use distinct protected
+      `independence_group` values;
+    - an empirical COLD_AUDIT provider must be group-distinct from empirical
+      PRIMARY and BLIND_RECALL;
+    - a non-empirical cold fixture may accompany an all-fixture mechanical run but
+      never upgrades semantic readiness.
+
+    This intentionally uses `independence_group`, not `underlying_family`: related
+    fine-tunes may use different family labels while sharing one independence group.
     """
     resolved = {
         "PRIMARY": resolve_registered_provider_identity(
-            registry, primary_provider, "PRIMARY", require_empirical=require_empirical
+            registry, primary_provider, "PRIMARY", require_empirical=False
         ),
         "BLIND_RECALL": resolve_registered_provider_identity(
-            registry, blind_provider, "BLIND_RECALL", require_empirical=require_empirical
+            registry, blind_provider, "BLIND_RECALL", require_empirical=False
         ),
     }
     if cold_audit_provider is not None:
         resolved["COLD_AUDIT"] = resolve_registered_provider_identity(
-            registry, cold_audit_provider, "COLD_AUDIT", require_empirical=require_empirical
+            registry, cold_audit_provider, "COLD_AUDIT", require_empirical=False
+        )
+
+    primary_empirical = bool(resolved["PRIMARY"]["empirical_semantic_model"])
+    blind_empirical = bool(resolved["BLIND_RECALL"]["empirical_semantic_model"])
+    if primary_empirical != blind_empirical:
+        raise ValueError(
+            "primary_blind_empirical_status_mixed:"
+            f"PRIMARY={primary_empirical}:BLIND_RECALL={blind_empirical}"
         )
 
     primary_group = str(resolved["PRIMARY"]["independence_group"])
     blind_group = str(resolved["BLIND_RECALL"]["independence_group"])
-    if primary_group == blind_group:
+    if primary_empirical and primary_group == blind_group:
         raise ValueError(
             f"primary_blind_independence_group_collision:{primary_group}"
         )
 
     if "COLD_AUDIT" in resolved:
+        cold_empirical = bool(resolved["COLD_AUDIT"]["empirical_semantic_model"])
         cold_group = str(resolved["COLD_AUDIT"]["independence_group"])
-        if cold_group in {primary_group, blind_group}:
+        if cold_empirical and not primary_empirical:
+            raise ValueError("empirical_cold_audit_with_nonempirical_producers")
+        if primary_empirical and cold_empirical and cold_group in {primary_group, blind_group}:
             raise ValueError(
                 f"cold_audit_independence_group_collision:{cold_group}"
             )
