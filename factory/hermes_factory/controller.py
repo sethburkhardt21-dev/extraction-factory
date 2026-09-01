@@ -81,9 +81,84 @@ def _work_id(role: str, unit_id: str) -> str:
     return "WORK-" + sha256_text(role + "|" + unit_id)[:24]
 
 
+def _provider_is_local(provider: SemanticProvider) -> bool:
+    """Return True only when the provider explicitly declares no network requirement."""
+    try:
+        return provider.capabilities().get("network_required") is False
+    except Exception:
+        return False
+
+
+def _resolved_schedule(primary_provider: SemanticProvider, blind_provider: SemanticProvider, requested: str) -> str:
+    requested = (requested or "AUTO").upper()
+    if requested not in {"AUTO", "PARALLEL", "PHASED"}:
+        raise ValueError(f"invalid_provider_schedule:{requested}")
+    if requested != "AUTO":
+        return requested
+    p = primary_provider.identity()
+    b = blind_provider.identity()
+    if (_provider_is_local(primary_provider) and _provider_is_local(blind_provider)
+            and (p.model_alias != b.model_alias or p.underlying_family != b.underlying_family)):
+        return "PHASED"
+    return "PARALLEL"
+
+
+def _effective_concurrency(provider: SemanticProvider, requested: int | None, workers: int) -> int:
+    if requested is not None:
+        if requested < 1:
+            raise ValueError("provider_concurrency_must_be_positive")
+        return requested
+    return 1 if _provider_is_local(provider) else max(1, workers)
+
+
+def _provider_telemetry(receipts: List[Dict[str, Any]]) -> Dict[str, Any]:
+    out: Dict[str, Any] = {}
+    for role in ("PRIMARY", "BLIND_RECALL"):
+        rows = [r for r in receipts if r.get("role") == role]
+        provider_seconds = []
+        controller_seconds = []
+        provider_attempts = 0
+        for r in rows:
+            pr = r.get("provider_receipt") or {}
+            if isinstance(pr.get("duration_seconds"), (int, float)):
+                provider_seconds.append(float(pr["duration_seconds"]))
+            if isinstance(r.get("controller_duration_seconds"), (int, float)):
+                controller_seconds.append(float(r["controller_duration_seconds"]))
+            if isinstance(pr.get("attempts"), int):
+                provider_attempts += pr["attempts"]
+        provider_seconds.sort()
+        out[role] = {
+            "calls": len(rows),
+            "provider_attempts": provider_attempts or None,
+            "provider_seconds_total": round(sum(provider_seconds), 3),
+            "provider_seconds_median": round(provider_seconds[len(provider_seconds)//2], 3) if provider_seconds else None,
+            "provider_seconds_p95": round(provider_seconds[min(len(provider_seconds)-1, int((len(provider_seconds)-1)*0.95))], 3) if provider_seconds else None,
+            "controller_seconds_total": round(sum(controller_seconds), 3),
+        }
+    return out
+
+
+def _dispatch_role(ledger_path: Path, staging_root: Path, provider: SemanticProvider, units: List[SourceUnit],
+                   role: str, risks: Dict[str, Dict[str, Any]], concurrency: int) -> Tuple[List[AssertionCandidate], List[Dict[str, Any]]]:
+    candidates: List[AssertionCandidate] = []
+    receipts: List[Dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=max(1, concurrency), thread_name_prefix=f"hermes-{role.lower()}") as pool:
+        future_map = {
+            pool.submit(_execute_semantic_work, ledger_path, staging_root, provider, unit, role,
+                        str(risks[unit.source_unit_id]["source_class"])): unit.source_unit_id
+            for unit in units
+        }
+        for fut in as_completed(future_map):
+            row_candidates, receipt = fut.result()
+            candidates.extend(row_candidates)
+            receipts.append(receipt)
+    return candidates, receipts
+
+
 def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: SemanticProvider, unit: SourceUnit,
                            role: str, source_class: str, max_attempts: int = 2) -> Tuple[List[AssertionCandidate], Dict[str, Any]]:
     work_id = _work_id(role, unit.source_unit_id)
+    started = time.perf_counter()
     last_error = None
     for attempt in range(1, max_attempts + 1):
         ledger = Ledger(ledger_path)
@@ -107,6 +182,7 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
             else:
                 raise ValueError("unknown_semantic_role")
             receipt["attempt"] = attempt
+            receipt["controller_duration_seconds"] = round(time.perf_counter() - started, 3)
             payload = "".join(json.dumps(c.to_dict(), ensure_ascii=False, sort_keys=True) + "\n" for c in candidates)
             staged = stage_artifact(staging_root, work_id=work_id, run_id=run_id,
                                     files={"candidates.jsonl": payload, "worker_receipt.json": receipt})
@@ -134,11 +210,14 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
                 raise
     raise RuntimeError(f"semantic_work_failed:{last_error}")
 
+
 def run_factory(*, project_root: Path, source_units_path: Path, primary_provider: SemanticProvider,
                 blind_provider: SemanticProvider, output_root: Path, source_pdf: Path | None = None,
                 source_expected_sha256: str | None = None, database_09d: Path | None = None,
                 cold_audit_rate: float = 0.25, mode: str = "OFFLINE_FIXTURE", execution_mode: str = "LOCAL_ONLY",
-                workers: int = 4, cold_audit_provider: SemanticProvider | None = None) -> Dict[str, Any]:
+                workers: int = 4, cold_audit_provider: SemanticProvider | None = None,
+                provider_schedule: str = "AUTO", primary_concurrency: int | None = None,
+                blind_concurrency: int | None = None, cold_concurrency: int = 1) -> Dict[str, Any]:
     project_root = Path(project_root)
     output_root = Path(output_root)
     output_root.mkdir(parents=True, exist_ok=True)
@@ -168,6 +247,24 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     build_check = verify_build(project_root, project_root / "CURRENT" / "CERTIFIED_BUILD_MANIFEST.json")
     runtime_check = verify_runtime_lock(project_root / "CURRENT" / "RUNTIME_LOCK.json")
 
+    if mode != "OFFLINE_FIXTURE":
+        predispatch_failures = []
+        if source_hash_result != GateResult.PASS.value:
+            predispatch_failures.append({"gate": "SOURCE_HASH", "result": source_hash_result, "detail": source_hash_detail})
+        if build_check.get("result") != GateResult.PASS.value:
+            predispatch_failures.append({"gate": "BUILD_INTEGRITY", "result": build_check.get("result"), "detail": build_check.get("errors", [])})
+        if runtime_check.get("result") != GateResult.PASS.value:
+            predispatch_failures.append({"gate": "RUNTIME_LOCK", "result": runtime_check.get("result"), "detail": runtime_check.get("errors", [])})
+        if predispatch_failures:
+            failure = {
+                "status": "NOT_READY",
+                "provider_calls_started": 0,
+                "fail_closed_stage": "PRE_PROVIDER_DISPATCH",
+                "failures": predispatch_failures,
+            }
+            _write_json(run_dir / "VALIDATION" / "predispatch_failure.json", failure)
+            raise RuntimeError("predispatch_gate_failure:" + json.dumps(failure, sort_keys=True))
+
     enforce_provider_network_policy(execution_mode, primary_provider)
     enforce_provider_network_policy(execution_mode, blind_provider)
     if cold_audit_provider is not None:
@@ -181,7 +278,6 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     risks = {u.source_unit_id: classify_source_unit(u) for u in units}
     _write_json(run_dir / "SOURCE" / "risk_classification.json", risks)
 
-    # Register the complete semantic work graph deterministically before dispatch.
     tasks = []
     for unit in units:
         for role in ("PRIMARY", "BLIND_RECALL"):
@@ -192,22 +288,45 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
                                       "source_class": risks[unit.source_unit_id]["source_class"]})
             tasks.append((unit, role))
 
-    # Primary and blind work may execute concurrently because blind packets are source-only by construction.
-    with ThreadPoolExecutor(max_workers=max(1, workers), thread_name_prefix="hermes-worker") as pool:
-        future_map = {}
-        for unit, role in tasks:
-            provider = primary_provider if role == "PRIMARY" else blind_provider
-            fut = pool.submit(_execute_semantic_work, ledger_path, run_dir / "staging", provider, unit, role,
-                              str(risks[unit.source_unit_id]["source_class"]))
-            future_map[fut] = (unit.source_unit_id, role)
-        for fut in as_completed(future_map):
-            _, role = future_map[fut]
-            candidates, receipt = fut.result()
-            if role == "PRIMARY":
-                primary_candidates.extend(candidates)
-            else:
-                blind_candidates.extend(candidates)
-            worker_receipts.append(receipt)
+    resolved_schedule = _resolved_schedule(primary_provider, blind_provider, provider_schedule)
+    primary_limit = _effective_concurrency(primary_provider, primary_concurrency, workers)
+    blind_limit = _effective_concurrency(blind_provider, blind_concurrency, workers)
+    _write_json(run_dir / "PROVENANCE" / "provider_schedule.json", {
+        "requested": provider_schedule.upper(),
+        "resolved": resolved_schedule,
+        "primary_concurrency": primary_limit,
+        "blind_concurrency": blind_limit,
+        "reason": (
+            "different local models are phased to prevent accelerator model-residency thrash"
+            if resolved_schedule == "PHASED" and provider_schedule.upper() == "AUTO" else
+            "explicit operator schedule" if provider_schedule.upper() != "AUTO" else
+            "providers can share parallel dispatch without cross-model local residency thrash"
+        ),
+    })
+
+    if resolved_schedule == "PHASED":
+        primary_candidates, primary_receipts = _dispatch_role(
+            ledger_path, run_dir / "staging", primary_provider, units, "PRIMARY", risks, primary_limit)
+        worker_receipts.extend(primary_receipts)
+        blind_candidates, blind_receipts = _dispatch_role(
+            ledger_path, run_dir / "staging", blind_provider, units, "BLIND_RECALL", risks, blind_limit)
+        worker_receipts.extend(blind_receipts)
+    else:
+        with ThreadPoolExecutor(max_workers=max(1, workers), thread_name_prefix="hermes-worker") as pool:
+            future_map = {}
+            for unit, role in tasks:
+                provider = primary_provider if role == "PRIMARY" else blind_provider
+                fut = pool.submit(_execute_semantic_work, ledger_path, run_dir / "staging", provider, unit, role,
+                                  str(risks[unit.source_unit_id]["source_class"]))
+                future_map[fut] = role
+            for fut in as_completed(future_map):
+                role = future_map[fut]
+                row_candidates, receipt = fut.result()
+                if role == "PRIMARY":
+                    primary_candidates.extend(row_candidates)
+                else:
+                    blind_candidates.extend(row_candidates)
+                worker_receipts.append(receipt)
 
     union = deterministic_union(primary_candidates, blind_candidates)
     families = build_evidence_families(union)
@@ -221,6 +340,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             cold_audit_provider, union, units, rate=cold_audit_rate, run_id=run_id,
             primary_family=primary_provider.identity().underlying_family,
             blind_family=blind_provider.identity().underlying_family,
+            concurrency=max(1, cold_concurrency),
         )
 
     numerics = [x for u in units for x in numeric_inventory(u)]
@@ -263,6 +383,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         return True
     primary_cert = role_certified(primary_provider, "PRIMARY")
     blind_cert = role_certified(blind_provider, "BLIND_RECALL")
+    cold_cert = role_certified(cold_audit_provider, "COLD_AUDIT") if cold_audit_provider is not None else False
     independent = primary_provider.identity().underlying_family != blind_provider.identity().underlying_family
     unresolved = [r for r in routes if r["action"] != "LOCAL_PRECISION_COMPLETE"]
     table_visual_unresolved = [r for r in routes if any(x.startswith(("TABLE_BINDING", "IMAGE_AVAILABLE")) for x in r["unresolved_flags"])]
@@ -306,10 +427,15 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             "COLD_AUDIT_POLICY", GateResult.FAIL_REVIEW_REQUIRED.value,
             f"Semantic cold audit ran but auditor family '{semantic_cold['auditor_identity']['underlying_family']}' is not independent of primary/blind families; reduced independence is recorded, not waived.",
         )
+    elif semantic_cold["status"] == "PASS" and not cold_cert:
+        cold_gate = Gate(
+            "COLD_AUDIT_POLICY", GateResult.BLOCKED_EXTERNAL.value,
+            f"Independent semantic cold audit ran cleanly, but auditor role {semantic_cold['auditor_identity']['provider']}|{semantic_cold['auditor_identity']['model_alias']} is not certified for COLD_AUDIT on this benchmark/source-risk scope.",
+        )
     elif semantic_cold["status"] == "PASS":
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.PASS.value,
-            f"Independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by {semantic_cold['auditor_identity']['underlying_family']} auditor, zero disagreements/errors.",
+            f"Certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by {semantic_cold['auditor_identity']['underlying_family']} auditor, zero disagreements/errors.",
         )
     else:
         cold_gate = Gate(
@@ -360,6 +486,11 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         "mode": mode,
         "execution_mode": execution_mode,
         "workers": workers,
+        "provider_schedule": resolved_schedule,
+        "primary_concurrency": primary_limit,
+        "blind_concurrency": blind_limit,
+        "cold_concurrency": max(1, cold_concurrency),
+        "provider_telemetry": _provider_telemetry(worker_receipts),
         "source_unit_count": len(units),
         "primary_candidate_count": len(primary_candidates),
         "blind_candidate_count": len(blind_candidates),
@@ -376,7 +507,11 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         "semantic_cold_audit_status": semantic_cold["status"] if semantic_cold else None,
         "semantic_empirical": semantic_empirical,
         "semantic_quality_measured": False,
-        "claim_boundary": "Offline fixture runs prove mechanics only; no semantic precision/recall claim is made without a source-first gold benchmark and certified real model providers.",
+        "claim_boundary": (
+            "Real semantic providers executed, but precision/recall is not certified until scored against frozen source-first gold."
+            if semantic_empirical else
+            "Offline fixture execution proves mechanics only; fixture output is not empirical semantic evidence."
+        ),
     }
     _write_json(run_dir / "RUN_SUMMARY.json", summary)
     (run_dir / "README_START_HERE.md").write_text(
@@ -385,9 +520,8 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         encoding="utf-8",
     )
 
-    # First package proves packaging mechanics; then final readiness records PACKAGE_INTEGRITY=PASS and is repackaged.
     temp_zip = output_root / (run_id + "_PREPACKAGE.zip")
-    temp_package = build_offline_package(run_dir, temp_zip, package_status=prelim["status"])
+    build_offline_package(run_dir, temp_zip, package_status=prelim["status"])
     temp_zip.unlink(missing_ok=True)
     for gate in gates:
         if gate.name == "PACKAGE_INTEGRITY":
