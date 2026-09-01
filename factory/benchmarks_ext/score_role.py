@@ -3,8 +3,8 @@
 Scoring is fail-closed and source-bound. The scorer verifies the gold manifest,
 source-unit bytes, gold-reference bytes, candidate worker identity, candidate
 source identity, and exact evidence substrings before computing metrics. A score
-report contains hashes for every benchmark input so certification can recompute
-and compare the report instead of trusting hand-edited JSON.
+report contains paths and hashes for every benchmark input so certification can
+recompute and compare it instead of trusting hand-edited JSON.
 
 E3 remains NOT_MEASURED. E4 remains a mechanical cue-injection proxy.
 """
@@ -144,8 +144,29 @@ def load_source_units_verified(path: Path, manifest: dict) -> tuple[dict[str, So
     return by_id, measured
 
 
-def load_reference_verified(path: Path, manifest: dict,
+def _verify_gold_artifact_chain(manifest_path: Path, manifest: dict) -> None:
+    """Require complete adjudication and the raw artifacts committed by the gold manifest."""
+    if manifest.get("adjudication_complete") is not True or int(manifest.get("adjudication_error_count", -1)) != 0:
+        raise ValueError("gold_adjudication_not_complete")
+    root = Path(manifest_path).parent
+    requirements = [
+        ("raw_builder_A.jsonl", "raw_builder_a_sha256"),
+        ("raw_builder_B.jsonl", "raw_builder_b_sha256"),
+        ("adjudication_log.jsonl", "adjudication_log_sha256"),
+    ]
+    for filename, key in requirements:
+        path = root / filename
+        expected = str(manifest.get(key) or "")
+        if not path.exists() or not expected:
+            raise ValueError(f"gold_artifact_missing_or_unbound:{filename}")
+        measured = sha256_text(path.read_text(encoding="utf-8"))
+        if measured != expected:
+            raise ValueError(f"gold_artifact_hash_mismatch:{filename}")
+
+
+def load_reference_verified(path: Path, manifest_path: Path, manifest: dict,
                             source_by_id: dict[str, SourceUnit]) -> tuple[list[dict], str]:
+    _verify_gold_artifact_chain(manifest_path, manifest)
     path = Path(path)
     raw = path.read_text(encoding="utf-8")
     measured = sha256_text(raw)
@@ -156,10 +177,8 @@ def load_reference_verified(path: Path, manifest: dict,
     if not rows:
         raise ValueError("gold_reference_empty")
     builder_map = {
-        "A": (str((manifest.get("builder_a") or {}).get("backend") or "").lower(),
-              str((manifest.get("builder_a") or {}).get("model") or "")),
-        "B": (str((manifest.get("builder_b") or {}).get("backend") or "").lower(),
-              str((manifest.get("builder_b") or {}).get("model") or "")),
+        "A": (str((manifest.get("builder_a") or {}).get("backend") or "").lower(), str((manifest.get("builder_a") or {}).get("model") or "")),
+        "B": (str((manifest.get("builder_b") or {}).get("backend") or "").lower(), str((manifest.get("builder_b") or {}).get("model") or "")),
     }
     for idx, row in enumerate(rows):
         uid = str(row.get("source_unit_id") or "")
@@ -184,8 +203,7 @@ def load_reference_verified(path: Path, manifest: dict,
     return rows, measured
 
 
-def validate_candidates_against_source(candidates: list[dict], source_by_id: dict[str, SourceUnit],
-                                       *, label: str) -> None:
+def validate_candidates_against_source(candidates: list[dict], source_by_id: dict[str, SourceUnit], *, label: str) -> None:
     if not candidates:
         raise ValueError(f"{label}_candidate_file_empty")
     seen_ids: set[str] = set()
@@ -218,51 +236,35 @@ def score(candidates: list[dict], gold: list[dict], units_in_scope: set[str],
     matched_cands = 0
     by_unit_c: dict[str, list[dict]] = defaultdict(list)
     by_unit_g: dict[str, list[dict]] = defaultdict(list)
-    for c in cands:
-        by_unit_c[c["source_unit_id"]].append(c)
-    for g in gold_rows:
-        by_unit_g[g["source_unit_id"]].append(g)
+    for c in cands: by_unit_c[c["source_unit_id"]].append(c)
+    for g in gold_rows: by_unit_g[g["source_unit_id"]].append(g)
     compound = 0
     missed_gold_rows: list[dict] = []
     for unit_id in sorted(set(by_unit_c) | set(by_unit_g)):
         uc, ug = by_unit_c.get(unit_id, []), by_unit_g.get(unit_id, [])
         pairs, un_c, un_g = greedy_align(uc, ug, threshold=MATCH_THRESHOLD)
-        matched_gold += len(pairs)
-        matched_cands += len(pairs)
+        matched_gold += len(pairs); matched_cands += len(pairs)
         missed_gold_rows.extend(ug[j] for j in un_g)
         compound += sum(1 for n in multi_match_counts(uc, ug, threshold=MATCH_THRESHOLD) if n >= 2)
-        per_unit.append({"source_unit_id": unit_id, "candidates": len(uc), "gold": len(ug),
-                         "matched": len(pairs), "unmatched_candidates": len(un_c), "missed_gold": len(un_g)})
+        per_unit.append({"source_unit_id": unit_id, "candidates": len(uc), "gold": len(ug), "matched": len(pairs), "unmatched_candidates": len(un_c), "missed_gold": len(un_g)})
 
-    evidence_ok = sum(
-        1 for c in cands
-        if isinstance(c.get("evidence"), str)
-        and c["source_unit_id"] in source_by_id
-        and c["evidence"] in source_by_id[c["source_unit_id"]].content
-    )
-    qual_applicable = 0
-    qual_preserved = 0
-    num_applicable = 0
-    num_preserved = 0
+    evidence_ok = sum(1 for c in cands if c["evidence"] in source_by_id[c["source_unit_id"]].content)
+    qual_applicable = qual_preserved = num_applicable = num_preserved = 0
     cue_injections = []
     for c in cands:
         ev, prop = c.get("evidence") or "", c.get("proposition") or ""
         ev_quals = _qual_cues(ev)
         if ev_quals:
             qual_applicable += 1
-            if all(q in prop.lower() for q in ev_quals):
-                qual_preserved += 1
+            if all(q in prop.lower() for q in ev_quals): qual_preserved += 1
         ev_nums = _numbers(ev)
         if ev_nums:
             num_applicable += 1
-            if all(n in _numbers(prop) for n in ev_nums):
-                num_preserved += 1
+            if all(n in _numbers(prop) for n in ev_nums): num_preserved += 1
         injected_numbers = _numbers(prop) - _numbers(ev)
         injected_rels = _rel_cues(prop) - _rel_cues(ev)
         if injected_numbers or injected_rels:
-            cue_injections.append({"candidate_id": c.get("candidate_id"),
-                                   "injected_numbers": sorted(injected_numbers),
-                                   "injected_relationship_cues": sorted(injected_rels)})
+            cue_injections.append({"candidate_id": c.get("candidate_id"), "injected_numbers": sorted(injected_numbers), "injected_relationship_cues": sorted(injected_rels)})
 
     result = {
         "semantic_unit_recall": _ratio(matched_gold, len(gold_rows)),
@@ -279,12 +281,10 @@ def score(candidates: list[dict], gold: list[dict], units_in_scope: set[str],
         "per_unit": per_unit,
         "alignment_threshold": MATCH_THRESHOLD,
     }
-
     if primary_candidates is not None:
         prim = [c for c in primary_candidates if c["source_unit_id"] in units_in_scope]
         by_unit_p: dict[str, list[dict]] = defaultdict(list)
-        for p in prim:
-            by_unit_p[p["source_unit_id"]].append(p)
+        for p in prim: by_unit_p[p["source_unit_id"]].append(p)
         primary_missed: list[dict] = []
         for unit_id, ug in by_unit_g.items():
             _, _, un_g = greedy_align(by_unit_p.get(unit_id, []), ug, threshold=MATCH_THRESHOLD)
@@ -292,128 +292,97 @@ def score(candidates: list[dict], gold: list[dict], units_in_scope: set[str],
         recovered = 0
         for unit_id in {g["source_unit_id"] for g in primary_missed}:
             miss_u = [g for g in primary_missed if g["source_unit_id"] == unit_id]
-            pairs, _, _ = greedy_align(by_unit_c.get(unit_id, []), miss_u, threshold=MATCH_THRESHOLD)
-            recovered += len(pairs)
+            pairs, _, _ = greedy_align(by_unit_c.get(unit_id, []), miss_u, threshold=MATCH_THRESHOLD); recovered += len(pairs)
         new_cands: list[dict] = []
         for unit_id, uc in by_unit_c.items():
-            _, un_c, _ = greedy_align(uc, by_unit_p.get(unit_id, []), threshold=DUP_THRESHOLD)
-            new_cands.extend(uc[i] for i in un_c)
+            _, un_c, _ = greedy_align(uc, by_unit_p.get(unit_id, []), threshold=DUP_THRESHOLD); new_cands.extend(uc[i] for i in un_c)
         new_matching_gold = 0
         for unit_id in {c["source_unit_id"] for c in new_cands}:
             nc_u = [c for c in new_cands if c["source_unit_id"] == unit_id]
-            pairs, _, _ = greedy_align(nc_u, by_unit_g.get(unit_id, []), threshold=MATCH_THRESHOLD)
-            new_matching_gold += len(pairs)
+            pairs, _, _ = greedy_align(nc_u, by_unit_g.get(unit_id, []), threshold=MATCH_THRESHOLD); new_matching_gold += len(pairs)
         result["blind_omission_recovery"] = _ratio(recovered, len(primary_missed))
         result["blind_useful_new_candidate_precision"] = _ratio(new_matching_gold, len(new_cands))
-        result["blind_interpretation_note"] = (
-            "Seeded-omission set = gold assertions the primary pass actually missed "
-            "(no synthetic seeding); useful-new = blind candidates not duplicating primary (>=0.6) that match gold."
-        )
+        result["blind_interpretation_note"] = "Seeded-omission set = gold assertions the primary pass actually missed; useful-new = blind candidates not duplicating primary (>=0.6) that match gold."
     return result
+
+
+def infer_source_units_path(candidates_path: Path) -> Path:
+    path = Path(candidates_path).resolve()
+    if path.parent.name == "ASSERTIONS":
+        candidate = path.parent.parent / "SOURCE" / "source_units.jsonl"
+        if candidate.exists(): return candidate
+    raise ValueError("source_units_not_supplied_and_not_inferable_from_run_candidate_path")
 
 
 def build_score_report(*, candidates_path: Path, reference_path: Path, gold_manifest_path: Path,
                        source_units_path: Path, registry_path: Path, role: str, model: str,
-                       units_in_scope: set[str] | None,
-                       primary_candidates_path: Path | None = None) -> dict[str, Any]:
-    manifest = json.loads(Path(gold_manifest_path).read_text(encoding="utf-8"))
-    if manifest.get("benchmark_version") != "MACHINES_P0299_P0301_SOURCE_FIRST_v1":
-        raise ValueError(f"benchmark_version_invalid:{manifest.get('benchmark_version')}")
-    if manifest.get("gold_label") != "MECHANICALLY_CHECKED":
-        raise ValueError(f"gold_label_invalid:{manifest.get('gold_label')}")
-    source_by_id, source_units_sha = load_source_units_verified(Path(source_units_path), manifest)
-    gold, reference_sha = load_reference_verified(Path(reference_path), manifest, source_by_id)
-    candidates = _load_jsonl(Path(candidates_path))
-    validate_candidates_against_source(candidates, source_by_id, label="scored")
-    registry = load_registry(Path(registry_path))
+                       units_in_scope: set[str] | None, primary_candidates_path: Path | None = None) -> dict[str, Any]:
+    candidates_path = Path(candidates_path).resolve(); reference_path = Path(reference_path).resolve()
+    gold_manifest_path = Path(gold_manifest_path).resolve(); source_units_path = Path(source_units_path).resolve()
+    registry_path = Path(registry_path).resolve(); primary_candidates_path = Path(primary_candidates_path).resolve() if primary_candidates_path else None
+    manifest = json.loads(gold_manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("benchmark_version") != "MACHINES_P0299_P0301_SOURCE_FIRST_v1": raise ValueError(f"benchmark_version_invalid:{manifest.get('benchmark_version')}")
+    if manifest.get("gold_label") != "MECHANICALLY_CHECKED": raise ValueError(f"gold_label_invalid:{manifest.get('gold_label')}")
+    source_by_id, source_units_sha = load_source_units_verified(source_units_path, manifest)
+    gold, reference_sha = load_reference_verified(reference_path, gold_manifest_path, manifest, source_by_id)
+    candidates = _load_jsonl(candidates_path); validate_candidates_against_source(candidates, source_by_id, label="scored")
+    registry = load_registry(registry_path)
     scored_identity = validate_scoring_independence(candidates, manifest, registry, expected_model=model, label="scored")
-
     scope = set(units_in_scope) if units_in_scope is not None else {g["source_unit_id"] for g in gold}
     unknown_scope = sorted(scope - set(source_by_id))
-    if unknown_scope:
-        raise ValueError(f"scope_contains_unknown_source_units:{unknown_scope}")
-    if not scope:
-        raise ValueError("scope_empty")
+    if unknown_scope: raise ValueError(f"scope_contains_unknown_source_units:{unknown_scope}")
+    if not scope: raise ValueError("scope_empty")
 
-    primary = None
-    primary_identity = None
-    primary_sha = None
+    primary = None; primary_identity = None; primary_sha = None
     if primary_candidates_path is not None:
-        primary = _load_jsonl(Path(primary_candidates_path))
-        validate_candidates_against_source(primary, source_by_id, label="primary_baseline")
+        primary = _load_jsonl(primary_candidates_path); validate_candidates_against_source(primary, source_by_id, label="primary_baseline")
         primary_identity = validate_scoring_independence(primary, manifest, registry, label="primary_baseline")
-        primary_sha = sha256_file(Path(primary_candidates_path))
-    if role == "BLIND_RECALL" and primary is None:
-        raise ValueError("BLIND_RECALL_requires_primary_candidates")
-    if role == "BLIND_RECALL" and primary_identity is not None and (
-        str(primary_identity.get("independence_group")) == str(scored_identity.get("independence_group"))
-    ):
-        raise ValueError(
-            f"blind_and_primary_share_independence_group:{scored_identity.get('independence_group')}"
-        )
+        primary_sha = sha256_file(primary_candidates_path)
+    if role == "BLIND_RECALL" and primary is None: raise ValueError("BLIND_RECALL_requires_primary_candidates")
+    if role == "BLIND_RECALL" and primary_identity is not None and str(primary_identity.get("independence_group")) == str(scored_identity.get("independence_group")):
+        raise ValueError(f"blind_and_primary_share_independence_group:{scored_identity.get('independence_group')}")
 
     return {
         "score_schema_version": SCORE_SCHEMA,
-        "role": role,
-        "model": model,
-        "scored_identity": scored_identity,
+        "role": role, "model": model, "scored_identity": scored_identity,
         "primary_baseline_identity": primary_identity,
         "gold_construction_independence_groups": manifest.get("gold_construction_independence_groups"),
-        "benchmark_version": manifest["benchmark_version"],
-        "gold_label": manifest["gold_label"],
-        "reference_sha256": reference_sha,
-        "source_units_sha256": source_units_sha,
-        "candidate_file_sha256": sha256_file(Path(candidates_path)),
-        "primary_candidate_file_sha256": primary_sha,
-        "gold_manifest_sha256": sha256_file(Path(gold_manifest_path)),
-        "registry_sha256": sha256_file(Path(registry_path)),
-        "units_in_scope": sorted(scope),
-        "benchmark_inputs_verified": True,
+        "benchmark_version": manifest["benchmark_version"], "gold_label": manifest["gold_label"],
+        "reference_sha256": reference_sha, "source_units_sha256": source_units_sha,
+        "candidate_file_sha256": sha256_file(candidates_path), "primary_candidate_file_sha256": primary_sha,
+        "gold_manifest_sha256": sha256_file(gold_manifest_path), "registry_sha256": sha256_file(registry_path),
+        "units_in_scope": sorted(scope), "benchmark_inputs_verified": True,
+        "input_paths": {
+            "candidates": str(candidates_path), "primary_candidates": str(primary_candidates_path) if primary_candidates_path else None,
+            "reference": str(reference_path), "gold_manifest": str(gold_manifest_path),
+            "source_units": str(source_units_path), "registry": str(registry_path),
+        },
         "metrics": score(candidates, gold, scope, primary, source_by_id),
     }
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="score_role")
-    parser.add_argument("--candidates", required=True)
-    parser.add_argument("--reference", required=True)
-    parser.add_argument("--gold-manifest", required=True)
-    parser.add_argument("--source-units", required=True, help="exact source_units.jsonl used to build gold")
-    parser.add_argument("--registry", default=str(DEFAULT_REGISTRY))
-    parser.add_argument("--role", required=True, choices=["PRIMARY", "BLIND_RECALL"])
-    parser.add_argument("--model", required=True)
-    parser.add_argument("--primary-candidates", help="required when scoring BLIND_RECALL")
-    parser.add_argument("--units", help="comma-separated unit ids in scope; default all gold units")
-    parser.add_argument("--out", required=True)
+    parser.add_argument("--candidates", required=True); parser.add_argument("--reference", required=True)
+    parser.add_argument("--gold-manifest", required=True); parser.add_argument("--source-units", help="exact source_units.jsonl; inferred from RUN/ASSERTIONS path when omitted")
+    parser.add_argument("--registry", default=str(DEFAULT_REGISTRY)); parser.add_argument("--role", required=True, choices=["PRIMARY", "BLIND_RECALL"])
+    parser.add_argument("--model", required=True); parser.add_argument("--primary-candidates")
+    parser.add_argument("--units", help="comma-separated source units in scope; default all gold units"); parser.add_argument("--out", required=True)
     args = parser.parse_args(argv)
-
     scope = set(args.units.split(",")) if args.units else None
     try:
+        source_units_path = Path(args.source_units) if args.source_units else infer_source_units_path(Path(args.candidates))
         report = build_score_report(
-            candidates_path=Path(args.candidates), reference_path=Path(args.reference),
-            gold_manifest_path=Path(args.gold_manifest), source_units_path=Path(args.source_units),
-            registry_path=Path(args.registry), role=args.role, model=args.model,
-            units_in_scope=scope,
-            primary_candidates_path=Path(args.primary_candidates) if args.primary_candidates else None,
+            candidates_path=Path(args.candidates), reference_path=Path(args.reference), gold_manifest_path=Path(args.gold_manifest),
+            source_units_path=source_units_path, registry_path=Path(args.registry), role=args.role, model=args.model,
+            units_in_scope=scope, primary_candidates_path=Path(args.primary_candidates) if args.primary_candidates else None,
         )
-    except (ValueError, KeyError, json.JSONDecodeError) as exc:
-        print(f"refusing invalid/unbound benchmark score: {exc}", file=sys.stderr)
-        return 4
-
+    except (ValueError, KeyError, json.JSONDecodeError, OSError) as exc:
+        print(f"refusing invalid/unbound benchmark score: {exc}", file=sys.stderr); return 4
     Path(args.out).write_text(json.dumps(report, indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8")
-    compact = {k: v for k, v in report["metrics"].items()
-               if k in ("semantic_unit_recall", "semantic_unit_precision", "qualifier_preservation",
-                        "numeric_preservation", "atomicity_failure_rate", "e4_mechanical_proxy_cue_injection",
-                        "blind_omission_recovery", "blind_useful_new_candidate_precision")}
-    print(json.dumps({
-        "role": args.role,
-        "model": args.model,
-        "scored_independence_group": report["scored_identity"].get("independence_group"),
-        "benchmark_inputs_verified": True,
-        **compact,
-    }, indent=2))
+    compact = {k: v for k, v in report["metrics"].items() if k in ("semantic_unit_recall", "semantic_unit_precision", "qualifier_preservation", "numeric_preservation", "atomicity_failure_rate", "e4_mechanical_proxy_cue_injection", "blind_omission_recovery", "blind_useful_new_candidate_precision")}
+    print(json.dumps({"role": args.role, "model": args.model, "scored_independence_group": report["scored_identity"].get("independence_group"), "benchmark_inputs_verified": True, **compact}, indent=2))
     return 0
 
 
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__ == "__main__": sys.exit(main())
