@@ -25,8 +25,6 @@ def project_root() -> Path:
 def _provider_from_args(args, role: str):
     prefix = {"PRIMARY": "primary", "BLIND_RECALL": "blind", "COLD_AUDIT": "cold"}[role]
     if args.mode == "offline-fixture":
-        # No fixture cold auditor exists: a fixture cannot audit semantics, so the
-        # gate must stay BLOCKED_EXTERNAL rather than pretend.
         return None if role == "COLD_AUDIT" else DeterministicFixtureProvider(role=role)
     command = getattr(args, prefix + "_command")
     if not command:
@@ -146,6 +144,10 @@ def cmd_run(args):
         execution_mode=args.execution_mode,
         workers=args.workers,
         cold_audit_provider=cold,
+        provider_schedule=args.provider_schedule,
+        primary_concurrency=args.primary_concurrency,
+        blind_concurrency=args.blind_concurrency,
+        cold_concurrency=args.cold_concurrency,
     )
     if ingestion is not None:
         result["ingestion"] = ingestion
@@ -260,6 +262,11 @@ def build_parser():
     r.add_argument("--primary-local", action="store_true")
     r.add_argument("--blind-local", action="store_true")
     r.add_argument("--cold-local", action="store_true")
+    r.add_argument("--provider-schedule", choices=["AUTO","PARALLEL","PHASED"], default="AUTO",
+                   help="AUTO phases distinct local models to avoid accelerator residency thrash")
+    r.add_argument("--primary-concurrency", type=int)
+    r.add_argument("--blind-concurrency", type=int)
+    r.add_argument("--cold-concurrency", type=int, default=1)
     r.add_argument("--provider-timeout", type=int, default=600,
                    help="seconds the controller waits on one provider command (wrapper timeouts should be lower)")
     r.set_defaults(func=cmd_run)
