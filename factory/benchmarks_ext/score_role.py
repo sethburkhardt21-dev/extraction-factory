@@ -6,6 +6,10 @@ source identity, and exact evidence substrings before computing metrics. A score
 report contains paths and hashes for every benchmark input so certification can
 recompute and compare it instead of trusting hand-edited JSON.
 
+Model identity includes the observed runtime version. Mixed versions under one
+provider/model alias are rejected. A score may still be descriptive when version
+authority is not certifiable, but role certification must remain blocked.
+
 E3 remains NOT_MEASURED. E4 remains a mechanical cue-injection proxy.
 """
 from __future__ import annotations
@@ -23,14 +27,18 @@ FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
 from hermes_factory.literal import NUM_RE, QUALIFIER_PATTERNS, REL_PATTERNS  # noqa: E402
-from hermes_factory.model_registry import load_registry, resolve_model_identity  # noqa: E402
+from hermes_factory.model_registry import (  # noqa: E402
+    load_registry,
+    observed_version_is_certifiable,
+    resolve_model_identity,
+)
 from hermes_factory.models import SourceUnit  # noqa: E402
 from benchmarks_ext.alignlib import greedy_align, multi_match_counts  # noqa: E402
 
 MATCH_THRESHOLD = 0.5
 DUP_THRESHOLD = 0.6
 DEFAULT_REGISTRY = FACTORY_ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"
-SCORE_SCHEMA = "hermes-role-score-1.1"
+SCORE_SCHEMA = "hermes-role-score-1.2"
 
 
 def sha256_text(text: str) -> str:
@@ -66,8 +74,8 @@ def _ratio(num: int, den: int):
 
 
 def _candidate_provider_model(candidates: list[dict], *, expected_model: str | None = None,
-                              label: str = "candidate") -> tuple[str, str]:
-    seen: set[tuple[str, str]] = set()
+                              label: str = "candidate") -> tuple[str, str, str]:
+    seen: set[tuple[str, str, str]] = set()
     incomplete = 0
     for row in candidates:
         worker = row.get("worker_identity")
@@ -75,21 +83,27 @@ def _candidate_provider_model(candidates: list[dict], *, expected_model: str | N
             continue
         provider = str(worker.get("provider") or "").upper().strip()
         model = str(worker.get("model_alias") or "").strip()
+        observed_version = str(worker.get("observed_version") or "UNOBSERVED").strip() or "UNOBSERVED"
         if provider or model:
             if not provider or not model:
                 incomplete += 1
             else:
-                seen.add((provider, model))
+                seen.add((provider, model, observed_version))
     if incomplete:
         raise ValueError(f"{label}_worker_identity_incomplete:{incomplete}")
     if not seen:
         raise ValueError(f"{label}_worker_identity_missing")
-    if len(seen) != 1:
-        raise ValueError(f"{label}_worker_identity_mixed:{sorted(seen)}")
-    provider, model = next(iter(seen))
+    provider_models = {(p, m) for p, m, _ in seen}
+    if len(provider_models) != 1:
+        raise ValueError(f"{label}_worker_identity_mixed:{sorted(provider_models)}")
+    versions = {v for _, _, v in seen}
+    if len(versions) != 1:
+        raise ValueError(f"{label}_observed_version_mixed:{sorted(versions)}")
+    provider, model = next(iter(provider_models))
+    observed_version = next(iter(versions))
     if expected_model is not None and model != expected_model:
         raise ValueError(f"{label}_model_argument_mismatch:{expected_model}!={model}")
-    return provider, model
+    return provider, model, observed_version
 
 
 def validate_scoring_independence(candidates: list[dict], manifest: dict, registry: dict,
@@ -100,7 +114,7 @@ def validate_scoring_independence(candidates: list[dict], manifest: dict, regist
         raise ValueError("gold_manifest_missing_construction_independence_groups")
     if len(groups) != len(set(groups)):
         raise ValueError(f"gold_manifest_construction_groups_not_distinct:{groups}")
-    provider, model = _candidate_provider_model(candidates, expected_model=expected_model, label=label)
+    provider, model, observed_version = _candidate_provider_model(candidates, expected_model=expected_model, label=label)
     blocked_models = set(manifest.get("gold_construction_models_not_scorable") or manifest.get("builders_not_scorable") or [])
     if model in blocked_models:
         raise ValueError(f"{label}_model_authored_gold:{model}")
@@ -113,6 +127,11 @@ def validate_scoring_independence(candidates: list[dict], manifest: dict, regist
     group = str(identity.get("independence_group") or "")
     if group in set(groups):
         raise ValueError(f"{label}_independence_group_authored_gold:{group}")
+    identity = dict(identity)
+    identity["observed_version"] = observed_version
+    identity["version_binding_certifiable"] = observed_version_is_certifiable(
+        str(identity.get("observed_version_policy") or ""), observed_version
+    )
     return identity
 
 
@@ -381,7 +400,15 @@ def main(argv=None) -> int:
         print(f"refusing invalid/unbound benchmark score: {exc}", file=sys.stderr); return 4
     Path(args.out).write_text(json.dumps(report, indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8")
     compact = {k: v for k, v in report["metrics"].items() if k in ("semantic_unit_recall", "semantic_unit_precision", "qualifier_preservation", "numeric_preservation", "atomicity_failure_rate", "e4_mechanical_proxy_cue_injection", "blind_omission_recovery", "blind_useful_new_candidate_precision")}
-    print(json.dumps({"role": args.role, "model": args.model, "scored_independence_group": report["scored_identity"].get("independence_group"), "benchmark_inputs_verified": True, **compact}, indent=2))
+    print(json.dumps({
+        "role": args.role,
+        "model": args.model,
+        "scored_independence_group": report["scored_identity"].get("independence_group"),
+        "observed_version": report["scored_identity"].get("observed_version"),
+        "version_binding_certifiable": report["scored_identity"].get("version_binding_certifiable"),
+        "benchmark_inputs_verified": True,
+        **compact,
+    }, indent=2))
     return 0
 
 
