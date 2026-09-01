@@ -3,7 +3,7 @@
 Unlike `validation/e2e_smoke.py`, this command requires the exact owner-held
 Machines PDF, the exact pinned sealed 09D r3 database, and real registered
 semantic providers. It also requires a source-first gold reference, either
-existing or built from three non-scored provider/model identities.
+existing or built from three non-scored independent provider/model families.
 
 The command never writes to 09D. It hashes the database before and after every
 real run and requires strict positive Motion-2 authority binding to the pinned
@@ -101,6 +101,30 @@ def validate_independence(registry: dict[str, Any], specs: list[str], label: str
     return identities
 
 
+def validate_gold_scoring_disjointness(manifest: dict[str, Any], scored_identities: list[dict[str, Any]]) -> dict[str, Any]:
+    """Refuse scoring models from any family that participated in gold creation."""
+    gold_groups = manifest.get("gold_construction_independence_groups")
+    if not isinstance(gold_groups, list) or len(gold_groups) != 3 or any(not isinstance(x, str) or not x for x in gold_groups):
+        raise RuntimeError("gold_manifest_missing_or_invalid_construction_independence_groups")
+    if len(set(gold_groups)) != 3:
+        raise RuntimeError(f"gold_manifest_construction_groups_not_distinct:{gold_groups}")
+    scored_groups = [str(x.get("independence_group") or "") for x in scored_identities]
+    overlap = sorted(set(gold_groups) & set(scored_groups))
+    if overlap:
+        raise RuntimeError(f"gold_scoring_independence_group_overlap:{overlap}")
+    blocked_models = set(manifest.get("gold_construction_models_not_scorable") or manifest.get("builders_not_scorable") or [])
+    scored_models = [str(x.get("model_alias") or "") for x in scored_identities]
+    model_overlap = sorted(blocked_models & set(scored_models))
+    if model_overlap:
+        raise RuntimeError(f"gold_scoring_model_overlap:{model_overlap}")
+    return {
+        "gold_construction_independence_groups": list(gold_groups),
+        "scored_independence_groups": scored_groups,
+        "scored_models": scored_models,
+        "overlap": [],
+    }
+
+
 def reconstruct_and_verify(pdf: Path, out_path: Path) -> tuple[list[dict[str, Any]], str]:
     reconstruct_machines_pilot(pdf, out_path)
     raw = out_path.read_text(encoding="utf-8")
@@ -111,6 +135,10 @@ def reconstruct_and_verify(pdf: Path, out_path: Path) -> tuple[list[dict[str, An
         extra = sorted(set(observed) - set(EXPECTED_UNIT_HASHES))
         wrong = sorted(k for k in set(observed) & set(EXPECTED_UNIT_HASHES) if observed[k] != EXPECTED_UNIT_HASHES[k])
         raise RuntimeError(f"machines_pilot_hash_mismatch:missing={missing}:extra={extra}:wrong={wrong}")
+    for row in units:
+        actual = sha256_text(str(row.get("content") or ""))
+        if actual != str(row.get("content_sha256") or ""):
+            raise RuntimeError(f"machines_pilot_declared_content_hash_mismatch:{row.get('source_unit_id')}")
     return units, sha256_text(raw)
 
 
@@ -127,6 +155,18 @@ def validate_gold(gold_dir: Path, source_units_sha256: str) -> tuple[Path, Path,
         raise RuntimeError(
             f"gold_source_units_hash_mismatch:{manifest.get('source_units_sha256')}!={source_units_sha256}"
         )
+    if manifest.get("source_pdf_sha256") != EXPECTED_MACHINES_SHA256:
+        raise RuntimeError(f"gold_source_pdf_hash_invalid:{manifest.get('source_pdf_sha256')}")
+    if manifest.get("source_unit_count") != 8:
+        raise RuntimeError(f"gold_source_unit_count_invalid:{manifest.get('source_unit_count')}")
+    if manifest.get("source_unit_content_sha256") != EXPECTED_UNIT_HASHES:
+        raise RuntimeError("gold_source_unit_hash_manifest_invalid")
+    groups = manifest.get("gold_construction_independence_groups")
+    if not isinstance(groups, list) or len(groups) != 3 or len(set(groups)) != 3:
+        raise RuntimeError(f"gold_construction_groups_invalid:{groups}")
+    models = manifest.get("gold_construction_models_not_scorable") or manifest.get("builders_not_scorable")
+    if not isinstance(models, list) or len(models) != 3 or len(set(models)) != 3:
+        raise RuntimeError(f"gold_construction_models_invalid:{models}")
     ref_name = str(manifest.get("scoring_reference") or "reference_v1.jsonl")
     reference = gold_dir / ref_name
     if not reference.exists():
@@ -146,18 +186,20 @@ def build_gold(args: argparse.Namespace, source_units: Path, gold_dir: Path, reg
         raise RuntimeError(
             "gold reference required: provide --gold-dir or all of --gold-builder-a, --gold-builder-b, --gold-adjudicator"
         )
-    validate_independence(registry, [str(x) for x in specs], "gold_builder")
-    scored_models = {parse_spec(args.primary)[1], parse_spec(args.blind)[1]}
-    builder_models = {parse_spec(str(args.gold_builder_a))[1], parse_spec(str(args.gold_builder_b))[1]}
-    collision = sorted(scored_models & builder_models)
-    if collision:
-        raise RuntimeError(f"gold_builders_cannot_be_scored_models:{collision}")
+    builder_identities = validate_independence(registry, [str(x) for x in specs], "gold_builder")
+    scored_identities = [registry_identity(registry, args.primary), registry_identity(registry, args.blind)]
+    prebuild_manifest = {
+        "gold_construction_independence_groups": [str(x["independence_group"]) for x in builder_identities],
+        "gold_construction_models_not_scorable": [str(x["model_alias"]) for x in builder_identities],
+    }
+    validate_gold_scoring_disjointness(prebuild_manifest, scored_identities)
 
     cmd = [
         PY, "-B", "benchmarks_ext/gold_build.py",
         "--builder-a", str(args.gold_builder_a),
         "--builder-b", str(args.gold_builder_b),
         "--adjudicator", str(args.gold_adjudicator),
+        "--registry", str(ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"),
         "--source-units", str(source_units),
         "--timeout", str(args.timeout_per_call),
         "--out", str(gold_dir),
@@ -178,6 +220,7 @@ def score_role(
         "--candidates", str(candidates),
         "--reference", str(reference),
         "--gold-manifest", str(manifest),
+        "--registry", str(ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"),
         "--role", role,
         "--model", model,
         "--units", ",".join(units),
@@ -261,7 +304,7 @@ def main(argv=None) -> int:
     work.mkdir(parents=True, exist_ok=False)
 
     report: dict[str, Any] = {
-        "schema_version": "hermes-owner-real-validation-1.0",
+        "schema_version": "hermes-owner-real-validation-1.1",
         "started_epoch": started,
         "checks": {},
         "limits": [
@@ -293,6 +336,7 @@ def main(argv=None) -> int:
     registry_path = ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"
     registry = load_registry(registry_path)
     role_identities = validate_independence(registry, [args.primary, args.blind, args.cold], "semantic_roles")
+    scored_identities = role_identities[:2]
     report["provider_identities"] = role_identities
     report["checks"]["provider_identity_and_independence"] = "PASS"
 
@@ -319,7 +363,9 @@ def main(argv=None) -> int:
     if not args.gold_dir:
         build_gold(args, reconstructed, gold_dir, registry)
     reference, gold_manifest_path, gold_manifest = validate_gold(gold_dir, source_units_sha)
+    gold_guard = validate_gold_scoring_disjointness(gold_manifest, scored_identities)
     report["checks"]["source_first_gold_integrity"] = "PASS"
+    report["checks"]["gold_scoring_family_disjointness"] = "PASS"
     report["gold"] = {
         "directory": str(gold_dir),
         "reference": str(reference),
@@ -328,6 +374,7 @@ def main(argv=None) -> int:
         "gold_label": gold_manifest.get("gold_label"),
         "challenge_pass": gold_manifest.get("challenge_pass"),
         "builders_not_scorable": gold_manifest.get("builders_not_scorable"),
+        "independence_guard": gold_guard,
     }
 
     db_before = sha256_file(database)
@@ -485,7 +532,6 @@ def main(argv=None) -> int:
         }
         report["checks"]["higher_risk_scored_descriptively"] = "PASS"
 
-    # Table-specific report is always emitted if the table unit exists in gold.
     if any(x.get("source_unit_id") == TABLE_UNIT for x in jsonl(reference)):
         p_table = score_role(
             candidates=primary_path, reference=reference, manifest=gold_manifest_path,
@@ -528,7 +574,7 @@ def main(argv=None) -> int:
         raise RuntimeError("09d_database_changed_during_benchmark_or_packaging")
 
     outcome2 = {
-        "schema_version": "hermes-owner-real-validation-outcome-1.0",
+        "schema_version": "hermes-owner-real-validation-outcome-1.1",
         "run_dir": str(run_dir),
         "owner_validation_report": str(owner_report),
         "owner_validation_package": str(final_validation_zip),
