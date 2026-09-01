@@ -3,11 +3,11 @@
 09D is a governed downstream reference substrate, not a gold label. New
 source-grounded candidates are never canonicalized or invalidated here.
 
-v1.5 adds a cycle-safety boundary: comparison defaults to the inherited
-Motion-1 carrier only. Prior Motion-2 extraction rows are excluded so model
-output cannot recursively become evidence for later model output. Exact subject
-aliases, predicate codes, structured numeric values, fact family, qualifiers,
-and witness kind are carried in the comparison receipts.
+v1.6 preserves the cycle-safe Motion-1 authority boundary from v1.5 and adds
+conservative numeric interval semantics plus namespace-aware predicate lookup.
+Equivalent numeric formatting and overlapping ranges no longer become false
+contradictions, and predicate tail matching is used only when it maps to one
+unique 09D predicate code (globally or inside an explicit fact family).
 """
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ import sys
 import time
 import unicodedata
 from collections import defaultdict
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -30,7 +31,7 @@ from hermes_factory.bridge_09d import motion2_capability_readonly  # noqa: E402
 from hermes_factory.literal import NUM_RE, QUALIFIER_PATTERNS  # noqa: E402
 
 COMPARATOR_TARGET = {
-    "comparator_target_version": "09d-r3-sealed-1.2",
+    "comparator_target_version": "09d-r3-sealed-1.3",
     "expected_db_sha256": "fa7a97313dc5bbd9b2fbb61b9124a4ecef5c318ad5d070eeefe67816a210f4a3",
     "db_role": (
         "Current 09D chain state: sealed r3 envelope final_s03.sqlite; carrier held 71,824 "
@@ -67,6 +68,11 @@ UNIT_ALIASES = {
 }
 
 NEGATION_RE = QUALIFIER_PATTERNS["NEGATION"]
+INTERVAL_RE = re.compile(
+    r"^(?P<cmp>[<>≤≥~≈]?)(?P<a>[+-]?\d+(?:\.\d+)?)"
+    r"(?:(?:-|–|—|to)(?P<b>[+-]?\d+(?:\.\d+)?))?$",
+    re.I,
+)
 
 
 def _sha256_file(path: Path) -> str:
@@ -93,10 +99,14 @@ def _normalize_unit(unit: str) -> str:
     return UNIT_ALIASES.get(unit, unit.replace(" ", ""))
 
 
+def _normalize_value_literal(value: str) -> str:
+    return re.sub(r"\s+", "", unicodedata.normalize("NFKC", value or ""))
+
+
 def _numbers_with_units(text: str) -> set[tuple[str, str]]:
     out: set[tuple[str, str]] = set()
     for m in NUM_RE.finditer(text or ""):
-        value = re.sub(r"\s+", "", m.group("value"))
+        value = _normalize_value_literal(m.group("value"))
         unit = _normalize_unit(m.group("unit") or "")
         out.add((value, unit))
     return out
@@ -111,12 +121,68 @@ def _candidate_numbers(candidate: dict, proposition: str) -> tuple[set[tuple[str
         value = item.get("value_literal")
         if value is None:
             continue
-        value = re.sub(r"\s+", "", str(value))
-        unit = _normalize_unit(str(item.get("unit_literal") or ""))
-        structured.add((value, unit))
+        structured.add((_normalize_value_literal(str(value)), _normalize_unit(str(item.get("unit_literal") or ""))))
     if structured:
         return structured, "STRUCTURED_NUMERIC_VALUES"
     return _numbers_with_units(proposition), "PROPOSITION_FALLBACK"
+
+
+def _parse_exact_interval(value: str) -> tuple[Decimal, Decimal] | None:
+    """Parse only exact scalar/range literals; inequalities/approximation stay ambiguous."""
+    m = INTERVAL_RE.fullmatch(_normalize_value_literal(value))
+    if not m or m.group("cmp"):
+        return None
+    try:
+        a = Decimal(m.group("a"))
+        b = Decimal(m.group("b")) if m.group("b") is not None else a
+    except InvalidOperation:
+        return None
+    return (min(a, b), max(a, b))
+
+
+def _numeric_relation(candidate_numbers: set[tuple[str, str]], row_numbers: set[tuple[str, str]]) -> tuple[str, str | None]:
+    """Conservative numeric relation without unit conversion.
+
+    Returns EQUIVALENT, OVERLAP, CONFLICT, AMBIGUOUS, NOT_COMPARABLE, or NONE.
+    A contradiction is allowed only for one comparable unit with disjoint exact
+    scalar/range intervals. Multi-dimensional or approximate cases are routed.
+    """
+    if not candidate_numbers and not row_numbers:
+        return "NONE", None
+    if not candidate_numbers or not row_numbers:
+        return "NOT_COMPARABLE", "numeric content exists on only one side"
+    common_units = sorted({u for _, u in candidate_numbers if u} & {u for _, u in row_numbers if u})
+    if not common_units:
+        return "NOT_COMPARABLE", "no shared normalized unit; no unit conversion attempted"
+
+    per_unit: list[tuple[str, str]] = []
+    for unit in common_units:
+        cvals = sorted({v for v, u in candidate_numbers if u == unit})
+        rvals = sorted({v for v, u in row_numbers if u == unit})
+        if len(cvals) != 1 or len(rvals) != 1:
+            return "AMBIGUOUS", f"multiple values share unit '{unit}'; automatic conflict suppressed"
+        ci = _parse_exact_interval(cvals[0])
+        ri = _parse_exact_interval(rvals[0])
+        if ci is None or ri is None:
+            return "AMBIGUOUS", f"non-exact or comparator numeric literal for unit '{unit}'; automatic conflict suppressed"
+        if ci == ri:
+            per_unit.append((unit, "EQUIVALENT"))
+        elif ci[1] < ri[0] or ri[1] < ci[0]:
+            per_unit.append((unit, "CONFLICT"))
+        else:
+            per_unit.append((unit, "OVERLAP"))
+
+    states = {state for _, state in per_unit}
+    if states == {"EQUIVALENT"}:
+        return "EQUIVALENT", "exact numeric scalar/range equivalence after decimal normalization"
+    if "CONFLICT" in states:
+        if len(common_units) == 1:
+            unit = common_units[0]
+            return "CONFLICT", f"disjoint exact numeric intervals for matched unit '{unit}'"
+        return "AMBIGUOUS", "multiple numeric dimensions include a conflict; automatic contradiction suppressed"
+    if "OVERLAP" in states:
+        return "OVERLAP", "exact numeric intervals overlap but are not identical"
+    return "AMBIGUOUS", "numeric relation could not be safely classified"
 
 
 def _qualifier_set(text: str) -> set[str]:
@@ -155,9 +221,7 @@ def load_carrier(db_path: Path, scope: str = "MOTION1_AUTHORITY") -> list[dict]:
         columns = {r[1] for r in conn.execute("PRAGMA table_info(source_assertion_candidate)")}
         witness_needed = {"source_resource_id", "ingest_locator_id"}
         if not witness_needed.issubset(columns):
-            raise RuntimeError(
-                "09d_witness_scope_unavailable:" + ",".join(sorted(witness_needed - columns))
-            )
+            raise RuntimeError("09d_witness_scope_unavailable:" + ",".join(sorted(witness_needed - columns)))
         rows = conn.execute(
             "SELECT candidate_id, subject_entity_id, predicate_code, value_text, fact_family, "
             "source_resource_id, ingest_locator_id FROM source_assertion_candidate "
@@ -210,8 +274,15 @@ def load_carrier(db_path: Path, scope: str = "MOTION1_AUTHORITY") -> list[dict]:
     return carrier
 
 
+def _predicate_tail(code: str) -> str:
+    parts = [p for p in re.split(r"[._:/]+", code or "") if p]
+    return _normalize_phrase(parts[-1]) if parts else ""
+
+
 def build_index(carrier: list[dict]) -> dict[Any, Any]:
     index: dict[Any, Any] = defaultdict(list)
+    global_tail_codes: dict[str, set[str]] = defaultdict(set)
+    family_tail_codes: dict[tuple[str, str], set[str]] = defaultdict(set)
     for i, row in enumerate(carrier):
         for token in row.get("tokens", set()):
             index[token].append(i)
@@ -224,11 +295,27 @@ def build_index(carrier: list[dict]) -> dict[Any, Any]:
         for alias in aliases:
             if alias:
                 index[("subject_alias", _normalize_phrase(alias))].append(i)
-        predicate_norm = row.get("predicate_norm") or _normalize_phrase(
-            str(row.get("predicate_code") or "").replace(".", " ").replace("_", " ")
-        )
+
+        raw_code = str(row.get("predicate_code") or "")
+        predicate_norm = row.get("predicate_norm") or _normalize_phrase(raw_code.replace(".", " ").replace("_", " "))
         if predicate_norm:
             index[("predicate", predicate_norm)].append(i)
+        tail = _predicate_tail(raw_code)
+        if tail:
+            index[("predicate_tail_all", tail)].append(i)
+            global_tail_codes[tail].add(predicate_norm)
+            family = _normalize_phrase(str(row.get("fact_family") or ""))
+            if family:
+                index[("predicate_family_tail_all", family, tail)].append(i)
+                family_tail_codes[(family, tail)].add(predicate_norm)
+
+    for tail, codes in global_tail_codes.items():
+        if len(codes) == 1:
+            index[("predicate_tail_unique", tail)] = list(index[("predicate_tail_all", tail)])
+    for key, codes in family_tail_codes.items():
+        if len(codes) == 1:
+            family, tail = key
+            index[("predicate_family_tail_unique", family, tail)] = list(index[("predicate_family_tail_all", family, tail)])
     return index
 
 
@@ -262,31 +349,25 @@ def _candidate_subject_rows(candidate: dict, index: dict[Any, Any]) -> tuple[set
 
 
 def _candidate_predicate_rows(candidate: dict, index: dict[Any, Any]) -> tuple[set[int], str]:
-    norm = _normalize_phrase(candidate.get("predicate") or "")
+    text = candidate.get("predicate") or ""
+    norm = _normalize_phrase(text)
     if not norm:
         return set(), "NO_PREDICATE_TEXT"
-    rows = set(index.get(("predicate", norm), []))
-    return rows, ("EXACT_CODE_OR_LABEL" if rows else "LEXICAL_ONLY")
+    exact = set(index.get(("predicate", norm), []))
+    if exact:
+        return exact, "EXACT_CODE_OR_LABEL"
 
-
-def _safe_numeric_conflict(candidate_numbers: set[tuple[str, str]], row_numbers: set[tuple[str, str]]) -> tuple[bool, bool, str | None]:
-    comparable_units = sorted({u for _, u in candidate_numbers if u} & {u for _, u in row_numbers if u})
-    if not comparable_units:
-        return False, False, None
-    conflicts = []
-    for unit in comparable_units:
-        cvals = sorted({v for v, u in candidate_numbers if u == unit})
-        rvals = sorted({v for v, u in row_numbers if u == unit})
-        if len(cvals) != 1 or len(rvals) != 1:
-            return False, True, f"multiple numeric values share unit '{unit}'; automatic contradiction suppressed"
-        if cvals[0] != rvals[0]:
-            conflicts.append((unit, cvals[0], rvals[0]))
-    if len(conflicts) == 1:
-        unit, cval, rval = conflicts[0]
-        return True, False, f"numeric conflict on matched subject+predicate+context and unit '{unit}': candidate {cval} vs 09D {rval}"
-    if len(conflicts) > 1:
-        return False, True, "multiple numeric dimensions conflict; automatic contradiction suppressed"
-    return False, False, None
+    predicate_tokens = _tokens(text)
+    tail_query = next(iter(predicate_tokens)) if len(predicate_tokens) == 1 else norm
+    family = _normalize_phrase(str(candidate.get("fact_family") or (candidate.get("metadata") or {}).get("fact_family") or ""))
+    if family:
+        family_rows = set(index.get(("predicate_family_tail_unique", family, tail_query), []))
+        if family_rows:
+            return family_rows, "UNIQUE_FAMILY_PREDICATE_TAIL"
+    global_rows = set(index.get(("predicate_tail_unique", tail_query), []))
+    if global_rows:
+        return global_rows, "UNIQUE_GLOBAL_PREDICATE_TAIL"
+    return set(), "LEXICAL_ONLY"
 
 
 def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dict:
@@ -354,6 +435,7 @@ def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dic
     top = scored[:5]
     reasons: list[str] = []
     comparison_confidence = "LOW"
+    numeric_relation = "NOT_EVALUATED"
 
     if not top or top[0][0] < 0.30:
         state = "MISSING_IN_09D"
@@ -369,11 +451,9 @@ def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dic
         row_context = set(best.get("context_qualifiers") or _context_qualifiers(best.get("value_text") or ""))
         context_compatible = cand_context == row_context
 
-        numeric_conflict = False
-        numeric_ambiguous = False
         numeric_reason = None
         if structured_comparable and context_compatible:
-            numeric_conflict, numeric_ambiguous, numeric_reason = _safe_numeric_conflict(numbers, best.get("numbers", set()))
+            numeric_relation, numeric_reason = _numeric_relation(numbers, best.get("numbers", set()))
             if numeric_reason:
                 reasons.append(numeric_reason)
         polarity_conflict = structured_comparable and context_compatible and negated != bool(best.get("negated")) and lexical_score >= 0.30
@@ -383,14 +463,14 @@ def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dic
         if subject_ambiguous:
             state = "IDENTITY_UNCERTAIN"
             reasons.append("candidate subject resolves to multiple plausible 09D entities; support/contradiction suppressed")
-        elif numeric_conflict or polarity_conflict:
+        elif numeric_relation == "CONFLICT" or polarity_conflict:
             state = "CONTRADICTION"
             comparison_confidence = "HIGH" if family_explicit else "MEDIUM"
         elif structured_comparable and not context_compatible:
             state = "CONTEXT_DIFFERENCE"
             comparison_confidence = "HIGH" if subject_resolution_mode in {"EXPLICIT_ID", "EXACT_ALIAS"} else "MEDIUM"
             reasons.append(f"compatible identity/predicate but contextual qualifier sets differ (candidate {sorted(cand_context)} vs 09D {sorted(row_context)})")
-        elif structured_comparable and numeric_ambiguous:
+        elif structured_comparable and numeric_relation == "AMBIGUOUS":
             state = "VARIANT"
             comparison_confidence = "MEDIUM"
         elif not structured_comparable:
@@ -402,10 +482,17 @@ def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dic
                 reasons.append(
                     f"retrieval only ({lexical_score:.2f}); support/contradiction suppressed because subject={subj_ok} ({subj_score:.2f}), predicate={pred_ok} ({pred_score:.2f}), family={family_ok}"
                 )
+        elif numeric_relation == "OVERLAP":
+            state = "POSSIBLE_DUPLICATE"
+            comparison_confidence = "MEDIUM"
+            reasons.append("numeric ranges overlap but are not identical; review scope/binding before merge")
+        elif numeric_relation == "NOT_COMPARABLE":
+            state = "VARIANT"
+            comparison_confidence = "MEDIUM"
+            reasons.append("numeric content is not directly comparable without unsafe assumptions or unit conversion")
         else:
-            equal_numeric = bool(numbers) and numbers == best.get("numbers", set())
-            no_numeric_either = not numbers and not best.get("numbers", set())
-            if best_score >= 0.78 and context_compatible and (equal_numeric or no_numeric_either):
+            numeric_equivalent = numeric_relation in {"EQUIVALENT", "NONE"}
+            if best_score >= 0.78 and context_compatible and numeric_equivalent:
                 state = "SUPPORT"
                 comparison_confidence = "HIGH" if not subject_resolution_ambiguous else "MEDIUM"
                 reasons.append(f"subject+predicate+context compatible with high agreement ({best_score:.2f}); no detected conflict")
@@ -419,7 +506,7 @@ def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dic
                 reasons.append(f"subject+predicate compatible with partial agreement ({best_score:.2f}); phrasing/value scope differs")
 
     return {
-        "comparison_receipt_schema_version": "09d-comparison-receipt-1.5",
+        "comparison_receipt_schema_version": "09d-comparison-receipt-1.6",
         "candidate_id": candidate.get("candidate_id"),
         "source_unit_id": candidate.get("source_unit_id"),
         "origin_pass": candidate.get("origin_pass"),
@@ -429,6 +516,7 @@ def classify(candidate: dict, carrier: list[dict], index: dict[Any, Any]) -> dic
         "state": state,
         "comparison_confidence": comparison_confidence,
         "numeric_comparison_basis": numeric_basis,
+        "numeric_relation": numeric_relation,
         "subject_resolution": {
             "mode": subject_resolution_mode,
             "resolved_entity_ids": sorted(resolved_subject_ids),
@@ -498,9 +586,13 @@ def main(argv=None) -> int:
     results = [classify(c, carrier, index) for c in candidates]
     counts: dict[str, int] = defaultdict(int)
     confidence_counts: dict[str, int] = defaultdict(int)
+    numeric_relation_counts: dict[str, int] = defaultdict(int)
+    predicate_resolution_counts: dict[str, int] = defaultdict(int)
     for r in results:
         counts[r["state"]] += 1
         confidence_counts[r["comparison_confidence"]] += 1
+        numeric_relation_counts[r["numeric_relation"]] += 1
+        predicate_resolution_counts[r["predicate_resolution"]["mode"]] += 1
 
     out_dir = run_dir / "09D"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -510,7 +602,7 @@ def main(argv=None) -> int:
 
     summary = {
         "stage": "READ_ONLY_09D_COMPARISON",
-        "comparison_schema_version": "09d-comparison-summary-1.5",
+        "comparison_schema_version": "09d-comparison-summary-1.6",
         "comparator_target": COMPARATOR_TARGET,
         "database_path": str(db_path),
         "database_sha256_measured": measured or "NOT_MEASURED",
@@ -524,11 +616,13 @@ def main(argv=None) -> int:
         "candidate_count": len(candidates),
         "state_counts": dict(sorted(counts.items())),
         "confidence_counts": dict(sorted(confidence_counts.items())),
+        "numeric_relation_counts": dict(sorted(numeric_relation_counts.items())),
+        "predicate_resolution_counts": dict(sorted(predicate_resolution_counts.items())),
         "duration_seconds": round(time.time() - started, 2),
         "method": (
-            "Motion-1 authority-scoped comparison by default; exact searchable-entity alias and predicate resolution "
-            "when available, structured numeric values preferred over proposition-wide number capture, then conservative "
-            "retrieval. Contradiction requires compatible subject+predicate+family+context and unambiguous conflict."
+            "Motion-1 authority-scoped comparison by default; exact searchable entity aliases and exact/unique "
+            "predicate-code tails when safely resolvable; structured numerics preferred; exact scalar/range interval "
+            "semantics suppress formatting/range false contradictions; no automatic unit conversion."
         ),
         "claim_boundary": (
             "Every state is reviewable. SUPPORT/POSSIBLE_DUPLICATE do not canonicalize or merge a candidate; "
@@ -537,8 +631,9 @@ def main(argv=None) -> int:
     }
     (out_dir / "comparison_09d_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps({k: summary[k] for k in (
-        "state_counts", "confidence_counts", "carrier_scope", "cycle_safe_authority_comparison",
-        "candidate_count", "carrier_rows_compared_against", "database_matches_declared_target", "duration_seconds"
+        "state_counts", "confidence_counts", "numeric_relation_counts", "predicate_resolution_counts",
+        "carrier_scope", "cycle_safe_authority_comparison", "candidate_count", "carrier_rows_compared_against",
+        "database_matches_declared_target", "duration_seconds"
     )}, indent=2))
     return 0
 
