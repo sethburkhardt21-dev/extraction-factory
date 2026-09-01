@@ -6,15 +6,11 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Dict
 
+MOTION2_TARGET_TABLES = ("ingest_source_locator", "source_assertion_candidate")
+
 
 def open_readonly_sqlite(path: Path, *, immutable: bool = True) -> sqlite3.Connection:
-    """Open a SQLite database through a fail-closed read-only URI.
-
-    09D release databases are sealed artifacts. ``immutable=1`` prevents SQLite
-    from attempting journal/WAL interaction and makes accidental write intent
-    even less useful. Callers can disable it only for synthetic tests or an
-    explicitly non-sealed inspection target.
-    """
+    """Open a SQLite database through a fail-closed read-only URI."""
     path = Path(path).resolve()
     suffix = "?mode=ro&immutable=1" if immutable else "?mode=ro"
     uri = f"file:{path.as_posix()}{suffix}"
@@ -26,6 +22,11 @@ def open_readonly_sqlite(path: Path, *, immutable: bool = True) -> sqlite3.Conne
 
 def _quote_identifier(value: str) -> str:
     return '"' + value.replace('"', '""') + '"'
+
+
+def _stable_sha256(value: Any) -> str:
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def table_columns(conn: sqlite3.Connection, table: str) -> list[dict[str, Any]]:
@@ -42,8 +43,85 @@ def schema_fingerprint(conn: sqlite3.Connection) -> str:
             "WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name"
         )
     ]
-    payload = json.dumps(rows, ensure_ascii=False, separators=(",", ":"))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return _stable_sha256(rows)
+
+
+def _table_contract(conn: sqlite3.Connection, table: str) -> dict[str, Any]:
+    """Return a focused, deterministic contract for one 09D target table."""
+    exists = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+    ).fetchone() is not None
+    if not exists:
+        return {"table": table, "present": False}
+
+    table_row = conn.execute(
+        "SELECT COALESCE(sql,'') AS sql FROM sqlite_master WHERE type='table' AND name=?", (table,)
+    ).fetchone()
+    columns = table_columns(conn, table)
+    safe = _quote_identifier(table)
+    foreign_keys = [dict(r) for r in conn.execute(f"PRAGMA foreign_key_list({safe})")]
+
+    indexes = []
+    for row in conn.execute(f"PRAGMA index_list({safe})"):
+        item = dict(row)
+        index_name = str(item.get("name") or "")
+        if index_name:
+            quoted_index = _quote_identifier(index_name)
+            item["columns"] = [dict(x) for x in conn.execute(f"PRAGMA index_info({quoted_index})")]
+            sql_row = conn.execute(
+                "SELECT COALESCE(sql,'') AS sql FROM sqlite_master WHERE type='index' AND name=?", (index_name,)
+            ).fetchone()
+            item["sql"] = str(sql_row["sql"] if sql_row else "")
+        indexes.append(item)
+
+    triggers = [
+        {"name": str(r["name"]), "sql": str(r["sql"] or "")}
+        for r in conn.execute(
+            "SELECT name, sql FROM sqlite_master WHERE type='trigger' AND tbl_name=? ORDER BY name", (table,)
+        )
+    ]
+    base = {
+        "table": table,
+        "present": True,
+        "create_sql": str(table_row["sql"] if table_row else ""),
+        "columns": columns,
+        "foreign_keys": foreign_keys,
+        "indexes": indexes,
+        "triggers": triggers,
+    }
+    base["table_contract_sha256"] = _stable_sha256(base)
+    return base
+
+
+def motion2_target_contract_readonly(path: Path) -> Dict[str, Any]:
+    """Fingerprint only the 09D structures the future Motion-2 loader targets.
+
+    This is intentionally separate from the whole-database schema fingerprint.
+    A future 09D release may change unrelated tables while preserving the exact
+    Motion-2 intake contract, or may alter this contract while the rest of the
+    database remains mostly unchanged. This receipt distinguishes those cases
+    without weakening full database hash verification.
+    """
+    conn = open_readonly_sqlite(path)
+    try:
+        contracts = {table: _table_contract(conn, table) for table in MOTION2_TARGET_TABLES}
+        whole_schema = schema_fingerprint(conn)
+    finally:
+        conn.close()
+
+    core = {
+        "contract_schema_version": "09d-motion2-target-contract-1.0",
+        "mode": "READ_ONLY_IMMUTABLE",
+        "target_tables": list(MOTION2_TARGET_TABLES),
+        "tables": contracts,
+    }
+    return {
+        **core,
+        "motion2_target_contract_sha256": _stable_sha256(core),
+        "whole_database_schema_fingerprint_sha256": whole_schema,
+        "direct_insert_allowed": False,
+        "automatic_schema_migration_allowed": False,
+    }
 
 
 def inventory_schema_readonly(path: Path) -> Dict[str, Any]:
@@ -65,13 +143,7 @@ def inventory_schema_readonly(path: Path) -> Dict[str, Any]:
 
 
 def carrier_witness_partition_readonly(path: Path) -> Dict[str, Any]:
-    """Measure Motion-1/Motion-2 carrier partition without mutating 09D.
-
-    This is also a cycle-safety primitive for comparison. New extraction runs
-    should compare against the inherited Motion-1 authority lane by default,
-    not against prior Motion-2 extraction rows that could recursively validate
-    later model output.
-    """
+    """Measure Motion-1/Motion-2 carrier partition without mutating 09D."""
     conn = open_readonly_sqlite(path)
     try:
         tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
@@ -133,7 +205,7 @@ def motion2_capability_readonly(path: Path) -> Dict[str, Any]:
     conn = open_readonly_sqlite(path)
     try:
         table_names = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-        required = {"source_assertion_candidate", "ingest_source_locator"}
+        required = set(MOTION2_TARGET_TABLES)
         missing = sorted(required - table_names)
         carrier_sql = ""
         if "source_assertion_candidate" in table_names:
@@ -166,6 +238,7 @@ def motion2_capability_readonly(path: Path) -> Dict[str, Any]:
         conn.close()
 
     partition = carrier_witness_partition_readonly(path)
+    target_contract = motion2_target_contract_readonly(path)
     return {
         "mode": "READ_ONLY_IMMUTABLE",
         "required_tables_present": not missing,
@@ -181,6 +254,7 @@ def motion2_capability_readonly(path: Path) -> Dict[str, Any]:
         "carrier_partition_valid": partition.get("partition_valid"),
         "ingest_source_locator_rows": locator_rows,
         "schema_fingerprint_sha256": fingerprint,
+        "motion2_target_contract_sha256": target_contract.get("motion2_target_contract_sha256"),
         "comparison_authority_default": "MOTION1_AUTHORITY",
         "direct_insert_allowed": False,
         "automatic_identity_merge_allowed": False,

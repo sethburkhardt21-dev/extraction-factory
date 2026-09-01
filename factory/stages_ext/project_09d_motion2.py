@@ -2,8 +2,9 @@
 
 The projection reduces friction for a future 09D-owned ingest lane. It never
 inserts rows, selects canonical identities, merges entities, or promotes
-assertions. v1.5 additionally requires cycle-safe Motion-1 comparison receipts
-before the handoff can be described as schema-compatible.
+assertions. v1.7 emits a focused cryptographic contract for the two Motion-2
+target tables so loader work can distinguish relevant schema drift from
+unrelated 09D evolution.
 """
 from __future__ import annotations
 
@@ -18,7 +19,11 @@ from typing import Any, Iterable
 FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
-from hermes_factory.bridge_09d import inventory_schema_readonly, motion2_capability_readonly  # noqa: E402
+from hermes_factory.bridge_09d import (  # noqa: E402
+    inventory_schema_readonly,
+    motion2_capability_readonly,
+    motion2_target_contract_readonly,
+)
 from hermes_factory.hashing import sha256_text  # noqa: E402
 
 
@@ -124,6 +129,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
     schema = inventory_schema_readonly(database)
     capability = motion2_capability_readonly(database)
+    target_contract = motion2_target_contract_readonly(database)
     table_schema = schema.get("schema", {})
     carrier_columns = table_schema.get("source_assertion_candidate", [])
     locator_columns = table_schema.get("ingest_source_locator", [])
@@ -131,6 +137,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
     comparison_scope = comparison_summary.get("carrier_scope")
     cycle_safe_comparison = comparison_summary.get("cycle_safe_authority_comparison") is True
+    target_contract_sha = target_contract.get("motion2_target_contract_sha256")
 
     source_by_id = {str(u.get("source_unit_id")): u for u in source_units}
     locator_rows: list[dict[str, Any]] = []
@@ -163,6 +170,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "unit_type": unit.get("unit_type"),
             "content_representation": unit.get("content_representation"),
             "locator": unit.get("locator") or {},
+            "09d_motion2_target_contract_sha256": target_contract_sha,
             "target_table": "ingest_source_locator",
             "target_columns_observed": sorted(str(c["name"]) for c in locator_columns),
             "direct_insert_allowed": False,
@@ -198,7 +206,9 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
         if len(resolved_ids) == 1 and not subject_ambiguous:
             single_entity_resolution += 1
-        if predicate_resolution.get("mode") == "EXACT_CODE_OR_LABEL":
+        if predicate_resolution.get("mode") in {
+            "EXACT_CODE_OR_LABEL", "UNIQUE_FAMILY_PREDICATE_TAIL", "UNIQUE_GLOBAL_PREDICATE_TAIL"
+        }:
             exact_predicate_resolution += 1
 
         identity_candidates = []
@@ -288,6 +298,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "09d_comparison_confidence": comparison.get("comparison_confidence"),
             "09d_comparison_carrier_scope": comparison_scope,
             "09d_cycle_safe_authority_comparison": cycle_safe_comparison,
+            "09d_motion2_target_contract_sha256": target_contract_sha,
             "subject_identity_resolution_state": identity_state,
             "predicate_identity_resolution_state": predicate_state,
             "subject_identity_candidates": identity_candidates,
@@ -322,10 +333,11 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
 
     summary = {
         "stage": "READ_ONLY_09D_MOTION2_PROJECTION",
-        "projection_schema_version": "09d-motion2-projection-1.5",
+        "projection_schema_version": "09d-motion2-projection-1.7",
         "projection_status": projection_status,
         "database": str(database),
         "database_schema_fingerprint_sha256": capability.get("schema_fingerprint_sha256"),
+        "motion2_target_contract_sha256": target_contract_sha,
         "motion2_capability": capability,
         "comparison_scope": comparison_scope,
         "cycle_safe_authority_comparison": cycle_safe_comparison,
@@ -334,7 +346,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         "comparison_state_counts": dict(sorted(state_counts.items())),
         "loader_disposition_counts": dict(sorted(disposition_counts.items())),
         "single_entity_resolution_candidate_count": single_entity_resolution,
-        "exact_predicate_resolution_candidate_count": exact_predicate_resolution,
+        "resolved_predicate_candidate_count": exact_predicate_resolution,
         "projection_error_count": len(projection_errors),
         "projection_errors": projection_errors,
         "target_schema_fit": {
@@ -347,16 +359,22 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
             "automatic_canonicalization_allowed": False,
             "automatic_identity_merge_allowed": False,
             "automatic_release_allowed": False,
+            "automatic_schema_migration_allowed": False,
             "identity_and_predicate_candidates_are_suggestions_only": True,
             "comparison_authority_must_exclude_prior_motion2_rows": True,
         },
         "claim_boundary": (
             "This projection is a governed handoff envelope, not SQL and not an insertion plan. "
-            "A future 09D-owned loader/adjudicator must assign target-native IDs, validate required columns, "
-            "resolve identities/predicates, and enforce 09D governance before any Motion-2 mutation."
+            "The target-contract hash fingerprints only the two Motion-2 intake tables and does not replace "
+            "full database/release verification. A 09D-owned loader/adjudicator remains responsible for mutation."
         ),
     }
-    return {"locator_rows": locator_rows, "candidate_rows": projected_candidates, "summary": summary}
+    return {
+        "locator_rows": locator_rows,
+        "candidate_rows": projected_candidates,
+        "target_contract": target_contract,
+        "summary": summary,
+    }
 
 
 def main(argv=None) -> int:
@@ -371,11 +389,15 @@ def main(argv=None) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     _write_jsonl(out_dir / "motion2_locator_projection.jsonl", projection["locator_rows"])
     _write_jsonl(out_dir / "motion2_candidate_projection.jsonl", projection["candidate_rows"])
+    (out_dir / "motion2_target_contract.json").write_text(
+        json.dumps(projection["target_contract"], indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8"
+    )
     (out_dir / "motion2_projection_summary.json").write_text(
         json.dumps(projection["summary"], indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8"
     )
     print(json.dumps({
         "projection_status": projection["summary"]["projection_status"],
+        "motion2_target_contract_sha256": projection["summary"]["motion2_target_contract_sha256"],
         "comparison_scope": projection["summary"]["comparison_scope"],
         "cycle_safe_authority_comparison": projection["summary"]["cycle_safe_authority_comparison"],
         "source_unit_count": projection["summary"]["source_unit_count"],
