@@ -6,9 +6,12 @@ import unittest
 from pathlib import Path
 
 from validation.owner_real_validation import (
+    EXPECTED_MACHINES_SHA256,
+    EXPECTED_UNIT_HASHES,
     _contradiction_queue,
     parse_spec,
     validate_gold,
+    validate_gold_scoring_disjointness,
     validate_independence,
 )
 
@@ -51,7 +54,12 @@ class OwnerValidationHelperTests(unittest.TestCase):
             manifest = {
                 "benchmark_version": "MACHINES_P0299_P0301_SOURCE_FIRST_v1",
                 "gold_label": "MECHANICALLY_CHECKED",
+                "source_pdf_sha256": EXPECTED_MACHINES_SHA256,
                 "source_units_sha256": "sourcehash",
+                "source_unit_count": 8,
+                "source_unit_content_sha256": EXPECTED_UNIT_HASHES,
+                "gold_construction_independence_groups": ["A", "B", "C"],
+                "gold_construction_models_not_scorable": ["gold-a", "gold-b", "gold-c"],
                 "scoring_reference": "reference_v1.jsonl",
                 "scoring_reference_sha256": ref_sha,
             }
@@ -60,6 +68,30 @@ class OwnerValidationHelperTests(unittest.TestCase):
             self.assertEqual(reference, ref)
             with self.assertRaisesRegex(RuntimeError, "gold_source_units_hash_mismatch"):
                 validate_gold(root, "other")
+
+    def test_gold_scoring_family_overlap_is_rejected_even_with_different_model_alias(self):
+        manifest = {
+            "gold_construction_independence_groups": ["QWEN", "LLAMA", "MISTRAL"],
+            "gold_construction_models_not_scorable": ["gold-qwen", "gold-llama", "gold-mistral"],
+        }
+        scored = [
+            {"model_alias": "different-qwen-model", "independence_group": "QWEN"},
+            {"model_alias": "deepseek", "independence_group": "DEEPSEEK"},
+        ]
+        with self.assertRaisesRegex(RuntimeError, "gold_scoring_independence_group_overlap"):
+            validate_gold_scoring_disjointness(manifest, scored)
+
+    def test_gold_scoring_disjointness_passes_for_separate_families(self):
+        manifest = {
+            "gold_construction_independence_groups": ["GOLD_A", "GOLD_B", "GOLD_C"],
+            "gold_construction_models_not_scorable": ["ga", "gb", "gc"],
+        }
+        scored = [
+            {"model_alias": "primary", "independence_group": "PRIMARY_FAMILY"},
+            {"model_alias": "blind", "independence_group": "BLIND_FAMILY"},
+        ]
+        result = validate_gold_scoring_disjointness(manifest, scored)
+        self.assertEqual(result["overlap"], [])
 
     def test_contradiction_queue_rejects_unstructured_contradiction(self):
         with tempfile.TemporaryDirectory() as td:
