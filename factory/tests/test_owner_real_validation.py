@@ -1,0 +1,83 @@
+from __future__ import annotations
+
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from validation.owner_real_validation import (
+    _contradiction_queue,
+    parse_spec,
+    validate_gold,
+    validate_independence,
+)
+
+
+class OwnerValidationHelperTests(unittest.TestCase):
+    def test_parse_spec_preserves_ollama_tag(self):
+        self.assertEqual(parse_spec("ollama:nuextract3-q8:latest"), ("ollama", "nuextract3-q8:latest"))
+
+    def test_independence_requires_distinct_empirical_groups(self):
+        registry = {
+            "model_identities": {
+                "OLLAMA|a": {"underlying_family": "A", "independence_group": "A", "empirical_semantic_model": True},
+                "OLLAMA|b": {"underlying_family": "B", "independence_group": "B", "empirical_semantic_model": True},
+                "OLLAMA|c": {"underlying_family": "C", "independence_group": "C", "empirical_semantic_model": True},
+            }
+        }
+        rows = validate_independence(registry, ["ollama:a", "ollama:b", "ollama:c"], "test")
+        self.assertEqual([x["independence_group"] for x in rows], ["A", "B", "C"])
+        registry["model_identities"]["OLLAMA|c"]["independence_group"] = "A"
+        with self.assertRaisesRegex(RuntimeError, "independence_groups_not_distinct"):
+            validate_independence(registry, ["ollama:a", "ollama:b", "ollama:c"], "test")
+
+    def test_non_empirical_provider_is_rejected(self):
+        registry = {
+            "model_identities": {
+                "ECHO|echo": {"underlying_family": "FIXTURE", "independence_group": "FIXTURE", "empirical_semantic_model": False},
+            }
+        }
+        with self.assertRaisesRegex(RuntimeError, "non_empirical_provider_not_allowed"):
+            validate_independence(registry, ["echo:echo"], "test")
+
+    def test_gold_reference_must_match_source_and_reference_hash(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            ref = root / "reference_v1.jsonl"
+            row = {"source_unit_id": "U", "proposition": "p", "evidence": "e"}
+            ref.write_text(json.dumps(row, sort_keys=True) + "\n", encoding="utf-8")
+            import hashlib
+            ref_sha = hashlib.sha256(ref.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
+            manifest = {
+                "benchmark_version": "MACHINES_P0299_P0301_SOURCE_FIRST_v1",
+                "gold_label": "MECHANICALLY_CHECKED",
+                "source_units_sha256": "sourcehash",
+                "scoring_reference": "reference_v1.jsonl",
+                "scoring_reference_sha256": ref_sha,
+            }
+            (root / "GOLD_MANIFEST.json").write_text(json.dumps(manifest), encoding="utf-8")
+            reference, _, _ = validate_gold(root, "sourcehash")
+            self.assertEqual(reference, ref)
+            with self.assertRaisesRegex(RuntimeError, "gold_source_units_hash_mismatch"):
+                validate_gold(root, "other")
+
+    def test_contradiction_queue_rejects_unstructured_contradiction(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = Path(td)
+            (run / "09D").mkdir()
+            (run / "ASSERTIONS").mkdir()
+            (run / "ASSERTIONS" / "union_candidates.jsonl").write_text(
+                json.dumps({"candidate_id": "C1", "evidence": "e"}) + "\n", encoding="utf-8"
+            )
+            bad = {
+                "candidate_id": "C1", "source_unit_id": "U1", "state": "CONTRADICTION",
+                "comparison_confidence": "HIGH", "proposition": "x",
+                "top_matches": [{"subject_compatible": False, "predicate_compatible": True, "fact_family_compatible": True}],
+            }
+            (run / "09D" / "comparison_09d.jsonl").write_text(json.dumps(bad) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "unstructured_contradiction_emitted"):
+                _contradiction_queue(run)
+
+
+if __name__ == "__main__":
+    unittest.main()
