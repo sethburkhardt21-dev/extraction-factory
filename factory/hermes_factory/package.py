@@ -9,6 +9,8 @@ from typing import Any, Dict
 from .hashing import sha256_file
 
 MANIFEST_SCHEMA = "hermes-offline-package-manifest-1.2"
+FINAL_READINESS = "VALIDATION/readiness.json"
+PREPACKAGE_READINESS = "VALIDATION/readiness_prepackage.json"
 
 
 def _manifest_for_dir(root: Path) -> Dict[str, Any]:
@@ -22,6 +24,32 @@ def _manifest_for_dir(root: Path) -> Dict[str, Any]:
             "sha256": sha256_file(p),
         })
     return {"schema_version": MANIFEST_SCHEMA, "files": files}
+
+
+def _package_readiness_authority(run_dir: Path, zip_path: Path) -> tuple[dict[str, Any], str, str]:
+    """Resolve the mechanically derived status that a package is allowed to claim.
+
+    Final/review packages MUST use VALIDATION/readiness.json. The controller's
+    internal `<run>_PREPACKAGE.zip` is the single explicit exception: before the
+    PACKAGE_INTEGRITY gate can be marked PASS, only readiness_prepackage.json
+    exists. That archive is immediately verified and deleted. Its manifest is
+    labelled PREPACKAGE_VALIDATION so it cannot masquerade as a final package.
+    """
+    final_path = run_dir / FINAL_READINESS
+    if final_path.exists():
+        value = json.loads(final_path.read_text(encoding="utf-8"))
+        if not isinstance(value, dict):
+            raise RuntimeError("readiness_json_not_object")
+        return value, FINAL_READINESS, "FINAL"
+
+    pre_path = run_dir / PREPACKAGE_READINESS
+    if zip_path.name.endswith("_PREPACKAGE.zip") and pre_path.exists():
+        value = json.loads(pre_path.read_text(encoding="utf-8"))
+        if not isinstance(value, dict):
+            raise RuntimeError("readiness_prepackage_json_not_object")
+        return value, PREPACKAGE_READINESS, "PREPACKAGE_VALIDATION"
+
+    raise RuntimeError("package_requires_final_readiness_json")
 
 
 def _validate_archive_members(z: zipfile.ZipFile) -> tuple[list[str], str | None]:
@@ -57,6 +85,18 @@ def _validate_manifest_shape(manifest: dict[str, Any]) -> list[str]:
         errors.append(f"package_manifest_schema_invalid:{manifest.get('schema_version')}")
     if not isinstance(manifest.get("package_status"), str) or not manifest.get("package_status"):
         errors.append("package_status_missing")
+
+    phase = manifest.get("package_phase")
+    authority = manifest.get("readiness_authority_path")
+    allowed = {
+        "FINAL": FINAL_READINESS,
+        "PREPACKAGE_VALIDATION": PREPACKAGE_READINESS,
+    }
+    if phase not in allowed:
+        errors.append(f"package_phase_invalid:{phase}")
+    elif authority != allowed[phase]:
+        errors.append(f"package_readiness_authority_invalid:{phase}:{authority}")
+
     rows = manifest.get("files")
     if not isinstance(rows, list):
         return errors + ["package_manifest_files_not_list"]
@@ -86,10 +126,7 @@ def _validate_manifest_shape(manifest: dict[str, Any]) -> list[str]:
 def build_offline_package(run_dir: Path, zip_path: Path, *, package_status: str) -> Dict[str, Any]:
     run_dir = Path(run_dir)
     zip_path = Path(zip_path)
-    readiness_path = run_dir / "VALIDATION" / "readiness.json"
-    if not readiness_path.exists():
-        raise RuntimeError("package_requires_readiness_json")
-    readiness = json.loads(readiness_path.read_text(encoding="utf-8"))
+    readiness, authority_path, package_phase = _package_readiness_authority(run_dir, zip_path)
     derived_status = readiness.get("status")
     if package_status != derived_status:
         raise RuntimeError(f"package_status_must_match_readiness:{package_status}!={derived_status}")
@@ -100,6 +137,8 @@ def build_offline_package(run_dir: Path, zip_path: Path, *, package_status: str)
         shutil.copytree(run_dir, bundle)
         manifest = _manifest_for_dir(bundle)
         manifest["package_status"] = package_status
+        manifest["package_phase"] = package_phase
+        manifest["readiness_authority_path"] = authority_path
         (bundle / "PACKAGE_MANIFEST.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
         tmpzip = zip_path.with_suffix(zip_path.suffix + ".tmp")
         if tmpzip.exists():
@@ -171,12 +210,15 @@ def verify_offline_package(zip_path: Path) -> Dict[str, Any]:
                 if sha256_file(p) != entry.get("sha256"):
                     errors.append(f"package_hash_mismatch:{rel}")
 
-            readiness_path = root / "VALIDATION" / "readiness.json"
-            if not readiness_path.exists():
-                errors.append("packaged_readiness_missing")
+            authority_rel = manifest.get("readiness_authority_path")
+            authority_path = root / str(authority_rel or "")
+            if authority_rel not in {FINAL_READINESS, PREPACKAGE_READINESS} or not authority_path.exists():
+                errors.append("packaged_readiness_authority_missing")
             else:
                 try:
-                    readiness = json.loads(readiness_path.read_text(encoding="utf-8"))
+                    readiness = json.loads(authority_path.read_text(encoding="utf-8"))
+                    if not isinstance(readiness, dict):
+                        raise ValueError("readiness_not_object")
                     if manifest.get("package_status") != readiness.get("status"):
                         errors.append(
                             f"package_status_readiness_mismatch:{manifest.get('package_status')}!={readiness.get('status')}"
