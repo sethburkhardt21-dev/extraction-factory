@@ -1,12 +1,12 @@
 {
   "benchmark_version": "BENCHMARK_SOURCE_FIRST_v1_NOT_YET_GOLD",
   "certifications": {},
-  "claim_boundary": "Model family and empirical-provider identity are authoritative here; CLI family text cannot override this registry. No semantic role is certified yet.",
+  "claim_boundary": "Model family, empirical-provider identity, and model-version authority are protected here. Ollama semantic certification requires the immutable local model digest; unpinned hosted aliases may execute but cannot inherit a semantic certificate.",
   "model_identities": {
     "CLAUDE|claude-opus-5": {
       "empirical_semantic_model": true,
       "independence_group": "ANTHROPIC_CLAUDE",
-      "observed_version_policy": "CLI_OBSERVED",
+      "observed_version_policy": "UNPINNED_HOSTED_ALIAS",
       "underlying_family": "ANTHROPIC_CLAUDE"
     },
     "ECHO|echo": {
@@ -18,13 +18,13 @@
     "OLLAMA|deepseek-r1:14b": {
       "empirical_semantic_model": true,
       "independence_group": "DEEPSEEK",
-      "observed_version_policy": "CLI_OBSERVED",
+      "observed_version_policy": "OLLAMA_DIGEST",
       "underlying_family": "DEEPSEEK"
     },
     "OLLAMA|nuextract3-q8:latest": {
       "empirical_semantic_model": true,
       "independence_group": "QWEN",
-      "observed_version_policy": "CLI_OBSERVED",
+      "observed_version_policy": "OLLAMA_DIGEST",
       "underlying_family": "QWEN_NUEXTRACT"
     }
   },
@@ -39,5 +39,5 @@
     "TABLE_W3": "UNBENCHMARKED",
     "VISUAL_W3": "UNBENCHMARKED"
   },
-  "schema_version": "hermes-model-certification-registry-1.1"
+  "schema_version": "hermes-model-certification-registry-1.2"
 }
