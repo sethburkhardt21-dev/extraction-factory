@@ -8,8 +8,8 @@
 Chain: certified Hermes runtime (register → lease → dispatch → blind allowlist →
 stage → CAS commit → union → families → specialists → precision → routing →
 deterministic + independent semantic cold audit → readiness) → read-only 09D
-comparison → schema-aware non-writing Motion-2 projection → final self-contained
-offline review ZIP.
+comparison → schema-aware non-writing Motion-2 projection → numeric context guard
+→ final self-contained offline review ZIP.
 
 Provider specs are backend:model (preferred) or legacy backend:model:FAMILY.
 Model family/independence are resolved from the protected model registry, never
@@ -145,6 +145,7 @@ def main(argv=None) -> int:
 
     comparison_summary = None
     projection_summary = None
+    context_guard_summary = None
     comparison_ok = False
     if args.database_09d and not args.skip_compare:
         print("[appliance] running read-only 09D comparison ...", flush=True)
@@ -171,9 +172,27 @@ def main(argv=None) -> int:
             print(proj_proc.stderr[-2000:], file=sys.stderr)
             print("[appliance] 09D projection requires review; comparison artifacts remain valid", file=sys.stderr)
         summary_path = run_dir / "09D" / "motion2_projection_summary.json"
-        if summary_path.exists():
+        candidate_projection_path = run_dir / "09D" / "motion2_candidate_projection.jsonl"
+        if summary_path.exists() and candidate_projection_path.exists():
             projection_summary = json.loads(summary_path.read_text(encoding="utf-8"))
             print(f"[appliance] 09D projection: {projection_summary['projection_status']}", flush=True)
+
+            print("[appliance] running 09D numeric context guard ...", flush=True)
+            guard_proc = subprocess.run(
+                [sys.executable, "-B", str(FACTORY_ROOT / "stages_ext" / "guard_09d_numeric_context.py"),
+                 "--run-dir", str(run_dir)],
+                capture_output=True, text=True, encoding="utf-8")
+            if guard_proc.returncode != 0:
+                print(guard_proc.stderr[-2000:], file=sys.stderr)
+                print("[appliance] 09D numeric context guard FAILED; projection remains review-only", file=sys.stderr)
+            guard_summary_path = run_dir / "09D" / "motion2_numeric_context_guard_summary.json"
+            if guard_summary_path.exists():
+                context_guard_summary = json.loads(guard_summary_path.read_text(encoding="utf-8"))
+                projection_summary = json.loads(summary_path.read_text(encoding="utf-8"))
+                print(
+                    f"[appliance] 09D context guard review count: {context_guard_summary['review_required_count']}",
+                    flush=True,
+                )
 
     print("[appliance] building final offline review package ...", flush=True)
     final_zip = run_dir.parent / f"APPLIANCE_{status}_{run_dir.name}.zip"
@@ -200,6 +219,8 @@ def main(argv=None) -> int:
         "comparison_09d_confidence": (comparison_summary or {}).get("confidence_counts"),
         "motion2_projection_status": (projection_summary or {}).get("projection_status"),
         "motion2_projection_errors": (projection_summary or {}).get("projection_error_count"),
+        "motion2_numeric_context_review_count": (context_guard_summary or {}).get("review_required_count"),
+        "motion2_numeric_context_result_counts": (context_guard_summary or {}).get("result_counts"),
         "final_package": str(final_zip) if package_ok else None,
         "final_package_verified": verify_ok,
         "wall_seconds": round(time.time() - started, 1),
