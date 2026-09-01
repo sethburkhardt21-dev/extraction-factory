@@ -1,30 +1,45 @@
-# Hermes Kanban Task — Nemo-Supervised Extraction Factory
+# Hermes Kanban Task — Nemo-Supervised Extraction Factory v1.3
 
-## Repository and branch
+## Source of truth
 
-Use this repository as the source of truth:
+Repository:
 
 `https://github.com/sethburkhardt21-dev/extraction-factory.git`
 
-Use branch:
+Execute branch:
 
-`chatgpt-hermes-kanban-hardening-20260831`
+`chatgpt-pipeline-optimization-20260901`
 
-Do **not** substitute an older ZIP, Meta pack, Hermes pack, or historical handoff. Preserve repository history and the existing rights quarantine.
+Do not substitute an older ZIP, Meta pack, Hermes pack, `master`, or the prior hardening branch. Preserve repository history and the existing rights quarantine.
 
 ## Mission
 
-Execute and empirically harden the existing governed anesthesia literature extraction factory. Do not redesign it from scratch. Nemo is the persistent supervisor/orchestrator; deterministic factory machinery remains the authority for source hashes, blindness, leases, CAS, staging, build integrity, model certification, readiness, 09D read-only enforcement, and final packaging.
+Execute, benchmark, and empirically validate the existing governed anesthesia literature extraction factory. Do not redesign it from scratch.
 
-Nemo usage is effectively free for this project. Use Nemo aggressively for supervision, routing, disagreement analysis, retries, model selection, specialist escalation, and empirical diagnosis. Do not optimize away Nemo calls merely to save usage.
+Nemo/Nemotron is the persistent supervisor/orchestrator. Nemo usage is effectively free for this project, so use it aggressively for supervision, model selection, disagreement analysis, retry planning, specialist routing, benchmark diagnosis, and performance analysis.
 
-Nemo must **not** override failed gates, directly canonicalize assertions, directly write to 09D, spoof independence, or author `FRONTIER_REVIEW_READY`.
+The deterministic factory remains authoritative for source hashes, blindness, evidence, leases, CAS, staging, build/runtime integrity, model identity/certification, readiness, 09D read-only enforcement, and packaging. Nemo may recommend actions but may not override a failed gate, canonicalize assertions, spoof independence, write to 09D, or author `FRONTIER_REVIEW_READY`.
 
-## Available model estate
+## Important v1.3 runtime behavior
 
-First enumerate exact currently installed Ollama model tags and currently available free Hermes-hosted models. Do not guess names.
+This branch contains a throughput/correctness optimization pass. Preserve and test it rather than reverting it:
 
-The local Ollama pool is expected to contain models corresponding to:
+- external semantic runs fail closed before any provider call if source hash, build integrity, or runtime lock fails;
+- provider family/empirical identity comes from the protected model registry, not CLI family text;
+- `--provider-schedule AUTO` phases distinct local Ollama models instead of running them concurrently and causing GPU/VRAM model-residency thrash;
+- local Ollama providers default to one in-flight request per model unless an empirical benchmark justifies a higher role-specific concurrency;
+- Ollama calls keep a role model resident with `keep_alive` (default 30m) and extraction temperature defaults to 0;
+- primary, blind, and cold concurrency can be tuned independently;
+- provider timing, attempts, and controller timing are preserved in run provenance;
+- cold audit is deterministic but risk-stratified toward table/figure, numeric, and uncertainty-bearing assertions before the remaining hash-selected population;
+- 09D `CONTRADICTION` requires compatible subject and predicate identity before numeric/polarity conflict is allowed;
+- blind recall remains always-on until source-first marginal-recall evidence supports changing that policy.
+
+Do not assume these changes improve wall time merely because they are theoretically better. Measure the same Machines pilot against the previous ~60.8-minute real-provider baseline and report the actual difference.
+
+## Model discovery
+
+First enumerate exact installed Ollama tags with the local runtime. Expected model families include models corresponding to:
 
 - GPT-OSS
 - MedGemma
@@ -34,84 +49,82 @@ The local Ollama pool is expected to contain models corresponding to:
 - Qwen 3.6
 - Qwen 3.1
 
-Free Hermes-hosted models may include Nemo/Nemotron, HY3, Laguna, X/Ox Alpha, or others. Discover the actual live list.
+Also enumerate the live free Hermes-hosted models. Nemo/Nemotron should supervise.
 
-### Initial role topology
+Do not guess exact model names or families. Add missing model identities to `factory/CURRENT/MODEL_CERTIFICATION_REGISTRY.json` using the exact observed provider/model tag and truthful underlying family / independence group. Different aliases of the same underlying model family do not satisfy independence. Echo/fixture never counts as empirical semantic work.
 
-Use this as the initial hypothesis, then benchmark it rather than treating it as dogma:
+### Initial role hypothesis
 
-- **Supervisor/orchestrator:** Nemo / strongest free Nemotron available
-- **Primary semantic extractor:** strongest local Qwen initially; benchmark against MedGemma and GPT-OSS
-- **Blind recall:** NuExtract
-- **Medical/domain specialist:** MedGemma
-- **Cold audit:** DeepSeek-R1 14B or another genuinely independent family
-- **Code/runtime repair:** Devstral
-- **Overflow/challenger:** GPT-OSS and Qwen 3.1
-- **Hosted escalation:** Nemo and other free hosted families when local workers disagree or fail
+Benchmark this topology; do not treat it as permanently correct:
 
-Use Nemo as supervisor even when another model performs the primary extraction.
+- Supervisor/orchestrator: Nemo / strongest free Nemotron available
+- Primary semantic extractor: strongest local Qwen initially; challenge with MedGemma and GPT-OSS
+- Blind recall: NuExtract
+- Medical/domain specialist: MedGemma
+- Cold audit: DeepSeek-R1 14B or another genuinely independent family
+- Code/runtime repair: Devstral
+- Overflow/challenger: GPT-OSS and Qwen 3.1
+- Hosted escalation: Nemo and other free hosted families for unresolved/disagreement cases
 
-## Independence and model identity
+Nemo should normally supervise rather than act simultaneously as primary + blind + cold auditor.
 
-The hardened branch moves model family and empirical-provider status into the protected model registry.
+## Phase 1 — forensic preflight and exact certification
 
-Do not trust operator-entered family labels. Discover actual provider/model identity and add missing identities to `factory/CURRENT/MODEL_CERTIFICATION_REGISTRY.json` only with truthful underlying family / independence-group data.
+Before semantic inference:
 
-Different aliases of the same underlying family do not satisfy independence.
+1. clone and checkout `chatgpt-pipeline-optimization-20260901`;
+2. record exact git HEAD;
+3. enumerate exact Ollama tags and free Hermes models;
+4. inspect `factory/CURRENT/` and the model registry;
+5. run `python -m hermes_factory test` from `factory/`;
+6. inspect any CI result for the same commit;
+7. verify the protected production surface contains appliance/provider/comparator/benchmark code;
+8. verify the portable Machines reconstruction path;
+9. verify 09D remains read-only;
+10. inspect existing source-first gold work and do not regress it.
 
-Fixture/echo providers never count as empirical semantic providers.
+Production code changed on this branch, so an older certificate must not be reused. After exact model identities are registered and tests pass in the actual Hermes machine:
 
-## First phase — forensic preflight
+```bash
+cd factory
+python -m hermes_factory test
+python -m hermes_factory certify-build --rerun-tests --refresh-runtime-lock
+python -m hermes_factory verify
+```
 
-Before model inference:
+If any deterministic predispatch gate fails, stop. Do not spend model calls until it is corrected and the exact changed build is re-certified.
 
-1. clone the specified branch;
-2. inspect actual bytes and current git HEAD;
-3. enumerate exact Ollama models/tags;
-4. enumerate free Hermes models;
-5. inspect `factory/CURRENT/`;
-6. run the complete test suite;
-7. inspect build-integrity coverage;
-8. verify that integration layers are inside the certified production surface;
-9. verify the model registry;
-10. verify provider wrappers;
-11. verify the Machines reconstruction path;
-12. verify the 09D boundary remains read-only;
-13. inspect the existing source-first gold work and do not regress it.
+## Phase 2 — governed Machines pilot
 
-The current branch intentionally invalidates any older build certificate because production code changed. Do not treat that as a defect. After tests pass in the actual Hermes execution environment, refresh the runtime lock if needed, certify the exact current build, then run verify.
+Do not start the 2,724-page textbook.
 
-A deterministic source/build/runtime failure must stop before semantic provider calls.
+Use the governed pilot:
 
-## Machines pilot first
+- semantic pages 299–301
+- boundary context 298 and 302
+- expected source SHA-256 `379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197`
 
-Do **not** launch the full textbook.
+The repository intentionally excludes copyrighted source-unit text. Use the owner-supplied hash-matched `Machines Textbook.pdf` and the portable reconstruction code. Reconstruction must produce the expected governed eight units and validate their content hashes.
 
-Use the governed Machines pilot:
+Never commit textbook bytes, reconstructed source text, page screenshots, or source-bearing handoff ZIPs to GitHub.
 
-- semantic pages: 299–301
-- boundary context: 298 and 302
-- expected source SHA-256: `379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197`
-
-The repository intentionally does not version textbook-derived source-unit bytes. Use the portable reconstruction code with the owner-supplied hash-matched `Machines Textbook.pdf`. Reconstruction must produce the exact 8 governed units and verify every expected unit content hash.
-
-Never commit textbook bytes, reconstructed source-unit text, generated page text, screenshots, or copyright-bearing handoff bundles back to GitHub.
-
-## Real semantic run
+## Phase 3 — real semantic run
 
 Do not use echo except for infrastructure tests.
 
-Run the pilot through real semantic models under factory governance:
+Run real providers under factory governance:
 
-`source unit -> bounded packet -> provider -> structured response -> evidence validation -> staging -> CAS/ledger commit -> deterministic union -> specialist controls -> routing -> cold audit -> benchmark/readiness -> package`
+`source unit -> bounded packet -> provider -> exact-evidence validation -> staging -> CAS/ledger commit -> union -> specialists -> routing -> independent cold audit -> benchmark/readiness -> package`
 
-Blind recall receives only its permitted source packet. It must not see primary output, gold, 09D answers, expected counts, or peer decisions.
+Blind recall receives the source-only positive-allowlist packet. It must not see primary output, gold, 09D answers, expected counts, or peer decisions.
 
-## Tables are the main known semantic risk
+Use `--provider-schedule AUTO` initially. For distinct local Ollama models, it should resolve to `PHASED`. This is intentional: keep one role model hot and finish its phase before swapping the next model onto the accelerator. Do not override to parallel until measured GPU memory/load behavior demonstrates that parallel distinct-model residency is actually faster and stable.
 
-The prior real pilot showed most sampled failures clustering in Table 6.1. Treat tables as first-class W3 work.
+Start local role concurrency at 1. Test 2 only after a clean pilot and compare throughput, memory pressure, malformed-output rate, and semantic quality. Higher generic worker counts are not useful if Ollama serializes or thrashes one GPU.
 
-For table-derived assertions require explicit binding of:
+## Tables and numerical binding are priority risk
+
+The previous real pilot concentrated sampled semantic failures in Table 6.1. For table-derived assertions require explicit binding of:
 
 - table identity
 - row/entity
@@ -119,61 +132,52 @@ For table-derived assertions require explicit binding of:
 - value
 - unit
 - qualifier
-- temperature/pressure/context where applicable
-- exact evidence/provenance
+- temperature/pressure/context when applicable
+- exact source evidence/provenance
 
-Do not confidently infer row/column semantics from ambiguous flattened text. Route ambiguity instead.
+Never infer a row/column relationship from a naked flattened number. Ambiguous table structure must be routed or explicitly flagged, not guessed.
 
-Explicitly test for:
+Explicitly challenge:
 
-- wrong-row numeric binding
-- wrong-column numeric binding
+- wrong-row binding
+- wrong-column binding
 - neighboring-cell leakage
 - dropped units
-- dropped temperatures
-- dropped qualifiers
+- dropped temperature/pressure qualifiers
+- lost qualifier or negation
 - false “no value supplied” claims
 
-Use NuExtract, Qwen, MedGemma, Nemo, or other appropriate specialists as challengers, but keep independence accounting truthful.
+## Router and specialists
 
-## Router requirements
+No evidence family with an unresolved hard specialist code may remain `LOCAL_PRECISION_COMPLETE`.
 
-No evidence family containing an unresolved hard specialist code may remain `LOCAL_PRECISION_COMPLETE`.
+At minimum retain routing for unresolved numeric, table/visual, cross-page, qualifier, negation, and relationship-direction failures. Preserve the hardened suffix-code parser so serialized flags such as `candidate:cue:DIRECTION_CUE_LOST` still trigger review.
 
-At minimum route unresolved:
+## Cold audit
 
-- `UNBOUND_NUMERIC`
-- `TABLE_BINDING_REQUIRES_SEMANTIC_OR_VISUAL_REVIEW`
-- `IMAGE_AVAILABLE_NOT_MODEL_REVIEWED`
-- `CROSS_PAGE_SEMANTIC_REVIEW_REQUIRED`
-- `DIRECTION_CUE_LOST`
-- `QUALIFIER_NOT_PRESERVED`
+Keep the audit model family independent of both primary and blind families.
 
-The branch contains the fix for legacy serialized flags where the failure code appears as a suffix such as `candidate:cue:DIRECTION_CUE_LOST`. Mutation-test it.
+The v1.3 sample is risk-stratified without increasing the configured sample volume. Verify that tables/figures and numeric assertions receive priority while preserving deterministic reproducibility. Do not let a clean but unbenchmarked auditor satisfy frontier readiness.
 
-## 09D comparison
+## 09D comparator
 
-09D is read-only evidence, not truth authority.
+09D is read-only comparison evidence, never gold or truth authority.
 
 Never insert, update, delete, merge, canonicalize, promote, or release directly into 09D.
 
-A true contradiction requires compatible subject/entity identity, compatible predicate identity, compatible context/dimension/unit semantics, and then a real polarity/value conflict.
+A true `CONTRADICTION` requires compatible subject identity + compatible predicate identity + compatible context/dimension/unit semantics, followed by an actual polarity or value conflict.
 
-Lexical overlap alone must not produce contradiction. Examples that must **not** be labeled contradictions:
+Regression cases that must not become contradictions:
 
-- `partial pressure` vs `partial laryngectomy`
-- desflurane MAC value vs a percentage MAC reduction
+- partial pressure vs partial laryngectomy
+- absolute desflurane MAC vs percentage MAC reduction
 - atmospheric pressure vs anesthetic vapor pressure merely because both use mmHg
 
-If semantic identity cannot be established, emit uncertainty/variant/possible-match rather than contradiction.
+If identity is not established, prefer `VARIANT` / `IDENTITY_UNCERTAIN` rather than contradiction.
 
-## Source-first gold and role benchmarking
+## Source-first benchmark
 
-Complete the source-first benchmark for the same pilot before broad expansion.
-
-Gold must be constructed from source, not from model candidates, 09D assertions, historical outputs, or expected counts.
-
-Use independent builders/adjudication and preserve the existing phase controls in the repository.
+Complete the same-pilot source-first gold before any broad expansion. Gold must be built from source, not model candidates, 09D, historical outputs, or expected counts. Preserve independent builders/adjudication and existing phase controls.
 
 Score at least:
 
@@ -181,96 +185,105 @@ Score at least:
 - NuExtract blind recall
 - MedGemma specialist/challenger
 - DeepSeek cold audit
-- at least one alternative primary model
-- Nemo as challenger/supervisor where useful
+- one alternative primary
+- Nemo as challenger where useful
 
-Measure:
+Measure separately:
 
-- precision
-- recall
-- F1
-- numeric precision/recall
-- qualifier preservation
-- negation preservation
+- precision / recall / F1
+- numeric precision / recall
+- qualifier and negation preservation
 - relationship-direction accuracy
-- table-specific precision/recall
+- table precision / recall
 - evidence-span validity
-- malformed-output rate
+- malformed-output/retry rate
 - accepted blind-only marginal recall
 - cold-audit detection rate
 - disagreement rate
 
-Do not hide weak table performance inside an overall average.
+Do not hide weak table performance inside a global average.
+
+Do **not** optimize blind recall away until accepted blind-only marginal recall is measured on frozen source-first gold. If later data shows blind recall contributes near-zero accepted marginal recall for a well-defined low-risk stratum, propose a gated policy change with tests rather than silently skipping it.
+
+## Performance profiling
+
+Capture and report separately:
+
+- provider inference time per role
+- provider attempts/retries
+- model load/swap behavior
+- role concurrency
+- queue wait
+- controller/staging/ledger overhead
+- deterministic specialist time
+- cold-audit time
+- 09D comparison time
+- packaging time
+- peak GPU/VRAM and host RAM when available
+
+Compare at least:
+
+1. v1.3 AUTO phased local schedule, concurrency 1;
+2. same model topology with concurrency 2 where hardware permits;
+3. only then any parallel-distinct-model experiment.
+
+Do not infer speedup; report measured wall-clock change against the prior ~3650-second pilot.
 
 ## Code repair policy
 
-If execution reveals a real defect:
+If execution reveals a defect:
 
 1. reproduce it;
-2. write a failing behavioral test;
-3. fix the smallest responsible component;
-4. run the full test suite;
-5. run relevant mutation/adversarial tests;
-6. update the current build manifest;
-7. explicitly re-certify the changed build;
-8. verify;
-9. rerun the affected pilot stage.
+2. add a failing behavioral regression test;
+3. make the smallest responsible fix;
+4. run the full suite;
+5. run targeted mutation/adversarial tests;
+6. because the production build changed, re-certify the exact build;
+7. verify;
+8. rerun the affected pilot stage.
 
-Use Devstral for coding work if useful; Nemo supervises.
-
-Do not perform speculative architecture rewrites without empirical reason.
+Devstral may perform code repair; Nemo supervises. Avoid speculative rewrites.
 
 ## Mandatory adversarial coverage
 
-Preserve existing tests and ensure coverage for:
+Retain and verify protection against:
 
-- blind peer leakage
-- evidence outside allowed source units
-- wrong-row/column table binding
+- blind peer/gold/count leakage
+- evidence outside permitted source
+- wrong table row/column binding
 - wrong numeric target
-- qualifier loss
-- negation loss
-- relationship direction loss
+- qualifier/negation/direction loss
 - fake same-family independence
 - operator family spoofing
 - fixture provider marked empirical
 - unbenchmarked cold auditor treated as certified
-- stale/expired/duplicate lease behavior
-- torn staging and post-stage mutation
+- stale/expired/duplicate leases
+- torn staging/post-stage mutation
 - production integration-layer mutation after certification
-- write attempt against 09D
-- false lexical 09D contradiction
+- 09D write attempts
+- lexical false contradictions
 - `NOT_RUN` treated as PASS
 - `FAIL_BLOCKING` masked by `BLOCKED_EXTERNAL`
-- semantic provider calls starting despite failed deterministic predispatch gates
+- semantic provider calls beginning after deterministic predispatch failure
+- distinct local-model parallel scheduling causing unsafe residency/memory behavior
 
 ## Readiness precedence
 
-Required order:
-
-1. any `FAIL_BLOCKING` or required `NOT_RUN` -> `NOT_READY`
+1. any required `FAIL_BLOCKING` or required `NOT_RUN` -> `NOT_READY`
 2. any unbounded required `FAIL_REVIEW_REQUIRED` -> `NOT_READY`
 3. otherwise required `BLOCKED_EXTERNAL` -> `READY_FOR_PROVIDER`
 4. only when all required gates genuinely pass -> `FRONTIER_REVIEW_READY`
 
 No unresolved P0 integrity defect may coexist with frontier readiness.
 
-## Throughput
-
-Correctness first. Run SAFE_4 first. Then profile provider inference, model load/startup, queue wait, staging/validation, ledger work, specialists, cold audit, 09D compare, and packaging separately.
-
-Only after semantic validity is measured should BALANCED_8/HIGH_12 be evaluated.
-
-Nemo is free for this setup, so do not minimize Nemo supervision. Optimize expensive/scarce external model calls instead.
-
 ## Kanban cards
 
-Create/update concrete cards for:
+Maintain concrete evidence-backed cards for:
 
 - FORENSIC PREFLIGHT
 - MODEL DISCOVERY
 - REGISTRY UPDATE
-- TEST + BUILD CERTIFICATION
+- TEST / CI / BUILD CERTIFICATION
 - PILOT RECONSTRUCTION
 - PRIMARY EXTRACTION
 - BLIND RECALL
@@ -284,53 +297,28 @@ Create/update concrete cards for:
 - FINAL CERTIFICATION
 - PACKAGE / EXECUTIVE REPORT
 
-Do not mark cards complete because a plan exists. Complete means executed with evidence.
+A card is complete only when the work ran and evidence exists.
 
 ## Expansion rule
 
-Do not process the whole 2,724-page Machines textbook until the pilot has:
+Do not process the full Machines textbook until the pilot has source-first gold, measured precision/recall, table metrics, role-specific certification outcomes, independent cold audit, bounded unresolved queues, and passing deterministic gates.
 
-- source-first gold
-- measured precision/recall
-- table-specific metrics
-- role-specific certification results
-- independent cold audit
-- bounded unresolved queues
-- passing deterministic integrity gates
+If the pilot succeeds, stop and recommend the next 25–50 page expansion window. Do not automatically run the whole estate.
 
-If successful, stop and recommend the next 25–50 page expansion window. Do not automatically start the full estate.
+## Final deliverables
 
-## Final deliverable
+Return the mechanically appropriate package:
 
-Return a self-contained execution package appropriate to the mechanically derived state:
+- `FRONTIER_REVIEW_READY_<RUN_ID>.zip`
+- `READY_FOR_PROVIDER_<RUN_ID>.zip`
+- or `REVIEW_PACKAGE_<RUN_ID>.zip`
 
-- `FRONTIER_REVIEW_READY_<RUN_ID>.zip`, or
-- `READY_FOR_PROVIDER_<RUN_ID>.zip`, or
-- `REVIEW_PACKAGE_<RUN_ID>.zip`
+Do not commit source-bearing output ZIPs to this repository. Deliver them through the Kanban/task artifact channel.
 
-Do not commit that ZIP to this repository if it contains source-derived copyrighted text or historical handoff material. Deliver it through the Kanban/task artifact channel instead.
-
-Also produce `EXECUTIVE_RUN_REPORT.md` stating exactly:
-
-1. git branch and commit actually executed;
-2. runtime actually used;
-3. models actually discovered;
-4. models actually used per role;
-5. independence groups;
-6. what failed;
-7. what code was changed;
-8. test/mutation results;
-9. semantic precision/recall;
-10. table-specific performance;
-11. blind-only marginal recall;
-12. cold-audit results;
-13. 09D comparison quality;
-14. runtime/performance;
-15. remaining blockers;
-16. whether expansion is justified.
+Also produce `EXECUTIVE_RUN_REPORT.md` with exact branch/commit/runtime, discovered and used models, independence groups, code changes, tests/CI/mutations, semantic metrics, table metrics, blind-only marginal recall, cold-audit result, 09D quality, role timing/concurrency, measured wall time versus baseline, remaining blockers, and whether expansion is justified.
 
 ## Success condition
 
-The goal is not a green dashboard. The goal is executable evidence that the factory can produce extremely high-recall, high-precision, exactly source-grounded anesthesia assertions at scale while preserving provenance, uncertainty, independence, and a read-only downstream authority boundary.
+The objective is executable evidence that the factory produces extremely high-recall, high-precision, exactly source-grounded anesthesia assertions at scale while preserving provenance, uncertainty, independence, durable state, and read-only downstream governance.
 
-**Begin with forensic preflight and model discovery. Do not stop at planning. Execute.**
+**Begin with forensic preflight and exact model discovery. Do not stop at planning. Execute.**
