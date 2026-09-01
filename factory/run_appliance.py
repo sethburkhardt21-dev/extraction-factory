@@ -40,8 +40,6 @@ def parse_spec(value: str) -> tuple[str, str, str | None]:
     backend, sep, rest = value.partition(":")
     if not sep or not backend or not rest:
         raise SystemExit(f"provider spec must be backend:model or backend:model:FAMILY — got {value!r}")
-    # Ollama model tags contain ':', so only interpret the final token as a legacy
-    # family assertion when it looks like a registry-family identifier.
     model, family = rest, None
     maybe_model, sep2, maybe_family = rest.rpartition(":")
     if sep2 and maybe_family and maybe_family.replace("_", "").isalnum() and maybe_family.upper() == maybe_family:
@@ -49,7 +47,8 @@ def parse_spec(value: str) -> tuple[str, str, str | None]:
     return backend, model, family
 
 
-def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | None = None) -> list[str]:
+def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | None = None,
+                   ollama_keep_alive: str = "30m") -> list[str]:
     backend, model, family = parse_spec(spec)
     command = (
         f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
@@ -57,6 +56,8 @@ def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | Non
     )
     if backend == "ollama" and ollama_think:
         command += f" --ollama-think {ollama_think}"
+    if backend == "ollama":
+        command += f" --ollama-keep-alive {ollama_keep_alive}"
     flags = [
         f"--{prefix}-command", command,
         f"--{prefix}-provider", backend.upper(),
@@ -86,6 +87,12 @@ def main(argv=None) -> int:
     parser.add_argument("--timeout-per-call", type=int, default=900)
     parser.add_argument("--ollama-think", choices=["false", "low", "medium", "high"],
                         help="thinking control applied to every ollama provider in this run")
+    parser.add_argument("--provider-schedule", choices=["auto", "parallel", "phased"], default="auto",
+                        help="auto phases different local models to prevent Ollama VRAM/model-swap thrash")
+    parser.add_argument("--primary-concurrency", type=int)
+    parser.add_argument("--blind-concurrency", type=int)
+    parser.add_argument("--cold-concurrency", type=int, default=1)
+    parser.add_argument("--ollama-keep-alive", default="30m")
     parser.add_argument("--skip-compare", action="store_true")
     args = parser.parse_args(argv)
 
@@ -93,7 +100,13 @@ def main(argv=None) -> int:
     run_cmd = [sys.executable, "-B", "-m", "hermes_factory", "run",
                "--mode", "external-command", "--execution-mode", "HYBRID",
                "--profile", args.profile, "--cold-audit-rate", str(args.cold_audit_rate),
+               "--provider-schedule", args.provider_schedule.upper(),
+               "--cold-concurrency", str(args.cold_concurrency),
                "--output", args.output]
+    if args.primary_concurrency is not None:
+        run_cmd += ["--primary-concurrency", str(args.primary_concurrency)]
+    if args.blind_concurrency is not None:
+        run_cmd += ["--blind-concurrency", str(args.blind_concurrency)]
     if args.pilot:
         run_cmd += ["--pilot", args.pilot]
         source_pdf = args.source_pdf or (str(DEFAULT_BOOK) if DEFAULT_BOOK.exists() else None)
@@ -107,15 +120,13 @@ def main(argv=None) -> int:
             run_cmd += ["--pages", args.pages]
         if args.source_id:
             run_cmd += ["--source-id", args.source_id]
-    # --skip-compare must make the appliance independent of the optional 09D path.
-    # Otherwise a missing/default database can fail the core run before comparison is even skipped.
     if args.database_09d and not args.skip_compare:
         run_cmd += ["--database-09d", args.database_09d]
     run_cmd += ["--provider-timeout", str(args.timeout_per_call + 90)]
-    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call, args.ollama_think)
-    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call, args.ollama_think)
+    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
+    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
     if args.cold:
-        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call, args.ollama_think)
+        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
 
     print(f"[appliance] launching factory run ({args.profile}) ...", flush=True)
     proc = subprocess.run(run_cmd, cwd=FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8")
