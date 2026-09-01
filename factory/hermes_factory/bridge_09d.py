@@ -1,27 +1,71 @@
 from __future__ import annotations
+
+import hashlib
 import sqlite3
 from pathlib import Path
 from typing import Any, Dict
 
+from .contract_09d import R3_TARGET, open_immutable_readonly
+
+
+FOCUSED_TABLES = tuple(R3_TARGET["required_tables"].keys())
+
 
 def open_readonly_sqlite(path: Path) -> sqlite3.Connection:
-    path = Path(path).resolve()
-    uri = f"file:{path.as_posix()}?mode=ro"
-    conn = sqlite3.connect(uri, uri=True)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA query_only=ON")
-    return conn
+    """Compatibility alias for the immutable read-only 09D opener."""
+    return open_immutable_readonly(path)
+
+
+def _schema_sha256(sql: str | None) -> str | None:
+    if sql is None:
+        return None
+    return hashlib.sha256(sql.encode("utf-8")).hexdigest()
 
 
 def inventory_schema_readonly(path: Path) -> Dict[str, Any]:
+    """Return a compact, schema-relevant inventory instead of dumping 276 tables.
+
+    The full database remains the authority. This artifact records the exact
+    objects the extraction/comparison bridge depends on, plus aggregate object
+    counts, without creating a large redundant schema copy in every run package.
+    """
     conn = open_readonly_sqlite(path)
     try:
-        tables = [r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
-        schema = {}
-        for table in tables:
+        object_counts = {
+            kind: int(conn.execute("SELECT count(*) FROM sqlite_master WHERE type=?", (kind,)).fetchone()[0])
+            for kind in ("table", "view", "index", "trigger")
+        }
+        focused: Dict[str, Any] = {}
+        for table in FOCUSED_TABLES:
+            row = conn.execute(
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name=?", (table,)
+            ).fetchone()
+            if row is None:
+                focused[table] = {"present": False}
+                continue
             safe = table.replace('"', '""')
-            schema[table] = [dict(r) for r in conn.execute(f'PRAGMA table_info("{safe}")')]
-        return {"database": str(Path(path)), "mode": "READ_ONLY", "tables": tables, "schema": schema}
+            columns = [dict(r) for r in conn.execute(f'PRAGMA table_xinfo("{safe}")')]
+            foreign_keys = [dict(r) for r in conn.execute(f'PRAGMA foreign_key_list("{safe}")')]
+            indexes = [dict(r) for r in conn.execute(f'PRAGMA index_list("{safe}")')]
+            focused[table] = {
+                "present": True,
+                "schema_sha256": _schema_sha256(row[0]),
+                "columns": columns,
+                "foreign_keys": foreign_keys,
+                "indexes": indexes,
+            }
+        return {
+            "database": str(Path(path).resolve()),
+            "mode": "READ_ONLY_IMMUTABLE",
+            "query_only": int(conn.execute("PRAGMA query_only").fetchone()[0]),
+            "sqlite_version": sqlite3.sqlite_version,
+            "object_counts": object_counts,
+            "focused_schema": focused,
+            "claim_boundary": (
+                "Focused structural inventory only. No mutation, promotion, canonicalization, "
+                "selection, or release authority is implied."
+            ),
+        }
     finally:
         conn.close()
 
@@ -31,7 +75,7 @@ def assert_write_blocked(path: Path) -> bool:
     try:
         try:
             conn.execute("CREATE TABLE __hermes_forbidden_write(x INTEGER)")
-        except sqlite3.OperationalError:
+        except sqlite3.Error:
             return True
         return False
     finally:
