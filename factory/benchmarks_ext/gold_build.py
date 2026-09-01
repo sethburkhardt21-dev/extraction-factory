@@ -58,19 +58,23 @@ def parse_spec(value: str) -> tuple[str, str]:
 
 
 def validate_governed_machines_units(rows: list[SourceUnit]) -> None:
-    """Refuse arbitrary source-unit files under the Machines benchmark label."""
-    observed = {u.source_unit_id: u.content_sha256 for u in rows}
-    if len(rows) != len(EXPECTED_UNIT_HASHES) or observed != EXPECTED_UNIT_HASHES:
-        missing = sorted(set(EXPECTED_UNIT_HASHES) - set(observed))
-        extra = sorted(set(observed) - set(EXPECTED_UNIT_HASHES))
+    """Refuse arbitrary or hash-spoofed source-unit files under the Machines label."""
+    actual = {u.source_unit_id: sha256_text(u.content or "") for u in rows}
+    declared = {u.source_unit_id: str(u.content_sha256 or "") for u in rows}
+    if len(rows) != len(EXPECTED_UNIT_HASHES) or actual != EXPECTED_UNIT_HASHES:
+        missing = sorted(set(EXPECTED_UNIT_HASHES) - set(actual))
+        extra = sorted(set(actual) - set(EXPECTED_UNIT_HASHES))
         wrong = sorted(
-            uid for uid in set(observed) & set(EXPECTED_UNIT_HASHES)
-            if observed[uid] != EXPECTED_UNIT_HASHES[uid]
+            uid for uid in set(actual) & set(EXPECTED_UNIT_HASHES)
+            if actual[uid] != EXPECTED_UNIT_HASHES[uid]
         )
         raise SystemExit(
             f"gold_source_not_exact_governed_machines_pilot:count={len(rows)}:"
-            f"missing={missing}:extra={extra}:wrong_hash={wrong}"
+            f"missing={missing}:extra={extra}:wrong_content_hash={wrong}"
         )
+    declared_mismatch = sorted(uid for uid in actual if declared.get(uid) != actual[uid])
+    if declared_mismatch:
+        raise SystemExit(f"gold_source_declared_content_hash_mismatch:{declared_mismatch}")
     bad_source = sorted(
         u.source_unit_id for u in rows if u.source_sha256 != MACHINES_PILOT_SOURCE_SHA256
     )
