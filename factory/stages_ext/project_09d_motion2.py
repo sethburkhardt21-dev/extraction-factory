@@ -48,6 +48,65 @@ def _required_without_default(columns: list[dict[str, Any]]) -> list[str]:
     )
 
 
+def _schema_mapping_plan(carrier_columns: list[dict[str, Any]], locator_columns: list[dict[str, Any]]) -> dict[str, Any]:
+    """Classify observed target columns by who is allowed to populate them.
+
+    This is descriptive, not executable SQL. Unknown required columns are made
+    explicit so a future 09D-owned loader cannot silently drop them.
+    """
+    carrier_names = {str(c["name"]) for c in carrier_columns}
+    locator_names = {str(c["name"]) for c in locator_columns}
+
+    carrier_mechanical = {
+        "value_text": "factory.proposition",
+        "ingest_locator_id": "projection.projection_locator_id -> 09D loader assigned locator id",
+    }
+    carrier_must_null = {
+        "source_resource_id", "parent_assertion_id", "source_locator_id", "raw_cell_id",
+        "carried_status", "carried_confidence_basis", "carried_source_era",
+    }
+    carrier_adjudication = {"subject_entity_id", "predicate_code", "fact_family"}
+    carrier_loader_owned = {
+        "candidate_id", "intake_package_id", "ingest_state", "created_at", "updated_at",
+        "created_by", "build_id", "run_id", "status", "review_state",
+    }
+
+    locator_mechanical = {
+        "source_id": "factory.source_id",
+        "source_version_id": "factory.source_version_id",
+        "source_sha256": "factory.source_sha256",
+        "content_sha256": "factory.content_sha256",
+        "locator_json": "factory.locator (canonical JSON serialization)",
+        "unit_type": "factory.unit_type",
+        "content_representation": "factory.content_representation",
+    }
+    locator_loader_owned = {"ingest_locator_id", "created_at", "updated_at", "build_id", "run_id"}
+
+    carrier_required = set(_required_without_default(carrier_columns))
+    locator_required = set(_required_without_default(locator_columns))
+    carrier_known = set(carrier_mechanical) | carrier_must_null | carrier_adjudication | carrier_loader_owned
+    locator_known = set(locator_mechanical) | locator_loader_owned
+
+    return {
+        "source_assertion_candidate": {
+            "mechanical": {k: v for k, v in carrier_mechanical.items() if k in carrier_names},
+            "must_be_null_for_motion2_witness": sorted(carrier_must_null & carrier_names),
+            "09d_adjudication_required": sorted(carrier_adjudication & carrier_names),
+            "09d_loader_owned": sorted(carrier_loader_owned & carrier_names),
+            "observed_unclassified_columns": sorted(carrier_names - carrier_known),
+            "required_without_default": sorted(carrier_required),
+            "unclassified_required_columns": sorted(carrier_required - carrier_known),
+        },
+        "ingest_source_locator": {
+            "mechanical": {k: v for k, v in locator_mechanical.items() if k in locator_names},
+            "09d_loader_owned": sorted(locator_loader_owned & locator_names),
+            "observed_unclassified_columns": sorted(locator_names - locator_known),
+            "required_without_default": sorted(locator_required),
+            "unclassified_required_columns": sorted(locator_required - locator_known),
+        },
+    }
+
+
 def _comparison_by_candidate(run_dir: Path) -> dict[str, dict[str, Any]]:
     rows = _read_jsonl(run_dir / "09D" / "comparison_09d.jsonl")
     return {str(r.get("candidate_id")): r for r in rows if r.get("candidate_id")}
@@ -65,6 +124,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
     table_schema = schema.get("schema", {})
     carrier_columns = table_schema.get("source_assertion_candidate", [])
     locator_columns = table_schema.get("ingest_source_locator", [])
+    mapping_plan = _schema_mapping_plan(carrier_columns, locator_columns)
 
     source_by_id = {str(u.get("source_unit_id")): u for u in source_units}
     locator_rows: list[dict[str, Any]] = []
@@ -119,8 +179,6 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         if predicate_resolution.get("mode") == "EXACT_CODE_OR_LABEL":
             exact_predicate_resolution += 1
 
-        # These are resolution *candidates*, never selected identities. Even a
-        # unique exact alias remains a proposal for the downstream 09D authority.
         identity_candidates = []
         seen = set()
         for entity_id in resolved_ids:
@@ -197,11 +255,16 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
     required_tables_ok = bool(capability.get("required_tables_present"))
     witness_ok = bool(capability.get("motion2_witness_columns_present") and capability.get("motion2_witness_constraint_present"))
     evidence_ok_all = not projection_errors
-    projection_status = (
-        "SCHEMA_COMPATIBLE_NEEDS_GOVERNED_09D_LOADER"
-        if required_tables_ok and witness_ok and evidence_ok_all
-        else "PROJECTION_REVIEW_REQUIRED"
+    mapping_gaps = (
+        mapping_plan["source_assertion_candidate"]["unclassified_required_columns"]
+        or mapping_plan["ingest_source_locator"]["unclassified_required_columns"]
     )
+    if not (required_tables_ok and witness_ok and evidence_ok_all):
+        projection_status = "PROJECTION_REVIEW_REQUIRED"
+    elif mapping_gaps:
+        projection_status = "SCHEMA_COMPATIBLE_MAPPING_GAPS"
+    else:
+        projection_status = "SCHEMA_COMPATIBLE_NEEDS_GOVERNED_09D_LOADER"
 
     summary = {
         "stage": "READ_ONLY_09D_MOTION2_PROJECTION",
@@ -219,6 +282,7 @@ def build_projection(run_dir: Path, database: Path) -> dict[str, Any]:
         "target_schema_fit": {
             "source_assertion_candidate_required_without_default": _required_without_default(carrier_columns),
             "ingest_source_locator_required_without_default": _required_without_default(locator_columns),
+            "mapping_plan": mapping_plan,
         },
         "governance": {
             "direct_09d_insert_allowed": False,
