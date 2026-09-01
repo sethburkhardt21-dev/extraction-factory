@@ -23,14 +23,20 @@ def _schema_sha256(sql: str | None) -> str | None:
 
 
 def inventory_schema_readonly(path: Path) -> Dict[str, Any]:
-    """Return a compact, schema-relevant inventory instead of dumping 276 tables.
+    """Return a compact schema-relevant inventory.
 
-    The full database remains the authority. This artifact records the exact
-    objects the extraction/comparison bridge depends on, plus aggregate object
-    counts, without creating a large redundant schema copy in every run package.
+    ``focused_schema`` carries detailed metadata only for objects the bridge
+    depends on. ``tables`` remains as a lightweight name/hash index for backward
+    compatibility; it intentionally does not copy hundreds of full CREATE
+    statements or column lists into every run artifact.
     """
     conn = open_readonly_sqlite(path)
     try:
+        table_rows = list(conn.execute("SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name"))
+        table_index = {
+            str(row[0]): {"schema_sha256": _schema_sha256(row[1])}
+            for row in table_rows
+        }
         object_counts = {
             kind: int(conn.execute("SELECT count(*) FROM sqlite_master WHERE type=?", (kind,)).fetchone()[0])
             for kind in ("table", "view", "index", "trigger")
@@ -60,6 +66,7 @@ def inventory_schema_readonly(path: Path) -> Dict[str, Any]:
             "query_only": int(conn.execute("PRAGMA query_only").fetchone()[0]),
             "sqlite_version": sqlite3.sqlite_version,
             "object_counts": object_counts,
+            "tables": table_index,
             "focused_schema": focused,
             "claim_boundary": (
                 "Focused structural inventory only. No mutation, promotion, canonicalization, "
