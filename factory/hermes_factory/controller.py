@@ -185,7 +185,7 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
             receipt["attempt"] = attempt
             receipt["controller_duration_seconds"] = round(time.perf_counter() - started, 3)
             payload = "".join(json.dumps(c.to_dict(), ensure_ascii=False, sort_keys=True) + "\n" for c in candidates)
-            staged = stage_artifact(run_dir if False else staging_root, work_id=work_id, run_id=run_id,
+            staged = stage_artifact(staging_root, work_id=work_id, run_id=run_id,
                                     files={"candidates.jsonl": payload, "worker_receipt.json": receipt})
             artifact_id = ledger.register_staged_artifact(work_id, lease_id, run_id, staged["path"], staged["manifest_sha256"])
             ledger.begin_validation(work_id, lease_id, artifact_id)
