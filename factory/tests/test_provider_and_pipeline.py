@@ -44,8 +44,8 @@ class PipelineTests(unittest.TestCase):
             u=SourceUnit(source_unit_id="U",source_id="S",source_version_id="V",source_sha256=source_sha,unit_type="PARAGRAPH",content_representation="TEXT",locator={"pdf_pages":[1]},content_sha256=sha256_text(content),content=content)
             sup=td/"units.jsonl";write_source_units([u],sup)
             project=Path(__file__).resolve().parents[1]
-            with patch("hermes_factory.controller.verify_build", return_value={"result":"PASS","errors":[]}), \
-                 patch("hermes_factory.controller.verify_runtime_lock", return_value={"result":"PASS","errors":[]}):
+            with patch("hermes_factory.controller_v14.verify_build", return_value={"result":"PASS","errors":[]}), \
+                 patch("hermes_factory.controller_v14.verify_runtime_lock", return_value={"result":"PASS","errors":[]}):
                 result=run_factory(project_root=project,source_units_path=sup,primary_provider=DeterministicFixtureProvider("PRIMARY"),blind_provider=DeterministicFixtureProvider("BLIND_RECALL"),output_root=td/"out",mode="OFFLINE_FIXTURE",source_pdf=source,source_expected_sha256=source_sha)
             self.assertTrue(Path(result["package"]["path"]).exists())
             self.assertEqual(result["readiness"]["status"],"READY_FOR_PROVIDER")
