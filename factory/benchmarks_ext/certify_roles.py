@@ -7,7 +7,8 @@ such reports from source units, gold, registry, and candidate files. Explicit
 recomputation succeeds.
 
 Passing W2/S1 roles are at most CERTIFIED_WITH_LIMITS because E3 and W3/S3 are
-outside the mechanically measured scope.
+outside the mechanically measured scope. A passing score is additionally blocked
+from certification when the exact model version/weights are not immutably bound.
 """
 from __future__ import annotations
 
@@ -72,6 +73,19 @@ def decide_blind(metrics: dict) -> tuple[str, list[str]]:
     return ("CERTIFIED_WITH_LIMITS" if not failures else "REJECTED"), failures
 
 
+def apply_version_binding_gate(score: dict, status: str, failures: list[str]) -> tuple[str, list[str]]:
+    """A metrics pass cannot become a reusable certificate without immutable model identity."""
+    if status not in {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}:
+        return status, failures
+    identity = score.get("scored_identity") or {}
+    if identity.get("version_binding_certifiable") is True:
+        return status, failures
+    policy = str(identity.get("observed_version_policy") or "MISSING")
+    observed = str(identity.get("observed_version") or "MISSING")
+    reason = f"model_version_binding_not_certifiable:policy={policy}:observed={observed}"
+    return "BLOCKED_EXTERNAL", [*failures, reason]
+
+
 def expected_w2s1_scope(source_units_path: Path, manifest: dict) -> list[str]:
     source_by_id, _ = load_source_units_verified(source_units_path, manifest)
     out = []
@@ -129,7 +143,7 @@ def verify_score_pair(*, primary_score_path: Path, blind_score_path: Path, prima
     if blind.get("primary_candidate_file_sha256") != primary.get("candidate_file_sha256"): raise ValueError("blind_primary_baseline_file_does_not_match_primary_score")
     if blind.get("primary_baseline_identity") != primary.get("scored_identity"): raise ValueError("blind_primary_baseline_identity_does_not_match_primary_score")
     return primary, blind, {
-        "verification_schema_version": "hermes-role-certification-input-verification-1.0",
+        "verification_schema_version": "hermes-role-certification-input-verification-1.1",
         "recomputation_verified": True, "W2_S1_scope": expected_scope,
         "primary": p_receipt, "blind": b_receipt,
     }
@@ -217,6 +231,9 @@ def main(argv=None) -> int:
     if args.blind_provider and args.blind_provider.upper() != b_provider.upper(): print(f"blind provider assertion mismatch:{args.blind_provider}!={b_provider}", file=sys.stderr); return 4
 
     p_status, p_fail = decide_primary(primary["metrics"]); b_status, b_fail = decide_blind(blind["metrics"])
+    p_status, p_fail = apply_version_binding_gate(primary, p_status, p_fail)
+    b_status, b_fail = apply_version_binding_gate(blind, b_status, b_fail)
+
     registry_path = Path(args.registry); registry = json.loads(registry_path.read_text(encoding="utf-8")); registry["benchmark_version"] = BENCHMARK_VERSION
     certs = registry.setdefault("certifications", {})
     def key(provider: str, model: str, role: str) -> str: return "|".join([provider.upper(), model, role, "W2", "S1", BENCHMARK_VERSION])
@@ -225,10 +242,12 @@ def main(argv=None) -> int:
         key(b_provider, blind["model"], "BLIND_RECALL"): build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
     }
     certs.update(changes); role_status = registry.setdefault("role_status", {}); role_status["PRIMARY_W2"] = p_status; role_status["BLIND_RECALL_W2"] = b_status
-    registry["claim_boundary"] = "Certifications are model/role/work/source/benchmark specific. Applied certification requires source-bound deterministic score recomputation. W3/S3, PRECISION_REVIEW and COLD_AUDIT remain outside this certification."
+    registry["claim_boundary"] = "Certifications are model-version/role/work/source/benchmark specific. Applied certification requires source-bound deterministic score recomputation and immutable model-version binding. W3/S3, PRECISION_REVIEW and COLD_AUDIT remain outside this certification."
     output = {
-        "primary": {"model": primary["model"], "provider": p_provider, "status": p_status, "failures": p_fail},
-        "blind": {"model": blind["model"], "provider": b_provider, "status": b_status, "failures": b_fail},
+        "primary": {"model": primary["model"], "provider": p_provider, "status": p_status, "failures": p_fail,
+                    "observed_version": p_identity.get("observed_version")},
+        "blind": {"model": blind["model"], "provider": b_provider, "status": b_status, "failures": b_fail,
+                  "observed_version": b_identity.get("observed_version")},
         "registry_keys_written": sorted(changes), "input_recomputation_verified": bool(verification),
         "verification": verification, "applied": bool(args.apply),
     }

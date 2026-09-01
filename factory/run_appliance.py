@@ -16,6 +16,14 @@ Model family/independence are resolved from the protected model registry, never
 trusted from CLI text. A legacy FAMILY suffix is treated only as an assertion and
 must match the registry or the run is rejected.
 
+For Ollama, the appliance resolves the exact model digest from the same daemon
+used for inference and places that immutable digest in WorkerIdentity.observed_version.
+Each semantic request is delegated through ollama_digest_guard.py, which requires
+the same tag digest immediately before and after the provider request before its
+stdout is released to Hermes. Hosted aliases without an immutable provider version
+remain explicitly unpinned: they may execute and be descriptively benchmarked but
+cannot inherit a reusable semantic role certificate.
+
 The operator experience: start it, leave it, return to a governed review
 package whose readiness status was derived fail-closed by the factory, never
 authored by a model or by this script.
@@ -24,9 +32,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 FACTORY_ROOT = Path(__file__).resolve().parent
@@ -35,6 +46,7 @@ DEFAULT_09D = (
     / "Project_09D_Milestone_A_Verified_Evidence_Checkpoint_v2" / "database" / "final_s03.sqlite"
 )
 DEFAULT_BOOK = Path(r"C:\Users\sethb\Downloads\School Resources\Machines Textbook.pdf")
+OLLAMA_DIGEST_RE = re.compile(r"^(?:sha256:)?([0-9a-f]{64})$", re.IGNORECASE)
 
 
 def parse_spec(value: str) -> tuple[str, str, str | None]:
@@ -45,25 +57,80 @@ def parse_spec(value: str) -> tuple[str, str, str | None]:
     maybe_model, sep2, maybe_family = rest.rpartition(":")
     if sep2 and maybe_family and maybe_family.replace("_", "").isalnum() and maybe_family.upper() == maybe_family:
         model, family = maybe_model, maybe_family
-    return backend, model, family
+    return backend.lower(), model, family
 
 
-def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | None = None,
-                   ollama_keep_alive: str = "30m") -> list[str]:
-    backend, model, family = parse_spec(spec)
-    command = (
-        f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
-        f"--backend {backend} --model {model} --timeout {timeout}"
-    )
-    if backend == "ollama" and ollama_think:
-        command += f" --ollama-think {ollama_think}"
+def normalize_ollama_host(host: str) -> str:
+    value = str(host or "").strip().rstrip("/")
+    if not value:
+        value = "http://127.0.0.1:11434"
+    if "://" not in value:
+        value = "http://" + value
+    return value
+
+
+def resolve_ollama_digest(model: str, host: str, *, timeout: int = 15) -> str:
+    """Resolve an exact Ollama tag to its immutable digest from the inference host."""
+    host = normalize_ollama_host(host)
+    req = urllib.request.Request(host + "/api/tags", method="GET")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    rows = payload.get("models")
+    if not isinstance(rows, list):
+        raise RuntimeError("ollama_tags_response_missing_models")
+    matches = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        names = {str(row.get("name") or ""), str(row.get("model") or "")}
+        if model in names:
+            matches.append(row)
+    if len(matches) != 1:
+        raise RuntimeError(f"ollama_model_digest_resolution_failed:{model}:matches={len(matches)}")
+    digest = str(matches[0].get("digest") or "").strip()
+    m = OLLAMA_DIGEST_RE.fullmatch(digest)
+    if not m:
+        raise RuntimeError(f"ollama_model_digest_invalid:{model}:{digest}")
+    return "sha256:" + m.group(1).lower()
+
+
+def resolve_observed_version(backend: str, model: str, explicit: str | None, ollama_host: str) -> str:
+    backend = backend.lower()
     if backend == "ollama":
-        command += f" --ollama-keep-alive {ollama_keep_alive}"
+        measured = resolve_ollama_digest(model, ollama_host)
+        if explicit and explicit.strip() and explicit.strip().lower() != measured.lower():
+            raise RuntimeError(f"ollama_explicit_version_mismatch:{model}:{explicit}!={measured}")
+        return measured
+    if backend == "echo":
+        return explicit.strip() if explicit and explicit.strip() else "echo-fixture-v1"
+    if explicit and explicit.strip():
+        return explicit.strip()
+    return f"UNPINNED_ALIAS:{model}"
+
+
+def provider_flags(prefix: str, spec: str, timeout: int, *, explicit_version: str | None = None,
+                   ollama_think: str | None = None, ollama_keep_alive: str = "30m",
+                   ollama_host: str = "http://127.0.0.1:11434") -> list[str]:
+    backend, model, family = parse_spec(spec)
+    observed_version = resolve_observed_version(backend, model, explicit_version, ollama_host)
+    if backend == "ollama":
+        command = (
+            f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "ollama_digest_guard.py"}" '
+            f"--model {model} --expected-digest {observed_version} --timeout {timeout} "
+            f"--ollama-host {normalize_ollama_host(ollama_host)} --ollama-keep-alive {ollama_keep_alive}"
+        )
+        if ollama_think:
+            command += f" --ollama-think {ollama_think}"
+    else:
+        command = (
+            f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
+            f"--backend {backend} --model {model} --timeout {timeout}"
+        )
     flags = [
         f"--{prefix}-command", command,
         f"--{prefix}-provider", backend.upper(),
         f"--{prefix}-model", model,
-        f"--{prefix}-version", "CLI_OBSERVED",
+        f"--{prefix}-version", observed_version,
     ]
     if family:
         flags += [f"--{prefix}-family", family]
@@ -78,6 +145,9 @@ def main(argv=None) -> int:
     parser.add_argument("--primary", required=True, help="backend:model (legacy backend:model:FAMILY is verified against registry)")
     parser.add_argument("--blind", required=True, help="backend:model (legacy backend:model:FAMILY is verified against registry)")
     parser.add_argument("--cold", help="backend:model (independent cold auditor; family comes from registry)")
+    parser.add_argument("--primary-version", help="optional asserted immutable version; Ollama assertion must equal measured digest")
+    parser.add_argument("--blind-version", help="optional asserted immutable version; Ollama assertion must equal measured digest")
+    parser.add_argument("--cold-version", help="optional asserted immutable version; Ollama assertion must equal measured digest")
     parser.add_argument("--pilot", choices=["machines"], help="use the bundled Machines p299-301 pilot")
     parser.add_argument("--source-pdf")
     parser.add_argument("--pages")
@@ -86,6 +156,8 @@ def main(argv=None) -> int:
     parser.add_argument("--output", default=str(FACTORY_ROOT.parent / "runs"))
     parser.add_argument("--cold-audit-rate", type=float, default=0.25)
     parser.add_argument("--timeout-per-call", type=int, default=900)
+    parser.add_argument("--ollama-host", default=os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434"),
+                        help="Ollama daemon used for both digest resolution and inference")
     parser.add_argument("--ollama-think", choices=["false", "low", "medium", "high"],
                         help="thinking control applied to every ollama provider in this run")
     parser.add_argument("--provider-schedule", choices=["auto", "parallel", "phased"], default="auto",
@@ -126,10 +198,26 @@ def main(argv=None) -> int:
     if args.database_09d and not args.skip_compare:
         run_cmd += ["--database-09d", args.database_09d]
     run_cmd += ["--provider-timeout", str(args.timeout_per_call + 90)]
-    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
-    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
-    if args.cold:
-        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
+    try:
+        run_cmd += provider_flags(
+            "primary", args.primary, args.timeout_per_call,
+            explicit_version=args.primary_version, ollama_think=args.ollama_think,
+            ollama_keep_alive=args.ollama_keep_alive, ollama_host=args.ollama_host,
+        )
+        run_cmd += provider_flags(
+            "blind", args.blind, args.timeout_per_call,
+            explicit_version=args.blind_version, ollama_think=args.ollama_think,
+            ollama_keep_alive=args.ollama_keep_alive, ollama_host=args.ollama_host,
+        )
+        if args.cold:
+            run_cmd += provider_flags(
+                "cold", args.cold, args.timeout_per_call,
+                explicit_version=args.cold_version, ollama_think=args.ollama_think,
+                ollama_keep_alive=args.ollama_keep_alive, ollama_host=args.ollama_host,
+            )
+    except (RuntimeError, OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"[appliance] provider version resolution FAILED: {exc}", file=sys.stderr)
+        return 2
 
     print(f"[appliance] launching factory run ({args.profile}) ...", flush=True)
     proc = subprocess.run(run_cmd, cwd=FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8")
@@ -197,7 +285,7 @@ def main(argv=None) -> int:
     # This summary is written BEFORE packaging so the self-contained archive
     # records exactly which optional downstream stages ran and what they found.
     run_summary = {
-        "schema_version": "hermes-appliance-run-summary-1.0",
+        "schema_version": "hermes-appliance-run-summary-1.1",
         "run_id": result["run_id"],
         "run_dir_name": run_dir.name,
         "readiness_status": status,
@@ -240,7 +328,7 @@ def main(argv=None) -> int:
     # APPLIANCE_RUN_SUMMARY above contains all pre-package run/stage outcomes.
     outcome = dict(run_summary)
     outcome.update({
-        "schema_version": "hermes-appliance-outcome-1.0",
+        "schema_version": "hermes-appliance-outcome-1.1",
         "final_package": str(final_zip) if package_ok else None,
         "final_package_verified": verify_ok,
         "wall_seconds": round(time.time() - started, 1),
