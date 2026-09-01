@@ -1,19 +1,19 @@
 """One canonical start command for the integrated frontier extraction factory.
 
     python run_appliance.py --profile SAFE_4 \
-        --primary claude:claude-opus-5:ANTHROPIC_CLAUDE \
-        --blind   ollama:qwen2.5vl:latest:QWEN \
-        --cold    ollama:deepseek-r1:14b:DEEPSEEK
+        --primary claude:claude-opus-5 \
+        --blind   ollama:nuextract3-q8:latest \
+        --cold    ollama:deepseek-r1:14b
 
 Chain: certified Hermes runtime (register → lease → dispatch → blind allowlist →
 stage → CAS commit → union → families → specialists → precision → routing →
 deterministic + independent semantic cold audit → readiness) → read-only 09D
 comparison stage → final self-contained offline review ZIP.
 
-Provider specs are backend:model:FAMILY — first ':' splits the backend, last
-':' splits the declared model family, everything between is the model name
-(Ollama tags may contain ':'). The FAMILY drives the INDEPENDENCE and
-COLD_AUDIT gates; declare it truthfully.
+Provider specs are backend:model (preferred) or legacy backend:model:FAMILY.
+Model family/independence are resolved from the protected model registry, never
+trusted from CLI text. A legacy FAMILY suffix is treated only as an assertion and
+must match the registry or the run is rejected.
 
 The operator experience: start it, leave it, return to a governed review
 package whose readiness status was derived fail-closed by the factory, never
@@ -36,15 +36,19 @@ DEFAULT_09D = (
 DEFAULT_BOOK = Path(r"C:\Users\sethb\Downloads\School Resources\Machines Textbook.pdf")
 
 
-def parse_spec(value: str) -> tuple[str, str, str]:
-    backend, _, rest = value.partition(":")
-    model, _, family = rest.rpartition(":")
-    if not backend or not model or not family:
-        raise SystemExit(f"provider spec must be backend:model:FAMILY — got {value!r}")
+def parse_spec(value: str) -> tuple[str, str, str | None]:
+    backend, sep, rest = value.partition(":")
+    if not sep or not backend or not rest:
+        raise SystemExit(f"provider spec must be backend:model or backend:model:FAMILY — got {value!r}")
+    model, family = rest, None
+    maybe_model, sep2, maybe_family = rest.rpartition(":")
+    if sep2 and maybe_family and maybe_family.replace("_", "").isalnum() and maybe_family.upper() == maybe_family:
+        model, family = maybe_model, maybe_family
     return backend, model, family
 
 
-def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | None = None) -> list[str]:
+def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | None = None,
+                   ollama_keep_alive: str = "30m") -> list[str]:
     backend, model, family = parse_spec(spec)
     command = (
         f'"{sys.executable}" -B "{FACTORY_ROOT / "providers_ext" / "llm_provider.py"}" '
@@ -52,13 +56,16 @@ def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | Non
     )
     if backend == "ollama" and ollama_think:
         command += f" --ollama-think {ollama_think}"
+    if backend == "ollama":
+        command += f" --ollama-keep-alive {ollama_keep_alive}"
     flags = [
         f"--{prefix}-command", command,
         f"--{prefix}-provider", backend.upper(),
         f"--{prefix}-model", model,
-        f"--{prefix}-family", family,
         f"--{prefix}-version", "CLI_OBSERVED",
     ]
+    if family:
+        flags += [f"--{prefix}-family", family]
     if backend == "ollama":
         flags.append(f"--{prefix}-local")
     return flags
@@ -67,9 +74,9 @@ def provider_flags(prefix: str, spec: str, timeout: int, ollama_think: str | Non
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="run_appliance", description=__doc__.splitlines()[0])
     parser.add_argument("--profile", choices=["SAFE_4", "BALANCED_8", "HIGH_12"], default="SAFE_4")
-    parser.add_argument("--primary", required=True, help="backend:model:FAMILY")
-    parser.add_argument("--blind", required=True, help="backend:model:FAMILY")
-    parser.add_argument("--cold", help="backend:model:FAMILY (independent cold auditor)")
+    parser.add_argument("--primary", required=True, help="backend:model (legacy backend:model:FAMILY is verified against registry)")
+    parser.add_argument("--blind", required=True, help="backend:model (legacy backend:model:FAMILY is verified against registry)")
+    parser.add_argument("--cold", help="backend:model (independent cold auditor; family comes from registry)")
     parser.add_argument("--pilot", choices=["machines"], help="use the bundled Machines p299-301 pilot")
     parser.add_argument("--source-pdf")
     parser.add_argument("--pages")
@@ -80,6 +87,12 @@ def main(argv=None) -> int:
     parser.add_argument("--timeout-per-call", type=int, default=900)
     parser.add_argument("--ollama-think", choices=["false", "low", "medium", "high"],
                         help="thinking control applied to every ollama provider in this run")
+    parser.add_argument("--provider-schedule", choices=["auto", "parallel", "phased"], default="auto",
+                        help="auto phases different local models to prevent Ollama VRAM/model-swap thrash")
+    parser.add_argument("--primary-concurrency", type=int)
+    parser.add_argument("--blind-concurrency", type=int)
+    parser.add_argument("--cold-concurrency", type=int, default=1)
+    parser.add_argument("--ollama-keep-alive", default="30m")
     parser.add_argument("--skip-compare", action="store_true")
     args = parser.parse_args(argv)
 
@@ -87,7 +100,13 @@ def main(argv=None) -> int:
     run_cmd = [sys.executable, "-B", "-m", "hermes_factory", "run",
                "--mode", "external-command", "--execution-mode", "HYBRID",
                "--profile", args.profile, "--cold-audit-rate", str(args.cold_audit_rate),
+               "--provider-schedule", args.provider_schedule.upper(),
+               "--cold-concurrency", str(args.cold_concurrency),
                "--output", args.output]
+    if args.primary_concurrency is not None:
+        run_cmd += ["--primary-concurrency", str(args.primary_concurrency)]
+    if args.blind_concurrency is not None:
+        run_cmd += ["--blind-concurrency", str(args.blind_concurrency)]
     if args.pilot:
         run_cmd += ["--pilot", args.pilot]
         source_pdf = args.source_pdf or (str(DEFAULT_BOOK) if DEFAULT_BOOK.exists() else None)
@@ -101,13 +120,13 @@ def main(argv=None) -> int:
             run_cmd += ["--pages", args.pages]
         if args.source_id:
             run_cmd += ["--source-id", args.source_id]
-    if args.database_09d:
+    if args.database_09d and not args.skip_compare:
         run_cmd += ["--database-09d", args.database_09d]
     run_cmd += ["--provider-timeout", str(args.timeout_per_call + 90)]
-    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call, args.ollama_think)
-    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call, args.ollama_think)
+    run_cmd += provider_flags("primary", args.primary, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
+    run_cmd += provider_flags("blind", args.blind, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
     if args.cold:
-        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call, args.ollama_think)
+        run_cmd += provider_flags("cold", args.cold, args.timeout_per_call, args.ollama_think, args.ollama_keep_alive)
 
     print(f"[appliance] launching factory run ({args.profile}) ...", flush=True)
     proc = subprocess.run(run_cmd, cwd=FACTORY_ROOT, capture_output=True, text=True, encoding="utf-8")

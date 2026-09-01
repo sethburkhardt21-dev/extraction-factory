@@ -8,14 +8,9 @@ Contract (hermes_factory.providers.command.JSONCommandProvider):
 Backends:
   claude  — Anthropic Claude via the local `claude` CLI (non-interactive -p).
   ollama  — any local Ollama model via the localhost HTTP API.
-  echo    — deterministic sentence splitter for wrapper self-tests only
-            (mirrors the fixture provider; never an empirical claim).
+  echo    — deterministic sentence splitter for wrapper self-tests only.
 
-The wrapper enforces the factory's hard evidence rule BEFORE emitting:
-every assertion's `evidence` must be an exact contiguous substring of the
-source-unit content. Assertions that fail after whitespace-exact recovery
-are dropped into provider_diagnostics.rejected — never silently repaired
-into something the model did not say, and never allowed to abort the unit.
+The wrapper enforces exact-source evidence before emitting candidates.
 """
 from __future__ import annotations
 
@@ -33,8 +28,8 @@ MAX_ASSERTIONS_PER_UNIT = 60
 
 RESPONSE_SCHEMA_HINT = """Return ONLY one JSON object, no markdown fences, no commentary:
 {"assertions": [
-  {"proposition": str,            // atomic restatement; see preservation rules
-   "evidence": str,               // EXACT contiguous verbatim substring of CONTENT
+  {"proposition": str,
+   "evidence": str,
    "subject": str|null,
    "predicate": str|null,
    "object_value": str|null,
@@ -49,24 +44,20 @@ RESPONSE_SCHEMA_HINT = """Return ONLY one JSON object, no markdown fences, no co
    "uncertainty_flags": [str]}
 ]}"""
 
+TABLE_EXTRACTION_RULES = """TABLE-SPECIFIC HARD RULES:
+1. Treat flattened table text as structurally ambiguous unless row and column labels are explicit in the evidence span.
+2. Every table assertion must name the row entity, the column/parameter, and the value/unit together.
+3. Evidence must include enough contiguous table text to show the row label and the relevant column/value; never bind a naked number to a neighboring parameter by position alone.
+4. Preserve table temperature/pressure qualifiers, footnotes, ranges, and units exactly.
+5. If row/column binding cannot be proven from the supplied text layer, do not guess: emit an uncertainty flag `TABLE_BINDING_AMBIGUOUS` or omit the assertion for specialist visual review.
+"""
+
 PRESERVATION_RULES = """HARD RULES:
-1. `evidence` must be copied verbatim from CONTENT — exact characters, casing,
-   punctuation, internal spacing. Prefer one complete sentence per assertion.
-2. The `proposition` must preserve VERBATIM every item that appears in its
-   evidence span: every number with its unit (e.g. "760 mm Hg", "20°C"),
-   every qualifier cue word (not, no, neither, nor, without, never, except,
-   unless, only, may, might, can, could, should, must, if, when, usually,
-   often, commonly, rarely, sometimes, always, more, less, greater, lower,
-   higher, before, after, during, while, until), and every relationship cue
-   (increases, decreases, raises, lowers, reduces, depends on, unaffected by,
-   equals, causes, results in, leads to, associated with).
-3. One atomic claim per assertion. Split compound sentences into multiple
-   assertions that may share the same evidence sentence.
-4. Use ONLY the supplied CONTENT. No outside knowledge, no inference beyond
-   the text. If something is ambiguous, add a short uncertainty flag instead
-   of guessing.
-5. Cover the entire CONTENT: every factual statement, definition, numeric
-   relationship, and caption fact should yield at least one assertion."""
+1. `evidence` must be copied verbatim from CONTENT — exact characters, casing, punctuation, internal spacing.
+2. The `proposition` must preserve VERBATIM every number/unit, qualifier cue, and relationship cue present in its evidence.
+3. One atomic claim per assertion. Split compound sentences into multiple assertions that may share the same evidence sentence.
+4. Use ONLY the supplied CONTENT. No outside knowledge. If ambiguous, flag uncertainty rather than guessing.
+5. Cover the entire CONTENT: every factual statement, definition, numeric relationship, and caption fact should yield at least one assertion."""
 
 
 def _sha256(text: str) -> str:
@@ -81,12 +72,10 @@ def build_prompt(request: dict) -> tuple[str, str]:
         target = request.get("audit_target") or {}
         system = (
             "You are an independent skeptical auditor inside a governed factory. "
-            "You judge only from the supplied source bytes. When not affirmatively "
-            "convinced, you mark the candidate unsupported."
+            "You judge only from the supplied source bytes. When not affirmatively convinced, mark unsupported."
         )
         user = (
-            f"TASK: {instructions}\n\n"
-            f"SOURCE UNIT ID: {unit['source_unit_id']}\n"
+            f"TASK: {instructions}\n\nSOURCE UNIT ID: {unit['source_unit_id']}\n"
             f"SOURCE CONTENT:\n<<<CONTENT_START>>>\n{unit['content']}\n<<<CONTENT_END>>>\n\n"
             "CANDIDATE UNDER AUDIT:\n"
             f"  proposition: {target.get('proposition')}\n"
@@ -97,15 +86,12 @@ def build_prompt(request: dict) -> tuple[str, str]:
         return system, user
     system = (
         "You are a precision extraction worker inside a governed factory. "
-        "Your output is noncanonical candidate data that later review stages depend on. "
-        "Faithfulness to the source bytes outranks fluency."
+        "Your output is noncanonical candidate data. Faithfulness to source bytes outranks fluency."
     )
+    table_rules = TABLE_EXTRACTION_RULES if str(unit.get("content_representation") or "").upper() == "TABLE" else ""
     user = (
-        f"ROLE: {role}\n"
-        f"TASK: {instructions}\n\n"
-        f"{PRESERVATION_RULES}\n\n"
-        f"{RESPONSE_SCHEMA_HINT}\n\n"
-        f"SOURCE UNIT ID: {unit['source_unit_id']}\n"
+        f"ROLE: {role}\nTASK: {instructions}\n\n{PRESERVATION_RULES}\n\n{table_rules}\n\n"
+        f"{RESPONSE_SCHEMA_HINT}\n\nSOURCE UNIT ID: {unit['source_unit_id']}\n"
         f"REPRESENTATION: {unit.get('content_representation')}\n"
         f"CONTENT:\n<<<CONTENT_START>>>\n{unit['content']}\n<<<CONTENT_END>>>"
     )
@@ -154,8 +140,7 @@ def call_claude(model: str, system: str, user: str, timeout: int) -> str:
     prompt = system + "\n\n" + user
     proc = subprocess.run(
         [exe, "--model", model, "-p", "--output-format", "json"],
-        input=prompt, capture_output=True, text=True, encoding="utf-8",
-        timeout=timeout,
+        input=prompt, capture_output=True, text=True, encoding="utf-8", timeout=timeout,
     )
     if proc.returncode != 0:
         raise RuntimeError(f"claude_cli_failed:rc={proc.returncode}:stderr={proc.stderr[-2000:]}")
@@ -168,7 +153,7 @@ def call_claude(model: str, system: str, user: str, timeout: int) -> str:
 
 
 def call_ollama(model: str, system: str, user: str, timeout: int, host: str,
-                think: str | None = None) -> str:
+                think: str | None = None, keep_alive: str = "30m", temperature: float = 0.0) -> str:
     payload = {
         "model": model,
         "messages": [
@@ -176,7 +161,8 @@ def call_ollama(model: str, system: str, user: str, timeout: int, host: str,
             {"role": "user", "content": user},
         ],
         "stream": False,
-        "options": {"temperature": 0.2, "num_ctx": 16384, "num_predict": 8192},
+        "keep_alive": keep_alive,
+        "options": {"temperature": temperature, "num_ctx": 16384, "num_predict": 8192},
     }
     if think is not None:
         payload["think"] = False if think == "false" else think
@@ -213,11 +199,6 @@ _PUNCT_MAP = str.maketrans({
 
 
 def _recover_span(evidence: str, content: str) -> str | None:
-    """Locate the source span the model plainly meant and return the SOURCE's
-    own bytes for it — never the model's rendition. Escalating tolerance:
-    trim → whitespace-collapse → case-insensitive → typography-normalized.
-    Each step requires a UNIQUE match; ambiguity rejects rather than guesses.
-    """
     trimmed = evidence.strip()
     if trimmed and trimmed in content:
         return trimmed
@@ -286,7 +267,11 @@ def run(argv=None) -> int:
     parser.add_argument("--max-retries", type=int, default=1)
     parser.add_argument("--ollama-host", default="http://127.0.0.1:11434")
     parser.add_argument("--ollama-think", choices=["false", "low", "medium", "high"],
-                        help="thinking control for Ollama reasoning models (false disables; low/medium/high set effort)")
+                        help="thinking control for Ollama reasoning models")
+    parser.add_argument("--ollama-keep-alive", default="30m",
+                        help="Ollama model residency duration; keeps a role model hot across a phase")
+    parser.add_argument("--temperature", type=float, default=0.0,
+                        help="sampling temperature; extraction defaults deterministic")
     args = parser.parse_args(argv)
 
     stdin = sys.stdin
@@ -313,14 +298,14 @@ def run(argv=None) -> int:
                 raw_text = json.dumps(parsed)
             else:
                 suffix = "" if attempts == 1 else (
-                    "\n\nYour previous reply was not one valid JSON object. "
-                    "Reply again with ONLY the JSON object, nothing else."
+                    "\n\nYour previous reply was not one valid JSON object. Reply again with ONLY the JSON object, nothing else."
                 )
                 if args.backend == "claude":
                     raw_text = call_claude(args.model, system, user + suffix, args.timeout)
                 else:
                     raw_text = call_ollama(args.model, system, user + suffix, args.timeout,
-                                           args.ollama_host, think=args.ollama_think)
+                                           args.ollama_host, think=args.ollama_think,
+                                           keep_alive=args.ollama_keep_alive, temperature=args.temperature)
                 parsed = _extract_json_object(raw_text)
             if role == "COLD_AUDIT":
                 verdict = parsed.get("verdict")
@@ -329,7 +314,7 @@ def run(argv=None) -> int:
             elif not isinstance(parsed.get("assertions"), list):
                 raise ValueError("model_output_missing_assertions_list")
             break
-        except Exception as exc:  # noqa: BLE001 — every failure mode retries once, then hard-fails
+        except Exception as exc:
             last_error = exc
             parsed = None
     if parsed is None:

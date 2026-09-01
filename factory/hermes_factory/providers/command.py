@@ -19,19 +19,24 @@ class JSONCommandProvider(SemanticProvider):
     def __init__(self, command: List[str] | str, *, provider: str, model_alias: str,
                  underlying_family: str, observed_version: str = "UNKNOWN", role: str = "PRIMARY",
                  timeout_seconds: int = 600, network_required: bool = True,
-                 certification_status: str = "UNBENCHMARKED"):
+                 certification_status: str = "UNBENCHMARKED", empirical_semantic_model: bool = True):
         self.command = shlex.split(command) if isinstance(command, str) else list(command)
         if not self.command:
             raise ValueError("empty_provider_command")
         self._identity = WorkerIdentity(provider, model_alias, underlying_family, observed_version, role, certification_status)
         self.timeout_seconds = timeout_seconds
         self.network_required = network_required
+        self._empirical_semantic_model = bool(empirical_semantic_model)
 
     def identity(self) -> WorkerIdentity:
         return self._identity
 
     def capabilities(self) -> Dict[str, Any]:
-        return {"json_stdin_stdout": True, "network_required": self.network_required, "roles": [self._identity.role]}
+        return {"json_stdin_stdout": True, "network_required": self.network_required, "roles": [self._identity.role],
+                "empirical_semantic_model": self._empirical_semantic_model}
+
+    def is_empirical_semantic_provider(self) -> bool:
+        return self._empirical_semantic_model
 
     def execute(self, request: Dict[str, Any]) -> Dict[str, Any]:
         env = os.environ.copy()

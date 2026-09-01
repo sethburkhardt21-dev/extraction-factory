@@ -122,3 +122,75 @@ def ingest_pdf(pdf_path: Path, output_jsonl: Path, *, page_spec: str | None = No
         "output_jsonl": str(output_jsonl),
         "content_policy": "deterministic text-layer chunks; figures/tables are only flagged from text cues and are not visually interpreted",
     }
+
+MACHINES_PILOT_SOURCE_SHA256 = "379a5d5c7fdfd1ecdea3db063bef143c94c7db792ec5497bc33b5abe176ae197"
+MACHINES_PILOT_PAGE_BREAK = "\n<PDF_PAGE_BREAK 300->301>\n"
+# Offset-only reconstruction recipe. No textbook-derived unit bytes are bundled.
+# Every reconstructed unit is hash-checked against the original governed pilot.
+MACHINES_PILOT_UNIT_SPECS = [
+    {"source_unit_id":"SU-DORSCH-P0299-VAPORPRESSURE","pages":[299],"segments":[(299,480,1661)],"unit_type":"PARAGRAPH","content_representation":"TEXT","locator":{"pdf_pages":[299],"heading":"Physics > Vapor Pressure"},"content_sha256":"1e05a3db793673dcc457174da309a192e8c1a2e98e59cad6a14292359423954a"},
+    {"source_unit_id":"SU-DORSCH-P0299-BOILING","pages":[299],"segments":[(299,1661,2052)],"unit_type":"PARAGRAPH","content_representation":"TEXT","locator":{"pdf_pages":[299],"heading":"Boiling Point"},"content_sha256":"38f645b80b29d136e2ed2d695d8f5fbd8efd07735bff9b01d90fa66e95ff1d52"},
+    {"source_unit_id":"SU-DORSCH-P0300-FIG6_1-CAPTION","pages":[300],"segments":[(300,0,556)],"unit_type":"FIGURE_CAPTION","content_representation":"FIGURE","locator":{"pdf_pages":[300],"figure":"Figure 6.1"},"content_sha256":"9968fd6a723d66d4e6d3840c953cb144f479c876ac4e645a4943b952cda674cf"},
+    {"source_unit_id":"SU-DORSCH-P0300-PARTIALPRESSURE","pages":[300],"segments":[(300,556,1271)],"unit_type":"PARAGRAPH","content_representation":"TEXT","locator":{"pdf_pages":[300],"heading":"Gas Concentration > Partial Pressure"},"content_sha256":"71451f23cea84f3656fedaee39a414b79e9c04b6d0111c7b45deaa327ef63657"},
+    {"source_unit_id":"SU-DORSCH-P0300_0301-TABLE6_1","pages":[300,301],"segments":[(300,1271,1740),(301,0,207)],"joiner":MACHINES_PILOT_PAGE_BREAK,"unit_type":"TABLE","content_representation":"TABLE","locator":{"pdf_pages":[300,301],"table":"TABLE 6.1 Properties of Common Anesthetic Agents","cross_page":True},"content_sha256":"ae95b47f7c945b00e151dc7184b6f2b15fb806ba5eafc679d772b68b34df6f18"},
+    {"source_unit_id":"SU-DORSCH-P0301-VOLUMESPERCENT","pages":[301],"segments":[(301,207,1128)],"unit_type":"PARAGRAPH","content_representation":"TEXT","locator":{"pdf_pages":[301],"heading":"Volumes Percent"},"content_sha256":"f79e7e20ef882e589bf0e164361f8f954ddf24d83a5aaabb8deb247b9930084c"},
+    {"source_unit_id":"SU-DORSCH-P0301-EQUATION-PARTIAL","pages":[301],"segments":[(301,708,757)],"unit_type":"EQUATION","content_representation":"EQUATION","locator":{"pdf_pages":[301],"heading":"Volumes Percent"},"content_sha256":"8ba19f5ee9a8ecc5aa8c6483d9e9e97f194d65d0910113835b825c7104f47335"},
+    {"source_unit_id":"SU-DORSCH-P0301-HEATVAP","pages":[301],"segments":[(301,1128,2453)],"unit_type":"PARAGRAPH","content_representation":"TEXT","locator":{"pdf_pages":[301],"heading":"Heat of Vaporization"},"content_sha256":"23fb86393c94380963b00e8704f4dc7c9e08cddbec619de781eee2da609e7373"},
+]
+
+
+def reconstruct_machines_pilot(pdf_path: Path, output_jsonl: Path) -> dict:
+    """Rebuild the exact governed 8-unit Machines pilot from owner-supplied PDF.
+
+    The repository carries only page/character offsets and expected hashes, not
+    textbook-derived source-unit content. If PDF extraction changes under a
+    different parser/runtime, hash validation fails closed instead of silently
+    creating a different benchmark.
+    """
+    try:
+        from pypdf import PdfReader
+    except Exception as exc:
+        raise RuntimeError(f"pypdf_required_for_machines_pilot_reconstruction:{exc}")
+    pdf_path = Path(pdf_path)
+    source_sha = sha256_file(pdf_path)
+    if source_sha != MACHINES_PILOT_SOURCE_SHA256:
+        raise ValueError(f"machines_source_sha256_mismatch:expected={MACHINES_PILOT_SOURCE_SHA256}:actual={source_sha}")
+    reader = PdfReader(str(pdf_path))
+    page_text = {p: (reader.pages[p-1].extract_text() or "") for p in (299,300,301)}
+    units: List[SourceUnit] = []
+    for spec in MACHINES_PILOT_UNIT_SPECS:
+        parts = []
+        for page_no, start, end in spec["segments"]:
+            text = page_text[page_no]
+            if end > len(text):
+                raise ValueError(f"machines_pilot_offset_out_of_range:{spec['source_unit_id']}:{page_no}:{start}:{end}:{len(text)}")
+            parts.append(text[start:end])
+        content = spec.get("joiner", "").join(parts)
+        actual_hash = sha256_text(content)
+        if actual_hash != spec["content_sha256"]:
+            raise ValueError(
+                f"machines_pilot_unit_hash_mismatch:{spec['source_unit_id']}:expected={spec['content_sha256']}:actual={actual_hash}"
+            )
+        units.append(SourceUnit(
+            source_unit_id=spec["source_unit_id"], source_id="BOOK-DORSCH-5E",
+            source_version_id="BOOK-DORSCH-5E-SHA-379a5d5c7fdf", source_sha256=source_sha,
+            unit_type=spec["unit_type"], content_representation=spec["content_representation"],
+            locator=spec["locator"], content_sha256=actual_hash, content=content,
+            rights_metadata={
+                "local_extraction_allowed":"OWNER_SUPPLIED_LOCAL_SOURCE",
+                "redistribution_status":"SOURCE_BYTES_NOT_BUNDLED",
+                "rights_basis":"Reconstructed locally from owner-supplied hash-pinned source.",
+            },
+            process_metadata={
+                "ingestion":"hermes_factory.reconstruct_machines_pilot/1.2",
+                "semantic_interpretation":False,
+                "offset_recipe_hash_checked":True,
+            },
+        ))
+    write_source_units(units, output_jsonl)
+    return {
+        "source_path":str(pdf_path), "source_sha256":source_sha, "pdf_pages_total":len(reader.pages),
+        "pdf_pages_selected":[299,300,301], "source_unit_count":len(units),
+        "output_jsonl":str(output_jsonl), "exact_governed_pilot_reconstructed":True,
+        "unit_hashes_verified":True, "source_bytes_bundled":False,
+    }

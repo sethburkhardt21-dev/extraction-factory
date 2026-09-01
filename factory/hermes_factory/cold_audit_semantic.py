@@ -1,24 +1,18 @@
 """Independent semantic cold audit over sampled union candidates.
 
-This closes the gap the advanced pack left explicit: deterministic cold-audit
-mechanics existed, but no real independent semantic auditor could be wired.
-The auditor is any SemanticProvider whose request role is COLD_AUDIT and whose
-response carries a {"verdict": {...}} object. The audit is deliberately
-skeptical: a candidate counts as supported only when the auditor affirmatively
-says so; parse failures and provider errors are recorded as findings, never
-silently dropped.
-
-Independence is measured, not assumed: the auditor's underlying model family
-must differ from BOTH the primary and blind families for the audit to count
-as independent. A same-family audit is still recorded — as reduced
-independence — and cannot produce a PASS.
+The auditor is a SemanticProvider whose request role is COLD_AUDIT. Sampling is
+deterministic but risk-stratified so scarce audit calls preferentially cover
+tables/figures, numeric claims, and uncertainty-bearing candidates before the
+remaining hash-selected population. Independence remains mandatory: the auditor
+family must differ from both primary and blind families.
 """
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, Iterable, List
 
 from .cold_audit import deterministic_sample
-from .hashing import sha256_json
+from .hashing import sha256_json, sha256_text
 from .models import AssertionCandidate, SourceUnit
 from .providers.base import SemanticProvider
 
@@ -74,6 +68,27 @@ def _normalize_verdict(output: Any) -> Dict[str, Any]:
     }
 
 
+def _risk_stratified_sample(candidates: List[AssertionCandidate], units_by_id: Dict[str, SourceUnit],
+                            rate: float, max_sample: int) -> tuple[List[AssertionCandidate], int]:
+    """Keep deterministic sample volume while preferentially auditing high-risk strata."""
+    baseline = deterministic_sample(candidates, rate, seed=SEMANTIC_SEED)
+    target = min(max_sample, max(len(baseline), 1 if candidates else 0))
+    baseline_ids = {c.candidate_id for c in baseline}
+
+    def priority(c: AssertionCandidate):
+        unit = units_by_id.get(c.source_unit_id)
+        rep = str(getattr(unit, "content_representation", "") or "").upper()
+        table_visual = rep in {"TABLE", "FIGURE"}
+        numeric = bool(c.numeric_values)
+        uncertainty = bool(c.uncertainty_flags)
+        tie = sha256_text(SEMANTIC_SEED + "|" + c.candidate_id)
+        return (0 if table_visual else 1, 0 if numeric else 1, 0 if uncertainty else 1,
+                0 if c.candidate_id in baseline_ids else 1, tie)
+
+    ordered = sorted(candidates, key=priority)
+    return ordered[:target], len(baseline)
+
+
 def run_semantic_cold_audit(
     provider: SemanticProvider,
     candidates: Iterable[AssertionCandidate],
@@ -84,11 +99,11 @@ def run_semantic_cold_audit(
     primary_family: str,
     blind_family: str,
     max_sample: int = 40,
+    concurrency: int = 1,
 ) -> Dict[str, Any]:
     units_by_id = {u.source_unit_id: u for u in units}
-    sample = deterministic_sample(candidates, rate, seed=SEMANTIC_SEED)
-    truncated = len(sample) > max_sample
-    sample = sample[:max_sample]
+    candidate_list = list(candidates)
+    sample, baseline_count = _risk_stratified_sample(candidate_list, units_by_id, rate, max_sample)
     identity = provider.identity()
     auditor_family = identity.underlying_family
     independent = (
@@ -96,39 +111,52 @@ def run_semantic_cold_audit(
         and auditor_family != primary_family
         and auditor_family != blind_family
     )
-    audited: List[Dict[str, Any]] = []
-    disagreements: List[Dict[str, Any]] = []
-    errors: List[Dict[str, Any]] = []
-    for candidate in sample:
+
+    def audit_one(candidate: AssertionCandidate) -> Dict[str, Any]:
         unit = units_by_id.get(candidate.source_unit_id)
-        if unit is None:
-            errors.append({"candidate_id": candidate.candidate_id, "error": "unknown_source_unit"})
-            continue
-        request = build_audit_request(candidate, unit, run_id)
         record: Dict[str, Any] = {
             "candidate_id": candidate.candidate_id,
             "source_unit_id": candidate.source_unit_id,
             "origin_pass": candidate.origin_pass,
-            "request_sha256": sha256_json(request),
+            "risk_strata": {
+                "representation": str(getattr(unit, "content_representation", "") or "") if unit else None,
+                "numeric": bool(candidate.numeric_values),
+                "uncertainty": bool(candidate.uncertainty_flags),
+            },
         }
+        if unit is None:
+            record["error"] = "unknown_source_unit"
+            return record
+        request = build_audit_request(candidate, unit, run_id)
+        record["request_sha256"] = sha256_json(request)
         try:
             output = provider.execute(request)
             verdict = _normalize_verdict(output)
             record["verdict"] = verdict
             record["output_sha256"] = sha256_json(output)
-            if not verdict["supported"]:
-                disagreements.append(record)
-        except Exception as exc:  # noqa: BLE001 — audit failures are findings, not crashes
+            if isinstance(output, dict) and output.get("provider_receipt") is not None:
+                record["provider_receipt"] = output.get("provider_receipt")
+        except Exception as exc:
             record["error"] = f"{type(exc).__name__}:{exc}"[:1000]
-            errors.append(record)
-        audited.append(record)
+        return record
+
+    concurrency = max(1, int(concurrency))
+    records_by_id: Dict[str, Dict[str, Any]] = {}
+    if concurrency == 1:
+        for candidate in sample:
+            records_by_id[candidate.candidate_id] = audit_one(candidate)
+    else:
+        with ThreadPoolExecutor(max_workers=concurrency, thread_name_prefix="hermes-cold-audit") as pool:
+            future_map = {pool.submit(audit_one, c): c.candidate_id for c in sample}
+            for fut in as_completed(future_map):
+                records_by_id[future_map[fut]] = fut.result()
+    audited = [records_by_id[c.candidate_id] for c in sample]
+    errors = [r for r in audited if r.get("error")]
+    disagreements = [r for r in audited if not r.get("error") and not (r.get("verdict") or {}).get("supported", False)]
+
     if not independent:
         status = "FAIL_INDEPENDENCE"
-    elif errors:
-        status = "FAIL_REVIEW_REQUIRED"
-    elif disagreements:
-        status = "FAIL_REVIEW_REQUIRED"
-    elif not audited:
+    elif errors or disagreements or not audited:
         status = "FAIL_REVIEW_REQUIRED"
     else:
         status = "PASS"
@@ -141,8 +169,11 @@ def run_semantic_cold_audit(
         "blind_family": blind_family,
         "sampling_rate": rate,
         "sampling_seed": SEMANTIC_SEED,
-        "sample_truncated_to": max_sample if truncated else None,
+        "sampling_strategy": "DETERMINISTIC_RISK_STRATIFIED_TABLE_VISUAL_NUMERIC_UNCERTAINTY_FIRST",
+        "baseline_hash_sample_count": baseline_count,
+        "sample_truncated_to": max_sample if len(candidate_list) > max_sample else None,
         "sample_count": len(sample),
+        "audit_concurrency": concurrency,
         "audited_count": len(audited),
         "disagreement_count": len(disagreements),
         "error_count": len(errors),
@@ -151,8 +182,8 @@ def run_semantic_cold_audit(
         "audited": audited,
         "status": status,
         "claim_boundary": (
-            "A PASS here means the sampled candidates survived independent same-source "
-            "skeptical review by a different model family. It is not a proof of full-corpus "
-            "correctness and never promotes any candidate to canonical."
+            "A PASS here means the deterministic risk-stratified sample survived independent same-source "
+            "skeptical review by a different model family. It is not a proof of full-corpus correctness "
+            "and never promotes any candidate to canonical."
         ),
     }

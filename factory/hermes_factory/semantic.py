@@ -140,6 +140,7 @@ def execute_primary(provider: SemanticProvider, unit: SourceUnit, capsule_id: st
         "output_sha256": sha256_json(output),
         "empirical_semantic_model": provider.is_empirical_semantic_provider(),
         "candidate_count": len(candidates),
+        "provider_receipt": output.get("provider_receipt") if isinstance(output, dict) else None,
     }
     return candidates, receipt
 
@@ -159,5 +160,6 @@ def execute_blind(provider: SemanticProvider, unit: SourceUnit, capsule_id: str,
         "empirical_semantic_model": provider.is_empirical_semantic_provider(),
         "candidate_count": len(candidates),
         "blindness_enforced_by": "POSITIVE_ALLOWLIST",
+        "provider_receipt": output.get("provider_receipt") if isinstance(output, dict) else None,
     }
     return candidates, receipt
