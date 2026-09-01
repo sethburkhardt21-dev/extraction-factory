@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import unittest
 from unittest.mock import patch
 
 from benchmarks_ext.certify_roles import apply_version_binding_gate
 from benchmarks_ext.score_role import validate_scoring_independence
 from hermes_factory.model_registry import observed_version_is_certifiable
+from providers_ext.ollama_digest_guard import build_parser as build_guard_parser, execute_guarded
 from run_appliance import provider_flags, resolve_observed_version, resolve_ollama_digest
 
 
@@ -130,7 +132,7 @@ class OllamaDigestDiscoveryTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "explicit_version_mismatch"):
                 resolve_observed_version("ollama", "model:latest", DIGEST_B, "http://127.0.0.1:11434")
 
-    def test_provider_flags_bind_digest_and_same_host(self):
+    def test_provider_flags_bind_digest_guard_and_same_host(self):
         with patch("run_appliance.resolve_ollama_digest", return_value=DIGEST_A):
             flags = provider_flags(
                 "primary", "ollama:model:latest", 60,
@@ -138,7 +140,56 @@ class OllamaDigestDiscoveryTests(unittest.TestCase):
             )
         self.assertIn(DIGEST_A, flags)
         command = flags[flags.index("--primary-command") + 1]
+        self.assertIn("ollama_digest_guard.py", command)
+        self.assertIn(f"--expected-digest {DIGEST_A}", command)
         self.assertIn("--ollama-host http://10.0.0.2:11434", command)
+
+
+class OllamaSemanticGuardTests(unittest.TestCase):
+    def _args(self):
+        return build_guard_parser().parse_args([
+            "--model", "model:latest",
+            "--expected-digest", DIGEST_A,
+            "--timeout", "60",
+            "--ollama-host", "http://127.0.0.1:11434",
+        ])
+
+    def test_pre_call_digest_mismatch_prevents_semantic_process_start(self):
+        with patch("providers_ext.ollama_digest_guard.resolve_digest", return_value=DIGEST_B), \
+             patch("providers_ext.ollama_digest_guard.subprocess.run") as delegated:
+            with self.assertRaisesRegex(RuntimeError, "digest_before_mismatch"):
+                execute_guarded(self._args(), '{"request":1}')
+            delegated.assert_not_called()
+
+    def test_stable_before_after_digest_releases_provider_json_with_receipt(self):
+        inner = subprocess.CompletedProcess(
+            args=["provider"], returncode=0,
+            stdout=json.dumps({"provider_receipt": {"attempts": 1}, "assertions": []}), stderr="",
+        )
+        with patch("providers_ext.ollama_digest_guard.resolve_digest", side_effect=[DIGEST_A, DIGEST_A]), \
+             patch("providers_ext.ollama_digest_guard.subprocess.run", return_value=inner) as delegated:
+            rc, stdout, stderr = execute_guarded(self._args(), '{"request":1}')
+        self.assertEqual(rc, 0)
+        self.assertEqual(stderr, "")
+        delegated.assert_called_once()
+        output = json.loads(stdout)
+        guard = output["provider_receipt"]["ollama_digest_guard"]
+        self.assertTrue(guard["stable"])
+        self.assertEqual(guard["expected_digest"], DIGEST_A)
+        self.assertEqual(guard["before_digest"], DIGEST_A)
+        self.assertEqual(guard["after_digest"], DIGEST_A)
+
+    def test_post_call_digest_mismatch_discards_successful_semantic_output(self):
+        inner = subprocess.CompletedProcess(
+            args=["provider"], returncode=0,
+            stdout=json.dumps({"provider_receipt": {}, "assertions": [{"proposition": "would be discarded"}]}),
+            stderr="",
+        )
+        with patch("providers_ext.ollama_digest_guard.resolve_digest", side_effect=[DIGEST_A, DIGEST_B]), \
+             patch("providers_ext.ollama_digest_guard.subprocess.run", return_value=inner) as delegated:
+            with self.assertRaisesRegex(RuntimeError, "digest_after_mismatch"):
+                execute_guarded(self._args(), '{"request":1}')
+            delegated.assert_called_once()
 
 
 if __name__ == "__main__":
