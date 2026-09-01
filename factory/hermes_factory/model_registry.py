@@ -48,7 +48,8 @@ def observed_version_is_certifiable(policy: str, observed_version: str) -> bool:
 
     Ollama roles must bind to the immutable local model digest. Hosted aliases that
     can silently retarget are explicitly non-certifiable until an immutable version
-    identifier is supplied by a provider-specific integration.
+    identifier is supplied by a provider-specific integration. Generic
+    `CLI_OBSERVED` is intentionally never certification authority.
     """
     policy = str(policy or "").strip().upper()
     version = str(observed_version or "").strip()
@@ -56,9 +57,9 @@ def observed_version_is_certifiable(policy: str, observed_version: str) -> bool:
         return False
     if policy == "OLLAMA_DIGEST":
         return bool(OLLAMA_DIGEST_RE.fullmatch(version))
-    if policy == "UNPINNED_HOSTED_ALIAS":
+    if policy in {"UNPINNED_HOSTED_ALIAS", "CLI_OBSERVED"}:
         return False
-    if policy in {"EXPLICIT_IMMUTABLE_VERSION", "CLI_OBSERVED"}:
+    if policy == "EXPLICIT_IMMUTABLE_VERSION":
         return bool(version)
     if policy == "DETERMINISTIC_FIXTURE":
         return bool(version)
