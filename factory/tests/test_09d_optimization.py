@@ -60,6 +60,7 @@ class ComparatorIdentityTests(unittest.TestCase):
         result = classify(candidate, carrier, build_index(carrier))
         self.assertEqual(result["state"], "CONTRADICTION")
         self.assertEqual(result["comparison_confidence"], "HIGH")
+        self.assertEqual(result["numeric_relation"], "CONFLICT")
 
     def test_context_difference_suppresses_numeric_contradiction(self):
         carrier = _carrier("MAC is 7.0%")
@@ -100,6 +101,59 @@ class ComparatorIdentityTests(unittest.TestCase):
         result = classify(candidate, carrier, build_index(carrier))
         self.assertEqual(result["numeric_comparison_basis"], "STRUCTURED_NUMERIC_VALUES")
         self.assertEqual(result["state"], "CONTRADICTION")
+
+    def test_decimal_formatting_equivalence_does_not_contradict(self):
+        carrier = _carrier("MAC is 6.40%")
+        carrier[0]["numbers"] = {("6.40", "%")}
+        candidate = {
+            "candidate_id": "C", "source_unit_id": "U", "origin_pass": "PRIMARY",
+            "proposition": "Desflurane MAC is 6.4%.", "subject": "Desflurane",
+            "predicate": "MAC", "polarity": "AFFIRMATIVE", "metadata": {"fact_family": "drug"},
+        }
+        result = classify(candidate, carrier, build_index(carrier))
+        self.assertEqual(result["numeric_relation"], "EQUIVALENT")
+        self.assertEqual(result["state"], "SUPPORT")
+
+    def test_scalar_inside_range_is_overlap_not_contradiction(self):
+        carrier = _carrier("MAC is 6-8%")
+        carrier[0]["numbers"] = {("6-8", "%")}
+        candidate = {
+            "candidate_id": "C", "source_unit_id": "U", "origin_pass": "PRIMARY",
+            "proposition": "Desflurane MAC is 7%.", "subject": "Desflurane", "predicate": "MAC",
+            "polarity": "AFFIRMATIVE", "metadata": {"fact_family": "drug"},
+            "numeric_values": [{"value_literal": "7", "unit_literal": "%"}],
+        }
+        result = classify(candidate, carrier, build_index(carrier))
+        self.assertEqual(result["numeric_relation"], "OVERLAP")
+        self.assertEqual(result["state"], "POSSIBLE_DUPLICATE")
+
+    def test_disjoint_ranges_can_contradict_when_identity_and_context_match(self):
+        carrier = _carrier("MAC is 6-7%")
+        carrier[0]["numbers"] = {("6-7", "%")}
+        candidate = {
+            "candidate_id": "C", "source_unit_id": "U", "origin_pass": "PRIMARY",
+            "proposition": "Desflurane MAC is 8-9%.", "subject": "Desflurane", "predicate": "MAC",
+            "polarity": "AFFIRMATIVE", "metadata": {"fact_family": "drug"},
+            "numeric_values": [{"value_literal": "8-9", "unit_literal": "%"}],
+        }
+        result = classify(candidate, carrier, build_index(carrier))
+        self.assertEqual(result["numeric_relation"], "CONFLICT")
+        self.assertEqual(result["state"], "CONTRADICTION")
+
+    def test_unique_family_predicate_tail_resolves_namespaced_code(self):
+        carrier = _carrier()
+        carrier[0]["predicate_code"] = "drug.mac"
+        carrier[0]["predicate_norm"] = "drug mac"
+        carrier[0]["predicate_tokens"] = {"drug", "mac"}
+        carrier[0]["tokens"] = {"desflurane", "drug", "mac"}
+        candidate = {
+            "candidate_id": "C", "source_unit_id": "U", "origin_pass": "PRIMARY",
+            "proposition": "Desflurane MAC is 6.4%.", "subject": "Desflurane", "predicate": "MAC is",
+            "polarity": "AFFIRMATIVE", "metadata": {"fact_family": "drug"},
+        }
+        result = classify(candidate, carrier, build_index(carrier))
+        self.assertEqual(result["predicate_resolution"]["mode"], "UNIQUE_FAMILY_PREDICATE_TAIL")
+        self.assertEqual(result["state"], "SUPPORT")
 
 
 class Motion2ProjectionTests(unittest.TestCase):
