@@ -1,15 +1,13 @@
 """Source-first gold construction for the governed Machines p299-301 benchmark.
 
-This builder is deliberately benchmark-specific and fail-closed:
-- source bytes must reconstruct/contain the exact eight governed Machines units;
+This builder is benchmark-specific and fail-closed:
+- source bytes must contain the exact eight governed Machines units;
 - Builder A, Builder B, and Adjudicator C must be registered empirical models
   from three distinct independence groups;
+- every disagreement must receive a valid adjudicator verdict before Reference
+  v1 can be frozen;
 - historical Reference-v2 challenge expansion remains NOT_RUN and supplying
   --challenge-dir is refused rather than mislabeled as executed.
-
-The rights-safe repository does not bundle textbook source-unit text. Supply
---source-pdf (the hash-pinned owner copy) or --source-units containing the exact
-reconstructed eight units.
 
 Gold label: MECHANICALLY_CHECKED. This is AI-authored source-first benchmark
 material, not clinical ground truth.
@@ -58,16 +56,12 @@ def parse_spec(value: str) -> tuple[str, str]:
 
 
 def validate_governed_machines_units(rows: list[SourceUnit]) -> None:
-    """Refuse arbitrary or hash-spoofed source-unit files under the Machines label."""
     actual = {u.source_unit_id: sha256_text(u.content or "") for u in rows}
     declared = {u.source_unit_id: str(u.content_sha256 or "") for u in rows}
     if len(rows) != len(EXPECTED_UNIT_HASHES) or actual != EXPECTED_UNIT_HASHES:
         missing = sorted(set(EXPECTED_UNIT_HASHES) - set(actual))
         extra = sorted(set(actual) - set(EXPECTED_UNIT_HASHES))
-        wrong = sorted(
-            uid for uid in set(actual) & set(EXPECTED_UNIT_HASHES)
-            if actual[uid] != EXPECTED_UNIT_HASHES[uid]
-        )
+        wrong = sorted(uid for uid in set(actual) & set(EXPECTED_UNIT_HASHES) if actual[uid] != EXPECTED_UNIT_HASHES[uid])
         raise SystemExit(
             f"gold_source_not_exact_governed_machines_pilot:count={len(rows)}:"
             f"missing={missing}:extra={extra}:wrong_content_hash={wrong}"
@@ -75,9 +69,7 @@ def validate_governed_machines_units(rows: list[SourceUnit]) -> None:
     declared_mismatch = sorted(uid for uid in actual if declared.get(uid) != actual[uid])
     if declared_mismatch:
         raise SystemExit(f"gold_source_declared_content_hash_mismatch:{declared_mismatch}")
-    bad_source = sorted(
-        u.source_unit_id for u in rows if u.source_sha256 != MACHINES_PILOT_SOURCE_SHA256
-    )
+    bad_source = sorted(u.source_unit_id for u in rows if u.source_sha256 != MACHINES_PILOT_SOURCE_SHA256)
     if bad_source:
         raise SystemExit(f"gold_source_pdf_identity_mismatch:{bad_source}")
 
@@ -108,7 +100,6 @@ def load_source_units(*, source_units: str | None, source_pdf: str | None) -> tu
             "rights-safe checkout contains no textbook source units; provide --source-pdf pointing to the "
             "hash-pinned Machines textbook or --source-units pointing to the exact reconstructed pilot"
         )
-
     rows = [SourceUnit.from_dict(json.loads(line)) for line in raw.splitlines() if line.strip()]
     if not rows:
         raise SystemExit("source unit input is empty")
@@ -160,8 +151,13 @@ def build_pass(name: str, backend: str, model: str, units: list[SourceUnit], tim
     def one(unit: SourceUnit) -> list[dict]:
         request = build_primary_request(unit, f"GOLD-{name}", f"GOLDRUN-{name}")
         response = call_wrapper(backend, model, request, timeout, extra_args)
+        assertions = response.get("assertions")
+        if not isinstance(assertions, list):
+            raise RuntimeError(f"gold_builder_assertions_not_list:{name}:{unit.source_unit_id}")
         out = []
-        for a in response.get("assertions", []):
+        for a in assertions:
+            if not isinstance(a, dict) or not isinstance(a.get("proposition"), str) or not isinstance(a.get("evidence"), str):
+                raise RuntimeError(f"gold_builder_assertion_shape_invalid:{name}:{unit.source_unit_id}")
             out.append({
                 "builder": name, "backend": backend, "model": model,
                 "source_unit_id": unit.source_unit_id,
@@ -181,6 +177,8 @@ def build_pass(name: str, backend: str, model: str, units: list[SourceUnit], tim
     else:
         for unit in units:
             rows.extend(one(unit))
+    if not rows:
+        raise RuntimeError(f"gold_builder_emitted_zero_assertions:{name}")
     path = out_dir / f"raw_builder_{name}.jsonl"
     path.write_text("".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in rows), encoding="utf-8")
     return rows
@@ -209,8 +207,37 @@ def adjudicate(backend: str, model: str, unit: SourceUnit, row: dict, timeout: i
         "output_schema": {"type": "object", "required": ["verdict"]},
     }
     response = call_wrapper(backend, model, request, timeout, extra_args)
-    verdict = response["verdict"]
-    return bool(verdict["supported"]), str(verdict.get("rationale") or "")[:400]
+    verdict = response.get("verdict")
+    if not isinstance(verdict, dict) or not isinstance(verdict.get("supported"), bool):
+        raise RuntimeError(f"gold_adjudicator_verdict_invalid:{unit.source_unit_id}")
+    return verdict["supported"], str(verdict.get("rationale") or "")[:400]
+
+
+def adjudicate_disagreements(disagreements: list[dict], units_by_id: dict[str, SourceUnit],
+                             backend: str, model: str, timeout: int,
+                             extra_args: list[str] | None = None) -> tuple[list[dict], list[dict]]:
+    """Every disagreement must be adjudicated; one provider error invalidates the gold build."""
+    kept_rows: list[dict] = []
+    log: list[dict] = []
+    for row in disagreements:
+        unit_id = str(row.get("source_unit_id") or "")
+        unit = units_by_id.get(unit_id)
+        if unit is None:
+            raise RuntimeError(f"gold_disagreement_unknown_source_unit:{unit_id}")
+        try:
+            keep, rationale = adjudicate(backend, model, unit, row, timeout, extra_args)
+        except Exception as exc:  # noqa: BLE001
+            raise RuntimeError(
+                f"gold_adjudication_failed:{unit_id}:{type(exc).__name__}:{exc}"
+            ) from exc
+        entry = {
+            "builder": row["builder"], "source_unit_id": unit_id,
+            "proposition": row["proposition"], "keep": keep, "rationale": rationale,
+        }
+        log.append(entry)
+        if keep:
+            kept_rows.append({**row, "gold_origin": f"ADJUDICATED_{row['builder']}"})
+    return kept_rows, log
 
 
 def main(argv=None) -> int:
@@ -230,34 +257,26 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     if args.challenge_dir:
-        print(
-            "refusing --challenge-dir: Reference-v2 historical challenge adjudication is not implemented in this version",
-            file=sys.stderr,
-        )
+        print("refusing --challenge-dir: Reference-v2 historical challenge adjudication is not implemented", file=sys.stderr)
         return 5
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    units, source_units_sha256, source_origin = load_source_units(
-        source_units=args.source_units, source_pdf=args.source_pdf,
-    )
-    specs = [args.builder_a, args.builder_b, args.adjudicator]
-    identities = resolve_gold_identities(Path(args.registry), specs)
+    units, source_units_sha256, source_origin = load_source_units(source_units=args.source_units, source_pdf=args.source_pdf)
+    identities = resolve_gold_identities(Path(args.registry), [args.builder_a, args.builder_b, args.adjudicator])
     ab, am = parse_spec(args.builder_a)
     bb, bm = parse_spec(args.builder_b)
     jb, jm = parse_spec(args.adjudicator)
     started = time.time()
 
-    print(
-        f"[gold] source={source_origin} units={len(units)} builder A={ab}:{am} "
-        f"builder B={bb}:{bm} adjudicator={jb}:{jm} phase={args.phase}", flush=True,
-    )
-
     def load_raw(name: str) -> list[dict]:
         path = out_dir / f"raw_builder_{name}.jsonl"
         if not path.exists():
             raise SystemExit(f"phase {args.phase} needs {path.name}; run build-{name.lower()} first")
-        return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if not rows:
+            raise SystemExit(f"phase {args.phase} found empty {path.name}")
+        return rows
 
     if args.phase in ("build-a", "all"):
         rows_a = build_pass("A", ab, am, units, args.timeout, 4 if ab == "claude" else 1, out_dir)
@@ -276,10 +295,7 @@ def main(argv=None) -> int:
     else:
         rows_b = load_raw("B")
 
-    inventories = {
-        u.source_unit_id: {"numeric": len(numeric_inventory(u)), "qualifier": len(qualifier_inventory(u))}
-        for u in units
-    }
+    inventories = {u.source_unit_id: {"numeric": len(numeric_inventory(u)), "qualifier": len(qualifier_inventory(u))} for u in units}
     units_by_id = {u.source_unit_id: u for u in units}
     reference: list[dict] = []
     disagreements: list[dict] = []
@@ -287,29 +303,21 @@ def main(argv=None) -> int:
         ua = [r for r in rows_a if r["source_unit_id"] == unit.source_unit_id]
         ub = [r for r in rows_b if r["source_unit_id"] == unit.source_unit_id]
         pairs, only_a, only_b = greedy_align(ua, ub, threshold=0.6)
-        for i, j, score in pairs:
+        for i, j, agreement_score in pairs:
             pick = ua[i] if (cue_count(ua[i]), len(ua[i]["proposition"]), ua[i]["proposition"]) >= (
                 cue_count(ub[j]), len(ub[j]["proposition"]), ub[j]["proposition"]
             ) else ub[j]
-            reference.append({**pick, "gold_origin": "AGREED_A_B", "agreement_score": round(score, 3)})
+            reference.append({**pick, "gold_origin": "AGREED_A_B", "agreement_score": round(agreement_score, 3)})
         disagreements.extend(ua[i] for i in only_a)
         disagreements.extend(ub[j] for j in only_b)
 
-    print(f"[gold] agreed={len(reference)} disagreements={len(disagreements)} — adjudicating with {jm}", flush=True)
-    adjudication_log: list[dict] = []
     j_extra = ["--ollama-think", args.adjudicator_think] if (args.adjudicator_think and jb == "ollama") else None
-    for row in disagreements:
-        unit = units_by_id[row["source_unit_id"]]
-        try:
-            keep, rationale = adjudicate(jb, jm, unit, row, args.timeout, j_extra)
-        except Exception as exc:  # noqa: BLE001
-            keep, rationale = False, f"ADJUDICATION_ERROR:{type(exc).__name__}"
-        adjudication_log.append({
-            "builder": row["builder"], "source_unit_id": row["source_unit_id"],
-            "proposition": row["proposition"], "keep": keep, "rationale": rationale,
-        })
-        if keep:
-            reference.append({**row, "gold_origin": f"ADJUDICATED_{row['builder']}"})
+    adjudicated_kept, adjudication_log = adjudicate_disagreements(
+        disagreements, units_by_id, jb, jm, args.timeout, j_extra
+    )
+    reference.extend(adjudicated_kept)
+    if len(adjudication_log) != len(disagreements):
+        raise RuntimeError(f"gold_adjudication_incomplete:{len(adjudication_log)}!={len(disagreements)}")
 
     validated = []
     dropped_mechanical = []
@@ -320,15 +328,20 @@ def main(argv=None) -> int:
             validated.append({**row, "gold_id": gold_id})
         else:
             dropped_mechanical.append(row)
+    if dropped_mechanical:
+        raise RuntimeError(f"gold_mechanical_validation_failed:{len(dropped_mechanical)}")
+    if not validated:
+        raise RuntimeError("gold_reference_empty_after_validation")
     validated.sort(key=lambda r: (r["source_unit_id"], r["gold_id"]))
 
+    raw_a_path = out_dir / "raw_builder_A.jsonl"
+    raw_b_path = out_dir / "raw_builder_B.jsonl"
+    adj_path = out_dir / "adjudication_log.jsonl"
     ref_path = out_dir / "reference_v1.jsonl"
     ref_bytes = "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in validated)
+    adj_bytes = "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in adjudication_log)
     ref_path.write_text(ref_bytes, encoding="utf-8")
-    (out_dir / "adjudication_log.jsonl").write_text(
-        "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in adjudication_log),
-        encoding="utf-8",
-    )
+    adj_path.write_text(adj_bytes, encoding="utf-8")
 
     construction_groups = [str(x["independence_group"]) for x in identities]
     construction_models = [str(x["model_alias"]) for x in identities]
@@ -344,30 +357,36 @@ def main(argv=None) -> int:
         "builder_b": {"backend": bb, "model": bm, "assertions": len(rows_b), "identity": identities[1]},
         "adjudicator": {
             "backend": jb, "model": jm, "items": len(adjudication_log),
-            "kept": sum(1 for x in adjudication_log if x["keep"]), "identity": identities[2],
+            "kept": len(adjudicated_kept), "identity": identities[2],
         },
         "gold_construction_independence_groups": construction_groups,
         "gold_construction_models_not_scorable": construction_models,
         "builders_not_scorable": construction_models,
+        "raw_builder_a_sha256": sha256_text(raw_a_path.read_text(encoding="utf-8")),
+        "raw_builder_b_sha256": sha256_text(raw_b_path.read_text(encoding="utf-8")),
+        "adjudication_log_sha256": sha256_text(adj_bytes),
+        "adjudication_complete": True,
+        "adjudication_error_count": 0,
         "agreed_count": sum(1 for r in validated if r["gold_origin"] == "AGREED_A_B"),
         "reference_v1_count": len(validated),
         "reference_v1_sha256": sha256_text(ref_bytes),
         "scoring_reference": "reference_v1.jsonl",
         "scoring_reference_sha256": sha256_text(ref_bytes),
-        "mechanically_dropped": len(dropped_mechanical),
+        "mechanically_dropped": 0,
         "deterministic_inventories": inventories,
         "challenge_pass": "NOT_RUN_REFERENCE_V2_NOT_IMPLEMENTED",
         "duration_seconds": round(time.time() - started, 1),
         "claim_boundary": (
             "AI-authored source-first gold, label MECHANICALLY_CHECKED. Exact governed Machines source bytes only; "
-            "three empirical independent gold-construction families; historical challenge expansion NOT_RUN. "
-            "This bounds benchmark claims, not clinical truth."
+            "three empirical independent gold-construction families; every disagreement adjudicated successfully; "
+            "historical challenge expansion NOT_RUN. This bounds benchmark claims, not clinical truth."
         ),
     }
     (out_dir / "GOLD_MANIFEST.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps({
         "reference_v1_count": manifest["reference_v1_count"],
         "agreed_count": manifest["agreed_count"],
+        "adjudicated_count": len(adjudication_log),
         "reference_v1_sha256": manifest["reference_v1_sha256"],
         "gold_construction_independence_groups": construction_groups,
         "duration_seconds": manifest["duration_seconds"],
