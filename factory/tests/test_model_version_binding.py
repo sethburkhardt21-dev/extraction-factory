@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import json
 import unittest
 from unittest.mock import patch
@@ -22,6 +21,9 @@ class VersionPolicyTests(unittest.TestCase):
     def test_ollama_placeholder_is_not_certifiable(self):
         for value in ("CLI_OBSERVED", "UNKNOWN", "UNOBSERVED", ""):
             self.assertFalse(observed_version_is_certifiable("OLLAMA_DIGEST", value))
+
+    def test_generic_cli_observed_policy_is_never_certification_authority(self):
+        self.assertFalse(observed_version_is_certifiable("CLI_OBSERVED", "plausible-version-string"))
 
     def test_unpinned_hosted_alias_is_not_certifiable(self):
         self.assertFalse(observed_version_is_certifiable("UNPINNED_HOSTED_ALIAS", "claude-opus-5-20260901"))
