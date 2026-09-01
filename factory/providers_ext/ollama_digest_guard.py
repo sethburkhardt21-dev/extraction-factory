@@ -85,6 +85,12 @@ def delegated_command(args: argparse.Namespace) -> list[str]:
     return command
 
 
+def delegate_timeout_seconds(args: argparse.Namespace) -> int:
+    """Cover every configured provider attempt plus process/guard overhead."""
+    attempts = max(1, int(args.max_retries) + 1)
+    return max(30, attempts * max(1, int(args.timeout)) + 60)
+
+
 def execute_guarded(args: argparse.Namespace, request_text: str) -> tuple[int, str, str]:
     host = normalize_host(args.ollama_host)
     expected = normalize_digest(args.expected_digest)
@@ -96,7 +102,7 @@ def execute_guarded(args: argparse.Namespace, request_text: str) -> tuple[int, s
         capture_output=True,
         text=True,
         encoding="utf-8",
-        timeout=args.timeout + 30,
+        timeout=delegate_timeout_seconds(args),
     )
 
     # Always perform the post-call check when the delegate returned. A digest
