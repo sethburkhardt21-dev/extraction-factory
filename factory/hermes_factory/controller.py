@@ -16,7 +16,7 @@ from .hashing import sha256_file, sha256_json, sha256_text
 from .ledger import Ledger
 from .literal import numeric_inventory, qualifier_inventory, relationship_inventory
 from .models import AssertionCandidate, Gate, GateResult, SourceUnit
-from .model_registry import load_registry, certification_key, is_certified
+from .model_registry import load_registry, certification_key, is_certified_for_source
 from .network_policy import enforce_provider_network_policy
 from .package import build_offline_package
 from .precision import precision_review
@@ -228,12 +228,13 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         (run_dir / d).mkdir(parents=True, exist_ok=True)
 
     units = load_source_units(source_units_path)
+    source_units_input_sha256 = sha256_file(source_units_path)
     shutil.copy2(source_units_path, run_dir / "SOURCE" / "source_units.jsonl")
     _write_json(run_dir / "SOURCE" / "source_summary.json", {
         "source_unit_count": len(units),
         "source_ids": sorted({u.source_id for u in units}),
         "source_sha256s": sorted({u.source_sha256 for u in units}),
-        "source_units_input_sha256": sha256_file(source_units_path),
+        "source_units_input_sha256": source_units_input_sha256,
     })
     source_hash_ok = False
     source_hash_result = GateResult.NOT_RUN.value
@@ -412,14 +413,26 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     semantic_empirical = primary_provider.is_empirical_semantic_provider() and blind_provider.is_empirical_semantic_provider()
     registry = runtime_registry
     benchmark_version = registry.get("benchmark_version", "UNKNOWN")
+
     def role_certified(provider, role):
         ident = provider.identity()
         for u in units:
             risk = risks[u.source_unit_id]
-            key = certification_key(ident.provider, ident.model_alias, role, str(risk["work_class"]), str(risk["source_class"]), benchmark_version)
-            if not is_certified(registry, key):
+            key = certification_key(
+                ident.provider, ident.model_alias, role,
+                str(risk["work_class"]), str(risk["source_class"]), benchmark_version,
+            )
+            if not is_certified_for_source(
+                registry,
+                key,
+                source_units_sha256=source_units_input_sha256,
+                source_unit_id=u.source_unit_id,
+                provider=ident.provider,
+                model_alias=ident.model_alias,
+            ):
                 return False
         return True
+
     primary_cert = role_certified(primary_provider, "PRIMARY")
     blind_cert = role_certified(blind_provider, "BLIND_RECALL")
     cold_cert = role_certified(cold_audit_provider, "COLD_AUDIT") if cold_audit_provider is not None else False
@@ -444,7 +457,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     semantic_provider_gate = Gate(
         "SEMANTIC_PROVIDER_CERTIFICATION",
         GateResult.PASS.value if semantic_empirical and primary_cert and blind_cert else GateResult.BLOCKED_EXTERNAL.value,
-        "Both primary and blind roles require empirically certified semantic providers; fixture/unbenchmarked providers cannot satisfy this gate.",
+        "Both primary and blind roles require source-bound empirically certified semantic providers; fixture, unbenchmarked, or differently scoped certifications cannot satisfy this gate.",
     )
     independence_gate = Gate(
         "INDEPENDENCE",
@@ -477,12 +490,12 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     elif semantic_cold["status"] == "PASS" and not cold_cert:
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.BLOCKED_EXTERNAL.value,
-            f"Independent semantic cold audit ran cleanly, but auditor role {semantic_cold['auditor_identity']['provider']}|{semantic_cold['auditor_identity']['model_alias']} is not certified for COLD_AUDIT on this benchmark/source-risk scope.",
+            f"Independent semantic cold audit ran cleanly, but auditor role {semantic_cold['auditor_identity']['provider']}|{semantic_cold['auditor_identity']['model_alias']} is not source-bound certified for COLD_AUDIT on this exact benchmark/source scope.",
         )
     elif semantic_cold["status"] == "PASS":
         cold_gate = Gate(
             "COLD_AUDIT_POLICY", GateResult.PASS.value,
-            f"Certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by independence group {semantic_cold.get('auditor_independence_group')}, zero disagreements/errors.",
+            f"Source-bound certified independent semantic cold audit: {semantic_cold['audited_count']} sampled candidates reviewed by independence group {semantic_cold.get('auditor_independence_group')}, zero disagreements/errors.",
         )
     else:
         cold_gate = Gate(
@@ -544,6 +557,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             "cold_group": cold_group,
         },
         "source_unit_count": len(units),
+        "source_units_input_sha256": source_units_input_sha256,
         "primary_candidate_count": len(primary_candidates),
         "blind_candidate_count": len(blind_candidates),
         "union_candidate_count": len(union),
