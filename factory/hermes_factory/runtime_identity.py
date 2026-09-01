@@ -55,13 +55,20 @@ def resolve_runtime_topology(
     primary_provider: SemanticProvider,
     blind_provider: SemanticProvider,
     cold_audit_provider: SemanticProvider | None = None,
+    *,
+    require_empirical: bool = True,
 ) -> Dict[str, Dict[str, Any]]:
     """Resolve and validate runtime model topology before inference.
 
+    `require_empirical=True` protects real semantic execution, but deliberately
+    preserves one mechanical-validation exception: PRIMARY and BLIND_RECALL may
+    both be registered non-empirical fixtures. Such runs remain unable to satisfy
+    semantic readiness elsewhere in the factory.
+
     Rules:
     - every configured provider must match protected registry identity metadata;
-    - PRIMARY and BLIND_RECALL must either both be non-empirical fixtures (mechanical
-      validation only) or both be empirical semantic providers;
+    - PRIMARY and BLIND_RECALL must either both be non-empirical fixtures or both
+      be empirical semantic providers; mixed producer pairs fail closed;
     - empirical PRIMARY and BLIND_RECALL must use distinct protected
       `independence_group` values;
     - an empirical COLD_AUDIT provider must be group-distinct from empirical
@@ -72,6 +79,7 @@ def resolve_runtime_topology(
     This intentionally uses `independence_group`, not `underlying_family`: related
     fine-tunes may use different family labels while sharing one independence group.
     """
+    # Resolve identity truth first without prematurely rejecting fixture transports.
     resolved = {
         "PRIMARY": resolve_registered_provider_identity(
             registry, primary_provider, "PRIMARY", require_empirical=False
@@ -93,6 +101,12 @@ def resolve_runtime_topology(
             f"PRIMARY={primary_empirical}:BLIND_RECALL={blind_empirical}"
         )
 
+    # `require_empirical` means a semantic pair cannot degrade to one fixture.
+    # An all-fixture pair is retained solely for deterministic bridge/E2E testing.
+    all_fixture_producers = not primary_empirical and not blind_empirical
+    if require_empirical and not all_fixture_producers and not (primary_empirical and blind_empirical):
+        raise ValueError("primary_blind_empirical_pair_required")
+
     primary_group = str(resolved["PRIMARY"]["independence_group"])
     blind_group = str(resolved["BLIND_RECALL"]["independence_group"])
     if primary_empirical and primary_group == blind_group:
@@ -103,7 +117,7 @@ def resolve_runtime_topology(
     if "COLD_AUDIT" in resolved:
         cold_empirical = bool(resolved["COLD_AUDIT"]["empirical_semantic_model"])
         cold_group = str(resolved["COLD_AUDIT"]["independence_group"])
-        if cold_empirical and not primary_empirical:
+        if cold_empirical and all_fixture_producers:
             raise ValueError("empirical_cold_audit_with_nonempirical_producers")
         if primary_empirical and cold_empirical and cold_group in {primary_group, blind_group}:
             raise ValueError(
