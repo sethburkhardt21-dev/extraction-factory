@@ -29,5 +29,8 @@ jobs:
       - name: Install runtime dependency
         run: python -m pip install --upgrade pip pypdf==5.9.0
 
-      - name: Run governed factory tests
+      - name: Run unit tests with visible failure output
+        run: python -m unittest discover -s tests -v
+
+      - name: Run governed factory test reporter
         run: python -m hermes_factory test
