@@ -9,10 +9,16 @@ The auditor task itself is generic skeptical review, but the current runtime key
 certification by source W/S stratum. One verified qualification decision is
 therefore projected into only the exact W/S strata and source units present in
 the benchmark. This does not broaden PRIMARY/BLIND extraction certification.
+
+Certification freshness binds the score-relevant auditor outcome, not run IDs,
+row order, rationale prose, or provider receipt metadata. A lifecycle-deactivated
+cold certificate can therefore be re-earned only when protected inputs or actual
+verdict behavior changes.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 import time
@@ -50,6 +56,51 @@ def _value(metrics: dict, key: str) -> float | None:
     node = metrics.get(key)
     value = node.get("value") if isinstance(node, dict) else None
     return float(value) if isinstance(value, (int, float)) else None
+
+
+def _canonical_sha(value: Any) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _load_jsonl(path: Path) -> list[dict[str, Any]]:
+    return [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def cold_certification_semantic_sha256(cases_path: Path, verdicts_path: Path) -> str:
+    """Hash only case meaning plus score-relevant auditor outcome.
+
+    This deliberately ignores row order, rationale/flags, request/output hashes,
+    provider receipts, and other metadata that cannot change the qualification
+    score. It does bind observed support/reject behavior and provider-error state.
+    """
+    cases = _load_jsonl(cases_path)
+    verdicts = _load_jsonl(verdicts_path)
+    case_map = {str(x.get("case_id") or ""): x for x in cases}
+    verdict_map = {str(x.get("case_id") or ""): x for x in verdicts}
+    if not case_map or len(case_map) != len(cases):
+        raise ValueError("cold_freshness_cases_missing_or_duplicate")
+    if len(verdict_map) != len(verdicts) or set(verdict_map) != set(case_map):
+        raise ValueError("cold_freshness_verdict_case_set_mismatch")
+    projection = []
+    for cid in sorted(case_map):
+        case = case_map[cid]
+        verdict = verdict_map[cid]
+        has_error = bool(verdict.get("error"))
+        observed = verdict.get("observed_supported")
+        if not has_error and type(observed) is not bool:
+            raise ValueError(f"cold_freshness_observed_supported_invalid:{cid}")
+        projection.append({
+            "source_unit_id": str(case.get("source_unit_id") or ""),
+            "gold_id": str(case.get("gold_id") or ""),
+            "expected_supported": bool(case.get("expected_supported")),
+            "mutation_type": str(case.get("mutation_type") or ""),
+            "proposition": str(case.get("proposition") or ""),
+            "evidence": str(case.get("evidence") or ""),
+            "provider_error": has_error,
+            "observed_supported": None if has_error else observed,
+        })
+    return _canonical_sha(projection)
 
 
 def decide(metrics: dict, units_in_scope: list[str]) -> tuple[str, list[str]]:
@@ -139,11 +190,19 @@ def recompute_and_verify(score_path: Path, paths: dict[str, Path]) -> tuple[dict
         provider=provider, model=model, observed_version=version,
     )
     replay = verify_replay_equivalence(stored, recomputed)
+    certification_semantic_sha = cold_certification_semantic_sha256(paths["cases"], paths["verdicts"])
+    # The score report remains a descriptive replay receipt. The certificate's
+    # lifecycle evidence is the score-relevant case+outcome projection derived
+    # from the replayed artifacts, not raw run metadata.
+    recomputed = dict(recomputed)
+    recomputed["candidate_semantic_sha256"] = certification_semantic_sha
+    recomputed["cold_certification_semantic_sha256"] = certification_semantic_sha
     return recomputed, {
-        "verification_schema_version": "hermes-cold-audit-certification-input-verification-1.1",
+        "verification_schema_version": "hermes-cold-audit-certification-input-verification-1.2",
         "recomputation_verified": True,
         "cases_sha256": recomputed["cold_benchmark_cases_sha256"],
         "verdicts_sha256": recomputed["cold_benchmark_verdicts_sha256"],
+        "cold_certification_semantic_sha256": certification_semantic_sha,
         **replay,
     }
 
@@ -167,6 +226,7 @@ def build_entry(score: dict, status: str, failures: list[str], verification: dic
         "candidate_semantic_sha256": score["candidate_semantic_sha256"],
         "cold_benchmark_cases_sha256": score["cold_benchmark_cases_sha256"],
         "cold_benchmark_verdicts_sha256": score["cold_benchmark_verdicts_sha256"],
+        "cold_certification_semantic_sha256": score.get("cold_certification_semantic_sha256"),
         "gold_label": score["gold_label"],
         "units_in_scope": sorted(units_in_scope),
         "scored_identity": score["scored_identity"],
@@ -267,6 +327,7 @@ def main(argv=None) -> int:
                 "COLD_AUDIT qualification is one source-first skeptical-review benchmark projected only into the "
                 "exact source W/S strata present in its source scope. Runtime still enforces source-unit membership, "
                 "model-version authority, protected identity, and independence from active primary/blind groups. "
+                "Lifecycle freshness binds score-relevant auditor verdict behavior, not run metadata. "
                 "It does not certify PRIMARY/BLIND W3 extraction or canonical medical truth."
             )
             registry_path.write_text(json.dumps(registry, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
