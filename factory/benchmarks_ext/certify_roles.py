@@ -12,10 +12,10 @@ from certification when the exact model version/weights are not immutably bound.
 Whole-registry SHA remains provenance telemetry; replay authority is the exact
 resolved model identity projection actually consumed by the scorer.
 
-A lifecycle deactivation invalidates the exact benchmark-evidence fingerprint
-that previously conferred authority. The same stale evidence may be inspected in
-dry-run but cannot be applied to restore certification. Fresh benchmark evidence
-may reactivate non-retired roles; RETIRED certification keys are terminal.
+Lifecycle invalidation uses canonical score-relevant candidate semantics for new
+certificates. Candidate IDs, run IDs, file ordering, and unused metadata therefore
+cannot manufacture fresh evidence. v1.21 file fingerprints remain migration
+compatible. RETIRED certification keys are terminal.
 """
 from __future__ import annotations
 
@@ -29,6 +29,7 @@ from typing import Any
 FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
+from hermes_factory.candidate_semantics import candidate_semantic_sha256_from_path  # noqa: E402
 from hermes_factory.certification_state import aggregate_role_status, recertification_block_reason  # noqa: E402
 from hermes_factory.risk import classify_source_unit  # noqa: E402
 from benchmarks_ext.replay_authority import (  # noqa: E402
@@ -189,7 +190,7 @@ def verify_score_pair(*, primary_score_path: Path, blind_score_path: Path, prima
     if blind.get("primary_baseline_identity") != primary.get("scored_identity"):
         raise ValueError("blind_primary_baseline_identity_does_not_match_primary_score")
     return primary, blind, {
-        "verification_schema_version": "hermes-role-certification-input-verification-1.3",
+        "verification_schema_version": "hermes-role-certification-input-verification-1.4",
         "recomputation_verified": True,
         "W2_S1_scope": expected_scope,
         "primary": p_receipt,
@@ -223,7 +224,37 @@ def auto_paths(primary_score_path: Path, blind_score_path: Path) -> dict[str, Pa
         return None
 
 
+def _bound_semantic_digest(score: dict, *, path_key: str, file_sha_key: str) -> str | None:
+    paths = score.get("input_paths")
+    if not isinstance(paths, dict) or not paths.get(path_key):
+        return None
+    expected_file_sha = score.get(file_sha_key)
+    if not isinstance(expected_file_sha, str) or len(expected_file_sha) != 64:
+        raise ValueError(f"semantic_digest_expected_file_sha_missing:{file_sha_key}")
+    path = Path(paths[path_key])
+    measured = sha256_file(path)
+    if measured != expected_file_sha:
+        raise ValueError(f"semantic_digest_candidate_file_changed_after_score:{path_key}:{measured}!={expected_file_sha}")
+    scope = score.get("units_in_scope")
+    if not isinstance(scope, list) or not scope:
+        raise ValueError("semantic_digest_score_scope_invalid")
+    return candidate_semantic_sha256_from_path(path, units_in_scope=scope)
+
+
+def _attach_bound_semantic_digests(primary: dict, blind: dict) -> None:
+    primary["candidate_semantic_sha256"] = _bound_semantic_digest(
+        primary, path_key="candidates", file_sha_key="candidate_file_sha256"
+    )
+    blind["candidate_semantic_sha256"] = _bound_semantic_digest(
+        blind, path_key="candidates", file_sha_key="candidate_file_sha256"
+    )
+    blind["primary_candidate_semantic_sha256"] = _bound_semantic_digest(
+        blind, path_key="primary_candidates", file_sha_key="primary_candidate_file_sha256"
+    )
+
+
 def build_entry(score: dict, role: str, status: str, failures: list[str], verification: dict | None) -> dict:
+    """Construct a certificate entry from already verified/bound score material."""
     compact = {key: node for key, node in score["metrics"].items() if isinstance(node, dict) and "value" in node}
     authority_projection = scoring_authority_projection(score)
     return {
@@ -238,6 +269,8 @@ def build_entry(score: dict, role: str, status: str, failures: list[str], verifi
         "source_units_sha256": score.get("source_units_sha256"),
         "candidate_file_sha256": score.get("candidate_file_sha256"),
         "primary_candidate_file_sha256": score.get("primary_candidate_file_sha256"),
+        "candidate_semantic_sha256": score.get("candidate_semantic_sha256"),
+        "primary_candidate_semantic_sha256": score.get("primary_candidate_semantic_sha256"),
         "gold_label": score["gold_label"],
         "units_in_scope": score["units_in_scope"],
         "scored_identity": score.get("scored_identity"),
@@ -331,6 +364,13 @@ def main(argv=None) -> int:
     p_status, p_fail = apply_version_binding_gate(primary, p_status, p_fail)
     b_status, b_fail = apply_version_binding_gate(blind, b_status, b_fail)
 
+    if verification is not None:
+        try:
+            _attach_bound_semantic_digests(primary, blind)
+        except (ValueError, json.JSONDecodeError, OSError) as exc:
+            print(f"certification semantic evidence binding failed: {exc}", file=sys.stderr)
+            return 4
+
     registry_path = Path(args.registry)
     try:
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
@@ -342,9 +382,11 @@ def main(argv=None) -> int:
         def key(provider: str, model: str, role: str) -> str:
             return "|".join([provider.upper(), model, role, "W2", "S1", BENCHMARK_VERSION])
 
+        p_key = key(p_provider, primary["model"], "PRIMARY")
+        b_key = key(b_provider, blind["model"], "BLIND_RECALL")
         changes = {
-            key(p_provider, primary["model"], "PRIMARY"): build_entry(primary, "PRIMARY", p_status, p_fail, verification),
-            key(b_provider, blind["model"], "BLIND_RECALL"): build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
+            p_key: build_entry(primary, "PRIMARY", p_status, p_fail, verification),
+            b_key: build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
         }
         reactivation_blocks = {
             cert_key: reason
@@ -363,6 +405,7 @@ def main(argv=None) -> int:
             "failures": p_fail,
             "observed_version": p_identity.get("observed_version"),
             "registry_authority_sha256": scoring_authority_sha256(primary),
+            "candidate_semantic_sha256": changes[p_key].get("candidate_semantic_sha256"),
         },
         "blind": {
             "model": blind["model"],
@@ -371,6 +414,8 @@ def main(argv=None) -> int:
             "failures": b_fail,
             "observed_version": b_identity.get("observed_version"),
             "registry_authority_sha256": scoring_authority_sha256(blind),
+            "candidate_semantic_sha256": changes[b_key].get("candidate_semantic_sha256"),
+            "primary_candidate_semantic_sha256": changes[b_key].get("primary_candidate_semantic_sha256"),
         },
         "registry_keys_written": sorted(changes) if not reactivation_blocks else [],
         "reactivation_blocks": reactivation_blocks,
@@ -398,10 +443,10 @@ def main(argv=None) -> int:
     registry["claim_boundary"] = (
         "Certifications are model-version/role/work/source/benchmark specific. Applied certification requires "
         "source-bound deterministic score recomputation, immutable model-version binding, preserved scoring-authority "
-        "identity, and benchmark evidence not previously invalidated by a lifecycle action. Whole-registry SHA is "
-        "provenance telemetry and unrelated certification-state mutations do not invalidate a score. Fresh evidence may "
-        "reactivate non-retired roles; RETIRED keys remain terminal. W3/S3, PRECISION_REVIEW and COLD_AUDIT remain outside "
-        "this certification."
+        "identity, and semantic benchmark evidence not previously invalidated by a lifecycle action. Candidate/run IDs, "
+        "row order, and unused metadata cannot manufacture freshness. Whole-registry SHA is provenance telemetry. "
+        "v1.21 file fingerprints remain migration compatible; RETIRED keys remain terminal. W3/S3, PRECISION_REVIEW and "
+        "COLD_AUDIT remain outside this certification."
     )
     print(json.dumps(output, indent=2))
     if args.apply:
