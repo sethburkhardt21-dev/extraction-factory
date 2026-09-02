@@ -241,17 +241,22 @@ def _bound_semantic_digest(score: dict, *, path_key: str, file_sha_key: str) -> 
     return candidate_semantic_sha256_from_path(path, units_in_scope=scope)
 
 
+def _attach_bound_semantic_digests(primary: dict, blind: dict) -> None:
+    primary["candidate_semantic_sha256"] = _bound_semantic_digest(
+        primary, path_key="candidates", file_sha_key="candidate_file_sha256"
+    )
+    blind["candidate_semantic_sha256"] = _bound_semantic_digest(
+        blind, path_key="candidates", file_sha_key="candidate_file_sha256"
+    )
+    blind["primary_candidate_semantic_sha256"] = _bound_semantic_digest(
+        blind, path_key="primary_candidates", file_sha_key="primary_candidate_file_sha256"
+    )
+
+
 def build_entry(score: dict, role: str, status: str, failures: list[str], verification: dict | None) -> dict:
+    """Construct a certificate entry from already verified/bound score material."""
     compact = {key: node for key, node in score["metrics"].items() if isinstance(node, dict) and "value" in node}
     authority_projection = scoring_authority_projection(score)
-    candidate_semantic_sha = _bound_semantic_digest(
-        score, path_key="candidates", file_sha_key="candidate_file_sha256"
-    )
-    primary_semantic_sha = None
-    if role == "BLIND_RECALL":
-        primary_semantic_sha = _bound_semantic_digest(
-            score, path_key="primary_candidates", file_sha_key="primary_candidate_file_sha256"
-        )
     return {
         "status": status,
         "decided_at_epoch": round(time.time(), 1),
@@ -264,8 +269,8 @@ def build_entry(score: dict, role: str, status: str, failures: list[str], verifi
         "source_units_sha256": score.get("source_units_sha256"),
         "candidate_file_sha256": score.get("candidate_file_sha256"),
         "primary_candidate_file_sha256": score.get("primary_candidate_file_sha256"),
-        "candidate_semantic_sha256": candidate_semantic_sha,
-        "primary_candidate_semantic_sha256": primary_semantic_sha,
+        "candidate_semantic_sha256": score.get("candidate_semantic_sha256"),
+        "primary_candidate_semantic_sha256": score.get("primary_candidate_semantic_sha256"),
         "gold_label": score["gold_label"],
         "units_in_scope": score["units_in_scope"],
         "scored_identity": score.get("scored_identity"),
@@ -359,6 +364,13 @@ def main(argv=None) -> int:
     p_status, p_fail = apply_version_binding_gate(primary, p_status, p_fail)
     b_status, b_fail = apply_version_binding_gate(blind, b_status, b_fail)
 
+    if verification is not None:
+        try:
+            _attach_bound_semantic_digests(primary, blind)
+        except (ValueError, json.JSONDecodeError, OSError) as exc:
+            print(f"certification semantic evidence binding failed: {exc}", file=sys.stderr)
+            return 4
+
     registry_path = Path(args.registry)
     try:
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
@@ -370,9 +382,11 @@ def main(argv=None) -> int:
         def key(provider: str, model: str, role: str) -> str:
             return "|".join([provider.upper(), model, role, "W2", "S1", BENCHMARK_VERSION])
 
+        p_key = key(p_provider, primary["model"], "PRIMARY")
+        b_key = key(b_provider, blind["model"], "BLIND_RECALL")
         changes = {
-            key(p_provider, primary["model"], "PRIMARY"): build_entry(primary, "PRIMARY", p_status, p_fail, verification),
-            key(b_provider, blind["model"], "BLIND_RECALL"): build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
+            p_key: build_entry(primary, "PRIMARY", p_status, p_fail, verification),
+            b_key: build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
         }
         reactivation_blocks = {
             cert_key: reason
@@ -391,7 +405,7 @@ def main(argv=None) -> int:
             "failures": p_fail,
             "observed_version": p_identity.get("observed_version"),
             "registry_authority_sha256": scoring_authority_sha256(primary),
-            "candidate_semantic_sha256": next(iter(changes.values())).get("candidate_semantic_sha256") if changes else None,
+            "candidate_semantic_sha256": changes[p_key].get("candidate_semantic_sha256"),
         },
         "blind": {
             "model": blind["model"],
@@ -400,8 +414,8 @@ def main(argv=None) -> int:
             "failures": b_fail,
             "observed_version": b_identity.get("observed_version"),
             "registry_authority_sha256": scoring_authority_sha256(blind),
-            "candidate_semantic_sha256": changes.get(key(b_provider, blind["model"], "BLIND_RECALL"), {}).get("candidate_semantic_sha256"),
-            "primary_candidate_semantic_sha256": changes.get(key(b_provider, blind["model"], "BLIND_RECALL"), {}).get("primary_candidate_semantic_sha256"),
+            "candidate_semantic_sha256": changes[b_key].get("candidate_semantic_sha256"),
+            "primary_candidate_semantic_sha256": changes[b_key].get("primary_candidate_semantic_sha256"),
         },
         "registry_keys_written": sorted(changes) if not reactivation_blocks else [],
         "reactivation_blocks": reactivation_blocks,
