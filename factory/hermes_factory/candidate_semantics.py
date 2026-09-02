@@ -5,6 +5,10 @@ run lineage, row order, and metadata. Those bytes are useful provenance but are 
 semantic freshness because the benchmark scorer does not use them to decide its
 metrics. This module projects only score-relevant source/proposition/evidence and
 authoritative worker identity, then hashes the sorted multiset.
+
+Observed-version normalization intentionally mirrors score_role: a missing version
+becomes UNOBSERVED. That value can be descriptively scored/digested but cannot earn
+semantic certification because the separate model-version authority gate rejects it.
 """
 from __future__ import annotations
 
@@ -22,8 +26,8 @@ def _worker_projection(row: dict) -> dict[str, str]:
         raise ValueError("candidate_semantic_worker_identity_missing")
     provider = str(worker.get("provider") or "").upper().strip()
     model = str(worker.get("model_alias") or "").strip()
-    observed_version = str(worker.get("observed_version") or "").strip()
-    if not provider or not model or not observed_version:
+    observed_version = str(worker.get("observed_version") or "UNOBSERVED").strip() or "UNOBSERVED"
+    if not provider or not model:
         raise ValueError("candidate_semantic_worker_identity_incomplete")
     return {
         "provider": provider,
