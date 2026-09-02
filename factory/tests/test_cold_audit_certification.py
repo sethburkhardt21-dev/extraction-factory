@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
+import tempfile
 import unittest
+from pathlib import Path
 
-from benchmarks_ext.certify_cold_audit import decide
+from benchmarks_ext.certify_cold_audit import build_entry, decide, risk_scopes
 from benchmarks_ext.cold_audit_score import (
     CASE_SCHEMA,
     VERDICT_SCHEMA,
@@ -11,6 +14,8 @@ from benchmarks_ext.cold_audit_score import (
     mutation_options,
     score_verdicts,
 )
+from hermes_factory.models import SourceUnit
+from benchmarks_ext.score_role import sha256_text
 
 
 class ColdCaseConstructionTests(unittest.TestCase):
@@ -120,6 +125,73 @@ class ColdAuditDecisionTests(unittest.TestCase):
         status, failures = decide(metrics, [f"U{i}" for i in range(8)])
         self.assertEqual(status, "REJECTED")
         self.assertTrue(any("unsupported_rejection" in x for x in failures))
+
+
+class ColdAuditRiskScopeTests(unittest.TestCase):
+    @staticmethod
+    def _write_jsonl(path: Path, rows: list[dict]) -> None:
+        path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8")
+
+    def test_risk_scopes_partition_certificates_without_broadening_units(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source_sha = "a" * 64
+            text = "Routine statement 25 mmHg."
+            table = "Row A | Value 25 mmHg"
+            units = [
+                SourceUnit(
+                    source_unit_id="U-TEXT", source_id="S", source_version_id="SV", source_sha256=source_sha,
+                    unit_type="PARAGRAPH", content_representation="TEXT", locator={"pdf_pages": [1]},
+                    content_sha256=sha256_text(text), content=text,
+                ),
+                SourceUnit(
+                    source_unit_id="U-TABLE", source_id="S", source_version_id="SV", source_sha256=source_sha,
+                    unit_type="TABLE", content_representation="TABLE", locator={"pdf_pages": [2]},
+                    content_sha256=sha256_text(table), content=table,
+                ),
+            ]
+            source = root / "source_units.jsonl"
+            self._write_jsonl(source, [u.to_dict() for u in units])
+            raw = source.read_text(encoding="utf-8")
+            manifest = {
+                "source_pdf_sha256": source_sha,
+                "source_units_sha256": sha256_text(raw),
+                "source_unit_content_sha256": {u.source_unit_id: u.content_sha256 for u in units},
+            }
+            manifest_path = root / "GOLD_MANIFEST.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            scopes = risk_scopes(source, manifest_path)
+            self.assertEqual(scopes[("W2", "S1")], ["U-TEXT"])
+            self.assertEqual(scopes[("W3", "S3")], ["U-TABLE"])
+            self.assertEqual(sorted(uid for rows in scopes.values() for uid in rows), ["U-TABLE", "U-TEXT"])
+
+    def test_build_entry_uses_exact_risk_stratum_unit_scope(self):
+        score = {
+            "metrics": self.perfect_metrics(),
+            "reference_sha256": "a" * 64,
+            "gold_manifest_sha256": "b" * 64,
+            "source_units_sha256": "c" * 64,
+            "cold_benchmark_cases_sha256": "d" * 64,
+            "cold_benchmark_verdicts_sha256": "e" * 64,
+            "candidate_semantic_sha256": "f" * 64,
+            "gold_label": "MECHANICALLY_CHECKED",
+            "scored_identity": {
+                "provider": "OLLAMA", "model_alias": "audit", "underlying_family": "DEEPSEEK",
+                "empirical_semantic_model": True, "independence_group": "DEEPSEEK",
+                "observed_version_policy": "OLLAMA_DIGEST", "observed_version": "sha256:" + "1" * 64,
+                "version_binding_certifiable": True,
+            },
+            "primary_baseline_identity": None,
+        }
+        verification = {"recomputation_verified": True}
+        entry = build_entry(score, "CERTIFIED_WITH_LIMITS", [], verification, units_in_scope=["U-TABLE"])
+        self.assertEqual(entry["units_in_scope"], ["U-TABLE"])
+        self.assertEqual(entry["candidate_file_sha256"], "d" * 64)
+        self.assertTrue(entry["benchmark_inputs_verified"])
+
+    @staticmethod
+    def perfect_metrics() -> dict:
+        return ColdAuditDecisionTests.perfect_metrics()
 
 
 if __name__ == "__main__":
