@@ -253,7 +253,9 @@ def resolve_model_identity(registry: Dict[str, Any], provider: str, model_alias:
         raise ValueError(f"registered_model_missing_independence_group:{key}")
     independence_group = group_raw.strip()
 
-    policy_raw = row.get("observed_version_policy", "CLI_OBSERVED")
+    if "observed_version_policy" not in row:
+        raise ValueError(f"registered_model_missing_observed_version_policy:{key}")
+    policy_raw = row.get("observed_version_policy")
     if not isinstance(policy_raw, str) or not policy_raw.strip():
         raise ValueError(f"registered_model_observed_version_policy_invalid:{key}")
 
