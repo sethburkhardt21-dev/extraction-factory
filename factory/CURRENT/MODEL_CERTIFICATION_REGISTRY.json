@@ -2,7 +2,8 @@
   "benchmark_version": "BENCHMARK_SOURCE_FIRST_v1_NOT_YET_GOLD",
   "certification_lifecycle_events": [],
   "certifications": {},
-  "claim_boundary": "Model family, empirical-provider identity, independence group, model-version policy, model-version authority, and certification lifecycle are protected state. Only CERTIFIED/CERTIFIED_WITH_LIMITS confer runtime authority. SUSPENDED, DEMOTED, EXPIRED, PROVISIONAL, and RETIRED are non-authoritative; RETIRED keys are additionally tombstoned against accidental recertification. Lifecycle writes are downward-only and audited. No automatic wall-clock expiry is synthesized because the architecture has not yet defined a retest interval.",
+  "claim_boundary": "Model family, empirical-provider identity, independence group, model-version policy, model-version authority, certification lifecycle, and deactivated benchmark-evidence fingerprints are protected state. Only CERTIFIED/CERTIFIED_WITH_LIMITS confer runtime authority. SUSPENDED, DEMOTED, EXPIRED, PROVISIONAL, and RETIRED are non-authoritative. Exact benchmark evidence invalidated by a lifecycle action cannot restore authority; fresh benchmark evidence may reactivate non-retired roles. RETIRED keys remain terminal. No automatic wall-clock expiry is synthesized because the architecture has not defined a retest interval.",
+  "invalidated_certification_evidence": [],
   "model_identities": {
     "CLAUDE|claude-opus-5": {
       "empirical_semantic_model": true,
@@ -41,5 +42,5 @@
     "TABLE_W3": "UNBENCHMARKED",
     "VISUAL_W3": "UNBENCHMARKED"
   },
-  "schema_version": "hermes-model-certification-registry-1.4"
+  "schema_version": "hermes-model-certification-registry-1.5"
 }

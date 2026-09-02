@@ -7,9 +7,11 @@ certify_roles.py.
 
 Dry-run is the default. `--apply` requires `--expect-status` as a compare-and-set
 assertion so a stale operator command cannot overwrite a newer registry state.
-Lifecycle events are also appended to a top-level protected audit log so later
-recertification cannot erase the administrative history. RETIRED creates a
-terminal tombstone enforced by runtime.
+Lifecycle events are appended to a top-level protected audit log so later
+recertification cannot erase administrative history. Every fingerprintable
+benchmark evidence set deactivated by a lifecycle action is also recorded so the
+same stale evidence cannot silently restore authority. RETIRED additionally
+creates a terminal certification-key tombstone enforced by runtime.
 """
 from __future__ import annotations
 
@@ -22,42 +24,14 @@ FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
 from hermes_factory.certification_lifecycle import DOWNWARD_TARGETS, apply_downward_transition  # noqa: E402
+from hermes_factory.certification_state import (  # noqa: E402
+    aggregate_role_status,
+    parse_certification_key,
+    record_evidence_invalidation,
+)
 from hermes_factory.model_registry import ALLOWED, CERTIFIED_STATUSES, certification_entry  # noqa: E402
 
 DEFAULT_REGISTRY = FACTORY_ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"
-
-
-def parse_certification_key(key: str) -> tuple[str, str, str, str, str, str]:
-    parts = str(key or "").split("|")
-    if len(parts) != 6 or any(not x for x in parts):
-        raise ValueError("certification_key_must_have_6_nonempty_fields")
-    return tuple(parts)  # type: ignore[return-value]
-
-
-def aggregate_role_status(certifications: dict, *, role: str, work_class: str, benchmark_version: str) -> str:
-    statuses = []
-    for key, entry in certifications.items():
-        if not isinstance(entry, dict):
-            continue
-        try:
-            _, _, key_role, key_work, _, key_benchmark = parse_certification_key(key)
-        except ValueError:
-            continue
-        if key_role == role and key_work == work_class and key_benchmark == benchmark_version:
-            status = str(entry.get("status") or "UNBENCHMARKED").upper()
-            if status in ALLOWED:
-                statuses.append(status)
-    if "CERTIFIED" in statuses:
-        return "CERTIFIED"
-    if "CERTIFIED_WITH_LIMITS" in statuses:
-        return "CERTIFIED_WITH_LIMITS"
-    for state in (
-        "SUSPENDED", "DEMOTED", "EXPIRED", "PROVISIONAL", "BENCHMARKING",
-        "BLOCKED_EXTERNAL", "REJECTED", "FIXTURE_NOT_EMPIRICAL", "RETIRED", "UNBENCHMARKED",
-    ):
-        if state in statuses:
-            return state
-    return "UNBENCHMARKED"
 
 
 def propose_transition(*, registry: dict, key: str, target_status: str, reason: str,
@@ -95,6 +69,16 @@ def propose_transition(*, registry: dict, key: str, target_status: str, reason: 
     event["source_class"] = source_class
     event["benchmark_version"] = benchmark_version
     event["runtime_authority_after_transition"] = updated_entry["status"] in CERTIFIED_STATUSES
+
+    # Fingerprint the certificate evidence being deactivated. This is deliberately
+    # based on benchmark/source/model-authority evidence, not time. Reusing the
+    # exact same evidence through certify_roles must not undo a safety action.
+    record_evidence_invalidation(
+        proposed,
+        certification_key=key,
+        entry=entry,
+        event=event,
+    )
 
     audit = proposed.setdefault("certification_lifecycle_events", [])
     if not isinstance(audit, list):
@@ -153,7 +137,7 @@ def main(argv=None) -> int:
         return 4
 
     output = {
-        "schema_version": "hermes-certification-lifecycle-transition-1.1",
+        "schema_version": "hermes-certification-lifecycle-transition-1.3",
         "certification_key": args.key,
         "from_status": event["from_status"],
         "to_status": event["to_status"],
@@ -161,6 +145,8 @@ def main(argv=None) -> int:
         "reason": event["reason"],
         "incident_ref": event.get("incident_ref"),
         "runtime_authority_after_transition": event["runtime_authority_after_transition"],
+        "invalidated_evidence_sha256": event.get("invalidated_evidence_sha256"),
+        "invalidated_evidence_match_mode": event.get("invalidated_evidence_match_mode"),
         "retirement_tombstone": args.key in proposed.get("retired_certification_keys", []),
         "applied": bool(args.apply),
         "automatic_time_expiry": "NOT_DEFINED_BY_ARCHITECTURE",
