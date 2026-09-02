@@ -1,7 +1,8 @@
 {
   "benchmark_version": "BENCHMARK_SOURCE_FIRST_v1_NOT_YET_GOLD",
+  "certification_lifecycle_events": [],
   "certifications": {},
-  "claim_boundary": "Model family, empirical-provider identity, independence group, model-version policy, and model-version authority are protected identity state. Applied semantic certificates must carry a hashed scoring-authority projection and remain valid only while the current protected model identity still matches it. Whole-registry SHA is provenance telemetry; unrelated certification-state mutations do not invalidate an otherwise identical score replay.",
+  "claim_boundary": "Model family, empirical-provider identity, independence group, model-version policy, model-version authority, and certification lifecycle are protected state. Only CERTIFIED/CERTIFIED_WITH_LIMITS confer runtime authority. SUSPENDED, DEMOTED, EXPIRED, PROVISIONAL, and RETIRED are non-authoritative; RETIRED keys are additionally tombstoned against accidental recertification. Lifecycle writes are downward-only and audited. No automatic wall-clock expiry is synthesized because the architecture has not yet defined a retest interval.",
   "model_identities": {
     "CLAUDE|claude-opus-5": {
       "empirical_semantic_model": true,
@@ -28,6 +29,7 @@
       "underlying_family": "QWEN_NUEXTRACT"
     }
   },
+  "retired_certification_keys": [],
   "role_status": {
     "BLIND_RECALL_W2": "UNBENCHMARKED",
     "COLD_AUDIT": "UNBENCHMARKED",
@@ -39,5 +41,5 @@
     "TABLE_W3": "UNBENCHMARKED",
     "VISUAL_W3": "UNBENCHMARKED"
   },
-  "schema_version": "hermes-model-certification-registry-1.3"
+  "schema_version": "hermes-model-certification-registry-1.4"
 }
