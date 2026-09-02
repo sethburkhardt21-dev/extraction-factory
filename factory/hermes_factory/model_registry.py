@@ -9,6 +9,7 @@ from .certification_authority import (
     certificate_projection_valid,
     current_registry_identity_matches_certificate,
 )
+from .cold_audit_certificate_policy import cold_audit_dimension_coverage_valid
 
 # The architecture defines the model-profile lifecycle states below. Historical
 # implementation statuses are retained for compatibility. Only CERTIFIED and
@@ -167,8 +168,9 @@ def is_certified_for_source(
 
     BLIND_RECALL additionally requires the current runtime PRIMARY to match the
     exact primary baseline identity recorded when blind-recall performance was
-    benchmarked. This prevents pair-dependent blind metrics from being replayed
-    behind a different primary model.
+    benchmarked. COLD_AUDIT additionally requires the canonical multidimensional
+    coverage receipt introduced in v1.25; older single-negative certificates are
+    deliberately non-authoritative at runtime.
     """
     if is_retired_certification_key(registry, key):
         return False
@@ -219,6 +221,8 @@ def is_certified_for_source(
         primary_model_alias=primary_model_alias,
         primary_observed_version=primary_observed_version,
     ):
+        return False
+    if role == "COLD_AUDIT" and not cold_audit_dimension_coverage_valid(entry):
         return False
 
     for required in ("gold_reference_sha256", "gold_manifest_sha256", "candidate_file_sha256"):
