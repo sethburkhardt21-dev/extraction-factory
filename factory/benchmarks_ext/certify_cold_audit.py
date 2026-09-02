@@ -6,6 +6,8 @@ but no certifier existed. The benchmark is deliberately strict and bounded:
 * positive controls are source-first gold proposition/evidence pairs;
 * negative controls are deterministic unsupported mutations of those same rows;
 * every challenge must be classified correctly; malformed provider output fails;
+* the auditor must be disjoint from all frozen gold-builder/adjudicator
+  independence groups, so it cannot be certified against gold it helped author;
 * lifecycle freshness is a canonical challenge-definition/outcome fingerprint,
   not volatile request IDs, rationale wording, timings, or provider receipts;
 * Ollama certification derives the immutable digest from the same daemon used for
@@ -62,10 +64,28 @@ NUMBER_RE = re.compile(r"(?<![\w.])(-?\d+(?:\.\d+)?)(?![\w.])")
 LIMITS = [
     "COLD_AUDIT challenge corpus is the governed eight-unit Machines/Dorsch pilot only",
     "positive controls are mechanically checked source-first gold; negative controls are deterministic injected errors",
+    "cold auditor must be disjoint from all three frozen gold-construction independence groups",
     "all challenge classifications must be correct, but this does not prove full-corpus or clinical correctness",
     "certification is role=W4 and exact source/model-version/registry-identity bound",
     "automatic applied version authority is currently implemented only for digest-guarded Ollama models",
 ]
+
+
+def validate_gold_construction_disjointness(manifest: dict, identity: dict) -> list[str]:
+    groups = manifest.get("gold_construction_independence_groups")
+    if not isinstance(groups, list) or len(groups) < 3:
+        raise ValueError("cold_audit_gold_construction_groups_missing_or_incomplete")
+    if any(not isinstance(x, str) or not x.strip() for x in groups):
+        raise ValueError("cold_audit_gold_construction_group_invalid")
+    normalized = [x.strip() for x in groups]
+    if len(set(normalized)) != len(normalized):
+        raise ValueError("cold_audit_gold_construction_groups_not_distinct")
+    auditor_group = str(identity.get("independence_group") or "").strip()
+    if not auditor_group:
+        raise ValueError("cold_audit_identity_missing_independence_group")
+    if auditor_group in set(normalized):
+        raise ValueError(f"cold_audit_gold_construction_contamination:{auditor_group}")
+    return sorted(normalized)
 
 
 def _challenge_id(kind: str, uid: str, proposition: str, evidence: str) -> str:
@@ -232,13 +252,7 @@ def _results_sha256(results: list[dict]) -> str:
 
 
 def challenge_semantic_projection(challenges: list[dict], results: list[dict]) -> list[dict]:
-    """Project only score-relevant challenge definition and classification outcome.
-
-    Challenge IDs, proposition/evidence, and expected labels bind the challenge
-    semantics. Actual supported/correct/error-class bind the measured outcome.
-    Run IDs, request/output hashes, timing, rationale wording, flags and provider
-    diagnostics are intentionally excluded because they do not affect the score.
-    """
+    """Project only score-relevant challenge definition and classification outcome."""
     result_by_id = {str(r.get("challenge_id") or ""): r for r in results}
     expected_ids = {str(c.get("challenge_id") or "") for c in challenges}
     if set(result_by_id) != expected_ids:
@@ -313,7 +327,6 @@ def build_entries(*, registry: dict, identity: dict, observed_version: str, metr
 
 def _build_provider(args: argparse.Namespace, identity: dict) -> tuple[JSONCommandProvider, str, bool]:
     provider_name = str(identity["provider"]).upper()
-    policy = str(identity.get("observed_version_policy") or "")
     if provider_name == "OLLAMA":
         if args.provider_command:
             raise ValueError("ollama_provider_command_not_accepted:guarded_command_is_constructed_by_certifier")
@@ -350,9 +363,6 @@ def _build_provider(args: argparse.Namespace, identity: dict) -> tuple[JSONComma
         role="COLD_AUDIT", timeout_seconds=max(1, args.timeout), network_required=True,
         empirical_semantic_model=True,
     )
-    # No generic command can prove that an operator-supplied version string is
-    # the exact immutable provider version that generated the response. Keep the
-    # benchmark descriptive until a provider-specific verifier exists.
     return provider, observed, False
 
 
@@ -389,6 +399,7 @@ def main(argv=None) -> int:
         identity = resolve_model_identity(registry, args.provider, args.model)
         if identity.get("empirical_semantic_model") is not True:
             raise ValueError("cold_audit_model_not_empirical")
+        gold_groups = validate_gold_construction_disjointness(manifest, identity)
 
         provider, observed_version, version_authority_verified = _build_provider(args, identity)
         version_certifiable = observed_version_is_certifiable(
@@ -434,13 +445,15 @@ def main(argv=None) -> int:
             "source_units_sha256": source_units_sha,
             "reference_sha256": reference_sha,
             "gold_manifest_sha256": sha256_file(manifest_path),
+            "gold_construction_independence_groups": gold_groups,
+            "cold_auditor_independence_group": identity["independence_group"],
             "observed_version": observed_version,
             "version_authority_verified": version_authority_verified,
             "scored_identity": next(iter(entries.values()))["scored_identity"] if entries else None,
             "registry_keys": sorted(entries),
             "reactivation_blocks": reactivation_blocks,
             "applied": bool(args.apply and status == "CERTIFIED_WITH_LIMITS" and not reactivation_blocks),
-            "claim_boundary": "Passing proves strict supported-vs-injected-error discrimination only on this exact governed pilot and provider-verified immutable model version.",
+            "claim_boundary": "Passing proves strict supported-vs-injected-error discrimination only on this exact governed pilot, disjoint from its gold-construction families, on a provider-verified immutable model version.",
         }
         Path(args.out).write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
         if args.apply:
@@ -461,7 +474,7 @@ def main(argv=None) -> int:
             )
             registry["claim_boundary"] = (
                 str(registry.get("claim_boundary") or "") +
-                " COLD_AUDIT W4 may be CERTIFIED_WITH_LIMITS only through the strict source-first positive/injected-error challenge benchmark on a provider-verified immutable model version."
+                " COLD_AUDIT W4 may be CERTIFIED_WITH_LIMITS only through the strict source-first positive/injected-error challenge benchmark, disjoint from the frozen gold-construction groups, on a provider-verified immutable model version."
             ).strip()
             registry_path.write_text(json.dumps(registry, indent=2, sort_keys=True), encoding="utf-8")
             print(f"registry updated: {registry_path}")
