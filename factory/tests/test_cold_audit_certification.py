@@ -5,7 +5,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from benchmarks_ext.certify_cold_audit import build_entry, decide, risk_scopes
+from benchmarks_ext.certify_cold_audit import (
+    build_entry,
+    cold_certification_semantic_sha256,
+    decide,
+    risk_scopes,
+)
 from benchmarks_ext.cold_audit_score import (
     CASE_SCHEMA,
     VERDICT_SCHEMA,
@@ -14,8 +19,8 @@ from benchmarks_ext.cold_audit_score import (
     mutation_options,
     score_verdicts,
 )
-from hermes_factory.models import SourceUnit
 from benchmarks_ext.score_role import sha256_text
+from hermes_factory.models import SourceUnit
 
 
 class ColdCaseConstructionTests(unittest.TestCase):
@@ -67,35 +72,55 @@ class ColdAuditMetricTests(unittest.TestCase):
             {"case_id": "N3", "source_unit_id": "U1", "expected_supported": False, "mutation_type": "QUALIFIER_DROPPED"},
         ]
 
+    @classmethod
+    def perfect_verdicts(cls) -> list[dict]:
+        return [{
+            "verdict_schema_version": VERDICT_SCHEMA,
+            "case_id": case["case_id"],
+            "expected_supported": case["expected_supported"],
+            "observed_supported": case["expected_supported"],
+        } for case in cls.cases()]
+
     def test_perfect_verdicts_score_perfectly(self):
-        verdicts = []
-        for case in self.cases():
-            verdicts.append({
-                "verdict_schema_version": VERDICT_SCHEMA,
-                "case_id": case["case_id"],
-                "expected_supported": case["expected_supported"],
-                "observed_supported": case["expected_supported"],
-            })
-        metrics = score_verdicts(self.cases(), verdicts)
+        metrics = score_verdicts(self.cases(), self.perfect_verdicts())
         self.assertEqual(metrics["supported_case_recall"]["value"], 1.0)
         self.assertEqual(metrics["unsupported_case_rejection"]["value"], 1.0)
         self.assertEqual(metrics["provider_error_rate"]["value"], 0.0)
 
     def test_provider_error_counts_as_failure(self):
-        verdicts = []
-        for case in self.cases():
-            row = {
-                "verdict_schema_version": VERDICT_SCHEMA,
-                "case_id": case["case_id"],
-                "expected_supported": case["expected_supported"],
-                "observed_supported": case["expected_supported"],
-            }
-            verdicts.append(row)
+        verdicts = self.perfect_verdicts()
         verdicts[0].pop("observed_supported")
         verdicts[0]["error"] = "provider_failed"
         metrics = score_verdicts(self.cases(), verdicts)
         self.assertGreater(metrics["provider_error_rate"]["value"], 0.0)
         self.assertLess(metrics["supported_case_recall"]["value"], 1.0)
+
+    def test_certification_semantic_digest_ignores_row_order_and_metadata(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); cases_path = root / "cases.jsonl"; verdicts_path = root / "verdicts.jsonl"
+            cases = self.cases(); verdicts = self.perfect_verdicts()
+            cases_path.write_text("".join(json.dumps(x) + "\n" for x in cases), encoding="utf-8")
+            for row in verdicts:
+                row["rationale"] = "ignored prose"
+                row["provider_receipt"] = {"duration_seconds": 999}
+            verdicts_path.write_text("".join(json.dumps(x) + "\n" for x in verdicts), encoding="utf-8")
+            first = cold_certification_semantic_sha256(cases_path, verdicts_path)
+            cases_path.write_text("".join(json.dumps(x) + "\n" for x in reversed(cases)), encoding="utf-8")
+            verdicts_path.write_text("".join(json.dumps(x) + "\n" for x in reversed(verdicts)), encoding="utf-8")
+            second = cold_certification_semantic_sha256(cases_path, verdicts_path)
+            self.assertEqual(first, second)
+
+    def test_certification_semantic_digest_changes_when_auditor_behavior_changes(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); cases_path = root / "cases.jsonl"; verdicts_path = root / "verdicts.jsonl"
+            cases = self.cases(); verdicts = self.perfect_verdicts()
+            cases_path.write_text("".join(json.dumps(x) + "\n" for x in cases), encoding="utf-8")
+            verdicts_path.write_text("".join(json.dumps(x) + "\n" for x in verdicts), encoding="utf-8")
+            before = cold_certification_semantic_sha256(cases_path, verdicts_path)
+            verdicts[0]["observed_supported"] = not verdicts[0]["observed_supported"]
+            verdicts_path.write_text("".join(json.dumps(x) + "\n" for x in verdicts), encoding="utf-8")
+            after = cold_certification_semantic_sha256(cases_path, verdicts_path)
+            self.assertNotEqual(before, after)
 
 
 class ColdAuditDecisionTests(unittest.TestCase):
@@ -174,6 +199,7 @@ class ColdAuditRiskScopeTests(unittest.TestCase):
             "cold_benchmark_cases_sha256": "d" * 64,
             "cold_benchmark_verdicts_sha256": "e" * 64,
             "candidate_semantic_sha256": "f" * 64,
+            "cold_certification_semantic_sha256": "f" * 64,
             "gold_label": "MECHANICALLY_CHECKED",
             "scored_identity": {
                 "provider": "OLLAMA", "model_alias": "audit", "underlying_family": "DEEPSEEK",
@@ -187,6 +213,7 @@ class ColdAuditRiskScopeTests(unittest.TestCase):
         entry = build_entry(score, "CERTIFIED_WITH_LIMITS", [], verification, units_in_scope=["U-TABLE"])
         self.assertEqual(entry["units_in_scope"], ["U-TABLE"])
         self.assertEqual(entry["candidate_file_sha256"], "d" * 64)
+        self.assertEqual(entry["candidate_semantic_sha256"], "f" * 64)
         self.assertTrue(entry["benchmark_inputs_verified"])
 
     @staticmethod
