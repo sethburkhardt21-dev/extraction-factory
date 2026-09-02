@@ -47,7 +47,18 @@ def get_status(registry: Dict[str, Any], key: str) -> str:
     return value
 
 
+def is_retired_certification_key(registry: Dict[str, Any], key: str) -> bool:
+    retired = registry.get("retired_certification_keys", [])
+    if retired is None:
+        return False
+    if not isinstance(retired, list) or any(not isinstance(x, str) or not x for x in retired):
+        raise ValueError("retired_certification_keys_not_string_array")
+    return key in retired
+
+
 def is_certified(registry: Dict[str, Any], key: str) -> bool:
+    if is_retired_certification_key(registry, key):
+        return False
     return get_status(registry, key) in CERTIFIED_STATUSES
 
 
@@ -98,7 +109,9 @@ def is_certified_for_source(
     model_alias: str,
     observed_version: str,
 ) -> bool:
-    """Require certification to match source, model version, and protected identity."""
+    """Require certification to match source, model version, lifecycle, and protected identity."""
+    if is_retired_certification_key(registry, key):
+        return False
     entry = certification_entry(registry, key)
     if entry is None:
         return False
