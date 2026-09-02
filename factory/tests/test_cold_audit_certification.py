@@ -221,15 +221,11 @@ class ColdAuditRuntimeCertificationTests(unittest.TestCase):
         key = certification_key("OLLAMA", "auditor:1", "COLD_AUDIT", "W2", "S1", "B1")
         self.assertEqual(key.split("|")[3], "W4")
 
-    def test_generated_certificate_is_runtime_source_and_version_bound(self):
+    def test_legacy_generated_certificate_is_not_runtime_authority_without_dimension_coverage(self):
         registry, key = self._registry_and_entry()
-        self.assertTrue(is_certified_for_source(
-            registry, key, source_units_sha256="4" * 64, source_unit_id="U1",
-            provider="OLLAMA", model_alias="auditor:1", observed_version=DIGEST,
-        ))
         self.assertFalse(is_certified_for_source(
             registry, key, source_units_sha256="4" * 64, source_unit_id="U1",
-            provider="OLLAMA", model_alias="auditor:1", observed_version="sha256:" + "b" * 64,
+            provider="OLLAMA", model_alias="auditor:1", observed_version=DIGEST,
         ))
 
     def test_certificate_carries_semantic_fingerprint_for_lifecycle_freshness(self):
