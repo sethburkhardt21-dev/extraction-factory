@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any
 
 AUTHORITY_SCHEMA = "hermes-scoring-authority-projection-1.0"
@@ -27,6 +28,7 @@ IDENTITY_AUTHORITY_FIELDS = (
     "version_binding_certifiable",
 )
 REPLAY_TELEMETRY_FIELDS = {"registry_sha256"}
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$", re.IGNORECASE)
 
 
 def _project_identity(identity: Any, *, label: str, optional: bool = False) -> dict | None:
@@ -63,14 +65,18 @@ def scoring_authority_sha256(score: dict) -> str:
     return canonical_projection_sha256(scoring_authority_projection(score))
 
 
-def verify_replay_equivalence(stored: dict, recomputed: dict) -> dict:
-    """Require exact score replay except for whole-registry SHA telemetry.
+def _required_registry_sha(score: dict, *, label: str) -> str:
+    value = str(score.get("registry_sha256") or "")
+    if not SHA256_RE.fullmatch(value):
+        raise ValueError(f"{label}_registry_sha256_missing_or_invalid")
+    return value.lower()
 
-    The identity projection is checked explicitly first so an independence-group,
-    empirical-status, family, version-policy, alias, provider, or observed-version
-    change receives an authority-specific failure rather than being hidden inside a
-    generic score diff.
-    """
+
+def verify_replay_equivalence(stored: dict, recomputed: dict) -> dict:
+    """Require exact score replay except for whole-registry SHA telemetry."""
+    stored_registry_sha = _required_registry_sha(stored, label="stored")
+    current_registry_sha = _required_registry_sha(recomputed, label="recomputed")
+
     stored_projection = scoring_authority_projection(stored)
     current_projection = scoring_authority_projection(recomputed)
     if stored_projection != current_projection:
@@ -85,8 +91,6 @@ def verify_replay_equivalence(stored: dict, recomputed: dict) -> dict:
         changed = sorted(k for k in set(left) | set(right) if left.get(k) != right.get(k))
         raise ValueError(f"score_report_does_not_match_recomputation:{changed}")
 
-    stored_registry_sha = str(stored.get("registry_sha256") or "")
-    current_registry_sha = str(recomputed.get("registry_sha256") or "")
     return {
         "replay_equivalent": True,
         "registry_sha256_at_score": stored_registry_sha,
