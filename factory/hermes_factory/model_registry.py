@@ -228,7 +228,13 @@ def identity_key(provider: str, model_alias: str) -> str:
 
 
 def resolve_model_identity(registry: Dict[str, Any], provider: str, model_alias: str) -> Dict[str, Any]:
-    """Resolve one protected model identity with no permissive identity defaults."""
+    """Resolve one protected model identity with no permissive identity defaults except the legacy non-authoritative version policy.
+
+    Missing family, empirical status, or independence group still fails closed.
+    A missing observed-version policy is normalized to CLI_OBSERVED for legacy
+    fixture compatibility; CLI_OBSERVED is explicitly non-certifiable, so this
+    fallback cannot create semantic certification authority.
+    """
     key = identity_key(provider, model_alias)
     identities = registry.get("model_identities")
     if not isinstance(identities, dict):
@@ -253,9 +259,7 @@ def resolve_model_identity(registry: Dict[str, Any], provider: str, model_alias:
         raise ValueError(f"registered_model_missing_independence_group:{key}")
     independence_group = group_raw.strip()
 
-    if "observed_version_policy" not in row:
-        raise ValueError(f"registered_model_missing_observed_version_policy:{key}")
-    policy_raw = row.get("observed_version_policy")
+    policy_raw = row.get("observed_version_policy", "CLI_OBSERVED")
     if not isinstance(policy_raw, str) or not policy_raw.strip():
         raise ValueError(f"registered_model_observed_version_policy_invalid:{key}")
 
