@@ -1,7 +1,7 @@
 {
   "benchmark_version": "BENCHMARK_SOURCE_FIRST_v1_NOT_YET_GOLD",
   "certifications": {},
-  "claim_boundary": "Model family, empirical-provider identity, and model-version authority are protected here. Ollama semantic certification requires the immutable local model digest; unpinned hosted aliases may execute but cannot inherit a semantic certificate.",
+  "claim_boundary": "Model family, empirical-provider identity, independence group, model-version policy, and model-version authority are protected identity state. Applied semantic certificates must carry a hashed scoring-authority projection and remain valid only while the current protected model identity still matches it. Whole-registry SHA is provenance telemetry; unrelated certification-state mutations do not invalidate an otherwise identical score replay.",
   "model_identities": {
     "CLAUDE|claude-opus-5": {
       "empirical_semantic_model": true,
@@ -39,5 +39,5 @@
     "TABLE_W3": "UNBENCHMARKED",
     "VISUAL_W3": "UNBENCHMARKED"
   },
-  "schema_version": "hermes-model-certification-registry-1.2"
+  "schema_version": "hermes-model-certification-registry-1.3"
 }
