@@ -413,6 +413,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     semantic_empirical = primary_provider.is_empirical_semantic_provider() and blind_provider.is_empirical_semantic_provider()
     registry = runtime_registry
     benchmark_version = registry.get("benchmark_version", "UNKNOWN")
+    primary_runtime_identity = primary_provider.identity()
 
     def role_certified(provider, role):
         ident = provider.identity()
@@ -422,6 +423,13 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
                 ident.provider, ident.model_alias, role,
                 str(risk["work_class"]), str(risk["source_class"]), benchmark_version,
             )
+            pair_kwargs = {}
+            if role == "BLIND_RECALL":
+                pair_kwargs = {
+                    "primary_provider": primary_runtime_identity.provider,
+                    "primary_model_alias": primary_runtime_identity.model_alias,
+                    "primary_observed_version": primary_runtime_identity.observed_version,
+                }
             if not is_certified_for_source(
                 registry,
                 key,
@@ -430,6 +438,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
                 provider=ident.provider,
                 model_alias=ident.model_alias,
                 observed_version=ident.observed_version,
+                **pair_kwargs,
             ):
                 return False
         return True
@@ -458,7 +467,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     semantic_provider_gate = Gate(
         "SEMANTIC_PROVIDER_CERTIFICATION",
         GateResult.PASS.value if semantic_empirical and primary_cert and blind_cert else GateResult.BLOCKED_EXTERNAL.value,
-        "Both primary and blind roles require source- and model-version-bound empirically certified semantic providers; fixture, unbenchmarked, differently scoped, or changed-version certifications cannot satisfy this gate.",
+        "Primary requires exact source/model-version certification; BLIND_RECALL additionally requires the exact certified primary-baseline pairing. Fixture, unbenchmarked, differently scoped, changed-version, or differently paired roles cannot satisfy this gate.",
     )
     independence_gate = Gate(
         "INDEPENDENCE",
@@ -575,7 +584,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         "semantic_empirical": semantic_empirical,
         "semantic_quality_measured": False,
         "claim_boundary": (
-            "Real semantic providers executed, but precision/recall is not certified until scored against frozen source-first gold with source- and model-version-bound certification."
+            "Real semantic providers executed, but precision/recall is not certified until scored against frozen source-first gold with source-, model-version-, and blind-primary-pair-bound certification."
             if semantic_empirical else
             "Offline fixture execution proves mechanics only; fixture output is not empirical semantic evidence."
         ),
