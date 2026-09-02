@@ -38,7 +38,12 @@ def load_registry(path: Path) -> Dict[str, Any]:
 
 
 def certification_key(provider: str, model_alias: str, role: str, work_class: str, source_class: str, benchmark_version: str) -> str:
-    return "|".join([provider, model_alias, role, work_class, source_class, benchmark_version])
+    # FRONTIER_COLD_AUDIT is an architectural W4 task regardless of the
+    # extraction work class of the source unit being audited. Centralizing that
+    # mapping here keeps runtime lookup and the dedicated cold-audit certifier on
+    # the same authority key instead of making W4 certification unreachable.
+    effective_work_class = "W4" if str(role) == "COLD_AUDIT" else str(work_class)
+    return "|".join([provider, model_alias, role, effective_work_class, source_class, benchmark_version])
 
 
 def get_status(registry: Dict[str, Any], key: str) -> str:
