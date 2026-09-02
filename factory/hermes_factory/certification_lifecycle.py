@@ -99,37 +99,3 @@ def apply_downward_transition(entry: dict, *, certification_key: str, target_sta
     updated["lifecycle_last_changed_at_epoch"] = event["at_epoch"]
     updated["lifecycle_last_reason"] = event["reason"]
     return updated, event
-
-
-def recertification_history(existing_entry: dict | None, new_status: str, *, now_epoch: float | None = None) -> list[dict]:
-    """Preserve demotion history when benchmark certification re-establishes authority.
-
-    RETIRED is terminal. Other non-authoritative states may be replaced only by the
-    normal benchmark certifier, which records a RECERTIFIED event in the retained
-    history. This helper does not itself grant certification.
-    """
-    if existing_entry is None:
-        return []
-    if not isinstance(existing_entry, dict):
-        raise ValueError("existing_certification_entry_not_object")
-    prior = str(existing_entry.get("status") or "UNBENCHMARKED").upper()
-    if prior == "RETIRED":
-        raise ValueError("retired_certification_cannot_be_reactivated")
-    history = existing_entry.get("lifecycle_history") or []
-    if not isinstance(history, list):
-        raise ValueError("lifecycle_history_not_array")
-    if prior in {"CERTIFIED", "CERTIFIED_WITH_LIMITS"} and prior == str(new_status).upper():
-        return list(history)
-    timestamp = round(float(time.time() if now_epoch is None else now_epoch), 3)
-    event = {
-        "certification_key": None,
-        "from_status": prior,
-        "to_status": str(new_status).upper(),
-        "reason": "source-bound benchmark recertification",
-        "incident_ref": None,
-        "actor": "BENCHMARK_CERTIFIER",
-        "at_epoch": timestamp,
-    }
-    canonical = json.dumps(event, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    event["event_id"] = "CERTLIFE-" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:24]
-    return [*history, event]
