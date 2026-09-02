@@ -12,7 +12,7 @@ from collections import Counter
 from typing import Any
 
 from hermes_factory.hashing import sha256_text
-from hermes_factory.literal import NUM_RE, QUALIFIER_PATTERNS, REL_PATTERNS
+from hermes_factory.literal import NUM_RE, QUALIFIER_PATTERNS
 
 DIM_SUPPORTED = "SUPPORTED"
 DIM_UNSUPPORTED_ADDITION = "UNSUPPORTED_ADDITION"
@@ -63,6 +63,10 @@ def _absent(text: str, source: str) -> bool:
     return text.strip().lower() not in (source or "").lower()
 
 
+def _numeric_literal_absent(value: str, source: str) -> bool:
+    return re.search(rf"(?<![\w.]){re.escape(value)}(?![\w.])", source or "", re.I) is None
+
+
 def _numeric_negative(proposition: str, evidence: str, unit_content: str) -> tuple[str, str] | None:
     match = NUM_RE.search(proposition or "")
     if not match:
@@ -78,15 +82,14 @@ def _numeric_negative(proposition: str, evidence: str, unit_content: str) -> tup
         return None
     value_start = match.start("value") + scalar.start()
     value_end = match.start("value") + scalar.end()
-    for delta in (1.0, 2.0, 10.0):
+    for delta in (1.0, 2.0, 10.0, 20.0):
         changed = value + delta
         replacement = str(int(changed)) if changed.is_integer() else f"{changed:.6f}".rstrip("0").rstrip(".")
-        if replacement == raw:
+        if replacement == raw or not _numeric_literal_absent(replacement, unit_content):
             continue
         mutated = proposition[:value_start] + replacement + proposition[value_end:]
-        if mutated == proposition or not _absent(mutated, unit_content):
-            continue
-        return mutated, "NUMERIC_VALUE_CHANGED"
+        if mutated != proposition and _absent(mutated, unit_content):
+            return mutated, "NUMERIC_VALUE_CHANGED"
     return None
 
 
@@ -100,13 +103,19 @@ def _unsupported_addition(proposition: str, unit_content: str) -> tuple[str, str
 
 
 def _negation_flip(proposition: str, unit_content: str) -> tuple[str, str] | None:
-    if QUALIFIER_PATTERNS["NEGATION"].search(proposition or ""):
+    text = proposition or ""
+    negation = QUALIFIER_PATTERNS["NEGATION"].search(text)
+    if negation is not None:
+        mutated = (text[:negation.start()] + text[negation.end():]).strip()
+        mutated = re.sub(r"\s+", " ", mutated)
+    else:
+        base = text.strip().rstrip(".")
+        if not base:
+            return None
+        mutated = f"It is not true that {base}."
+    if not mutated or mutated == text or not _absent(mutated, unit_content):
         return None
-    base = (proposition or "").strip().rstrip(".")
-    if not base:
-        return None
-    mutated = f"It is not true that {base}."
-    return (mutated, "NEGATION_FLIPPED") if _absent(mutated, unit_content) else None
+    return mutated, "NEGATION_FLIPPED"
 
 
 def _qualifier_strengthen(proposition: str, unit_content: str) -> tuple[str, str] | None:
@@ -121,8 +130,6 @@ def _qualifier_strengthen(proposition: str, unit_content: str) -> tuple[str, str
 
 
 def _direction_reverse(proposition: str, unit_content: str) -> tuple[str, str] | None:
-    if not any(pattern.search(proposition or "") for _, pattern in REL_PATTERNS):
-        return None
     for pattern, replacement in DIRECTION_SWAPS:
         match = pattern.search(proposition or "")
         if not match:
@@ -171,31 +178,21 @@ def build_dimension_challenges(gold: list[dict], source_by_id: dict[str, Any]) -
             "mutation": "NONE_SOURCE_FIRST_POSITIVE",
             "dimension": DIM_SUPPORTED,
         })
-        _append_negative(
-            challenges, uid=uid, evidence=evidence,
-            mutation=_unsupported_addition(proposition, unit.content),
-            dimension=DIM_UNSUPPORTED_ADDITION,
-        )
-        _append_negative(
-            challenges, uid=uid, evidence=evidence,
-            mutation=_negation_flip(proposition, unit.content),
-            dimension=DIM_NEGATION,
-        )
-        _append_negative(
-            challenges, uid=uid, evidence=evidence,
-            mutation=_numeric_negative(proposition, evidence, unit.content),
-            dimension=DIM_NUMERIC,
-        )
-        _append_negative(
-            challenges, uid=uid, evidence=evidence,
-            mutation=_qualifier_strengthen(proposition, unit.content),
-            dimension=DIM_QUALIFIER,
-        )
-        _append_negative(
-            challenges, uid=uid, evidence=evidence,
-            mutation=_direction_reverse(proposition, unit.content),
-            dimension=DIM_RELATIONSHIP_DIRECTION,
-        )
+        _append_negative(challenges, uid=uid, evidence=evidence,
+                         mutation=_unsupported_addition(proposition, unit.content),
+                         dimension=DIM_UNSUPPORTED_ADDITION)
+        _append_negative(challenges, uid=uid, evidence=evidence,
+                         mutation=_negation_flip(proposition, unit.content),
+                         dimension=DIM_NEGATION)
+        _append_negative(challenges, uid=uid, evidence=evidence,
+                         mutation=_numeric_negative(proposition, evidence, unit.content),
+                         dimension=DIM_NUMERIC)
+        _append_negative(challenges, uid=uid, evidence=evidence,
+                         mutation=_qualifier_strengthen(proposition, unit.content),
+                         dimension=DIM_QUALIFIER)
+        _append_negative(challenges, uid=uid, evidence=evidence,
+                         mutation=_direction_reverse(proposition, unit.content),
+                         dimension=DIM_RELATIONSHIP_DIRECTION)
     deduped: list[dict] = []
     seen: set[str] = set()
     for row in challenges:
@@ -213,9 +210,9 @@ def applicable_dimensions(gold: list[dict]) -> set[str]:
         proposition = str(row.get("proposition") or "")
         if NUM_RE.search(proposition):
             dims.add(DIM_NUMERIC)
-        if any(pattern.search(proposition) for key, pattern in QUALIFIER_PATTERNS.items() if key != "NEGATION"):
+        if any(pattern.search(proposition) for pattern, _ in QUALIFIER_STRENGTHEN):
             dims.add(DIM_QUALIFIER)
-        if any(pattern.search(proposition) for _, pattern in REL_PATTERNS):
+        if any(pattern.search(proposition) for pattern, _ in DIRECTION_SWAPS):
             dims.add(DIM_RELATIONSHIP_DIRECTION)
     return dims
 
