@@ -11,6 +11,11 @@ outside the mechanically measured scope. A passing score is additionally blocked
 from certification when the exact model version/weights are not immutably bound.
 Whole-registry SHA remains provenance telemetry; replay authority is the exact
 resolved model identity projection actually consumed by the scorer.
+
+A lifecycle deactivation invalidates the exact benchmark-evidence fingerprint
+that previously conferred authority. The same stale evidence may be inspected in
+dry-run but cannot be applied to restore certification. Fresh benchmark evidence
+may reactivate non-retired roles; RETIRED certification keys are terminal.
 """
 from __future__ import annotations
 
@@ -24,6 +29,7 @@ from typing import Any
 FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
+from hermes_factory.certification_state import aggregate_role_status, recertification_block_reason  # noqa: E402
 from hermes_factory.risk import classify_source_unit  # noqa: E402
 from benchmarks_ext.replay_authority import (  # noqa: E402
     scoring_authority_projection,
@@ -183,7 +189,7 @@ def verify_score_pair(*, primary_score_path: Path, blind_score_path: Path, prima
     if blind.get("primary_baseline_identity") != primary.get("scored_identity"):
         raise ValueError("blind_primary_baseline_identity_does_not_match_primary_score")
     return primary, blind, {
-        "verification_schema_version": "hermes-role-certification-input-verification-1.2",
+        "verification_schema_version": "hermes-role-certification-input-verification-1.3",
         "recomputation_verified": True,
         "W2_S1_scope": expected_scope,
         "primary": p_receipt,
@@ -231,6 +237,7 @@ def build_entry(score: dict, role: str, status: str, failures: list[str], verifi
         "gold_manifest_sha256": score.get("gold_manifest_sha256"),
         "source_units_sha256": score.get("source_units_sha256"),
         "candidate_file_sha256": score.get("candidate_file_sha256"),
+        "primary_candidate_file_sha256": score.get("primary_candidate_file_sha256"),
         "gold_label": score["gold_label"],
         "units_in_scope": score["units_in_scope"],
         "scored_identity": score.get("scored_identity"),
@@ -325,27 +332,29 @@ def main(argv=None) -> int:
     b_status, b_fail = apply_version_binding_gate(blind, b_status, b_fail)
 
     registry_path = Path(args.registry)
-    registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    registry["benchmark_version"] = BENCHMARK_VERSION
-    certs = registry.setdefault("certifications", {})
+    try:
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        registry["benchmark_version"] = BENCHMARK_VERSION
+        certs = registry.setdefault("certifications", {})
+        if not isinstance(certs, dict):
+            raise ValueError("registry_certifications_not_object")
 
-    def key(provider: str, model: str, role: str) -> str:
-        return "|".join([provider.upper(), model, role, "W2", "S1", BENCHMARK_VERSION])
+        def key(provider: str, model: str, role: str) -> str:
+            return "|".join([provider.upper(), model, role, "W2", "S1", BENCHMARK_VERSION])
 
-    changes = {
-        key(p_provider, primary["model"], "PRIMARY"): build_entry(primary, "PRIMARY", p_status, p_fail, verification),
-        key(b_provider, blind["model"], "BLIND_RECALL"): build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
-    }
-    certs.update(changes)
-    role_status = registry.setdefault("role_status", {})
-    role_status["PRIMARY_W2"] = p_status
-    role_status["BLIND_RECALL_W2"] = b_status
-    registry["claim_boundary"] = (
-        "Certifications are model-version/role/work/source/benchmark specific. Applied certification requires "
-        "source-bound deterministic score recomputation, immutable model-version binding, and preserved scoring-authority "
-        "identity. Whole-registry SHA is provenance telemetry and unrelated certification-state mutations do not invalidate "
-        "a score. W3/S3, PRECISION_REVIEW and COLD_AUDIT remain outside this certification."
-    )
+        changes = {
+            key(p_provider, primary["model"], "PRIMARY"): build_entry(primary, "PRIMARY", p_status, p_fail, verification),
+            key(b_provider, blind["model"], "BLIND_RECALL"): build_entry(blind, "BLIND_RECALL", b_status, b_fail, verification),
+        }
+        reactivation_blocks = {
+            cert_key: reason
+            for cert_key, entry in changes.items()
+            if (reason := recertification_block_reason(registry, cert_key, entry)) is not None
+        }
+    except (ValueError, KeyError, json.JSONDecodeError, OSError) as exc:
+        print(f"certification registry policy verification failed: {exc}", file=sys.stderr)
+        return 5
+
     output = {
         "primary": {
             "model": primary["model"],
@@ -363,11 +372,37 @@ def main(argv=None) -> int:
             "observed_version": b_identity.get("observed_version"),
             "registry_authority_sha256": scoring_authority_sha256(blind),
         },
-        "registry_keys_written": sorted(changes),
+        "registry_keys_written": sorted(changes) if not reactivation_blocks else [],
+        "reactivation_blocks": reactivation_blocks,
         "input_recomputation_verified": bool(verification),
         "verification": verification,
-        "applied": bool(args.apply),
+        "applied": bool(args.apply and not reactivation_blocks),
     }
+
+    if args.apply and reactivation_blocks:
+        print(json.dumps(output, indent=2))
+        print("refusing --apply because benchmark evidence was previously invalidated by certification lifecycle policy", file=sys.stderr)
+        return 6
+
+    certs.update(changes)
+    role_status = registry.setdefault("role_status", {})
+    if not isinstance(role_status, dict):
+        print("certification registry policy verification failed: registry_role_status_not_object", file=sys.stderr)
+        return 5
+    role_status["PRIMARY_W2"] = aggregate_role_status(
+        certs, role="PRIMARY", work_class="W2", benchmark_version=BENCHMARK_VERSION
+    )
+    role_status["BLIND_RECALL_W2"] = aggregate_role_status(
+        certs, role="BLIND_RECALL", work_class="W2", benchmark_version=BENCHMARK_VERSION
+    )
+    registry["claim_boundary"] = (
+        "Certifications are model-version/role/work/source/benchmark specific. Applied certification requires "
+        "source-bound deterministic score recomputation, immutable model-version binding, preserved scoring-authority "
+        "identity, and benchmark evidence not previously invalidated by a lifecycle action. Whole-registry SHA is "
+        "provenance telemetry and unrelated certification-state mutations do not invalidate a score. Fresh evidence may "
+        "reactivate non-retired roles; RETIRED keys remain terminal. W3/S3, PRECISION_REVIEW and COLD_AUDIT remain outside "
+        "this certification."
+    )
     print(json.dumps(output, indent=2))
     if args.apply:
         registry_path.write_text(json.dumps(registry, indent=2, sort_keys=True), encoding="utf-8")
