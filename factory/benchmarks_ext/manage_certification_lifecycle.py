@@ -7,6 +7,9 @@ certify_roles.py.
 
 Dry-run is the default. `--apply` requires `--expect-status` as a compare-and-set
 assertion so a stale operator command cannot overwrite a newer registry state.
+Lifecycle events are also appended to a top-level protected audit log so later
+recertification cannot erase the administrative history. RETIRED creates a
+terminal tombstone enforced by runtime.
 """
 from __future__ import annotations
 
@@ -81,11 +84,10 @@ def propose_transition(*, registry: dict, key: str, target_status: str, reason: 
     )
     proposed = json.loads(json.dumps(registry))
     certs = proposed.setdefault("certifications", {})
+    if not isinstance(certs, dict):
+        raise ValueError("registry_certifications_not_object")
     certs[key] = updated_entry
-    role_status = proposed.setdefault("role_status", {})
-    role_status[f"{role}_{work_class}"] = aggregate_role_status(
-        certs, role=role, work_class=work_class, benchmark_version=benchmark_version
-    )
+
     event["provider"] = provider
     event["model_alias"] = model
     event["role"] = role
@@ -93,6 +95,27 @@ def propose_transition(*, registry: dict, key: str, target_status: str, reason: 
     event["source_class"] = source_class
     event["benchmark_version"] = benchmark_version
     event["runtime_authority_after_transition"] = updated_entry["status"] in CERTIFIED_STATUSES
+
+    audit = proposed.setdefault("certification_lifecycle_events", [])
+    if not isinstance(audit, list):
+        raise ValueError("certification_lifecycle_events_not_array")
+    if any(isinstance(row, dict) and row.get("event_id") == event["event_id"] for row in audit):
+        raise ValueError(f"duplicate_lifecycle_event_id:{event['event_id']}")
+    audit.append(dict(event))
+
+    retired = proposed.setdefault("retired_certification_keys", [])
+    if not isinstance(retired, list):
+        raise ValueError("retired_certification_keys_not_array")
+    if updated_entry["status"] == "RETIRED" and key not in retired:
+        retired.append(key)
+    retired.sort()
+
+    role_status = proposed.setdefault("role_status", {})
+    if not isinstance(role_status, dict):
+        raise ValueError("registry_role_status_not_object")
+    role_status[f"{role}_{work_class}"] = aggregate_role_status(
+        certs, role=role, work_class=work_class, benchmark_version=benchmark_version
+    )
     return proposed, event
 
 
@@ -130,7 +153,7 @@ def main(argv=None) -> int:
         return 4
 
     output = {
-        "schema_version": "hermes-certification-lifecycle-transition-1.0",
+        "schema_version": "hermes-certification-lifecycle-transition-1.1",
         "certification_key": args.key,
         "from_status": event["from_status"],
         "to_status": event["to_status"],
@@ -138,6 +161,7 @@ def main(argv=None) -> int:
         "reason": event["reason"],
         "incident_ref": event.get("incident_ref"),
         "runtime_authority_after_transition": event["runtime_authority_after_transition"],
+        "retirement_tombstone": args.key in proposed.get("retired_certification_keys", []),
         "applied": bool(args.apply),
         "automatic_time_expiry": "NOT_DEFINED_BY_ARCHITECTURE",
     }
