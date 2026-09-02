@@ -137,7 +137,7 @@ def main(argv=None) -> int:
         return 4
 
     output = {
-        "schema_version": "hermes-certification-lifecycle-transition-1.2",
+        "schema_version": "hermes-certification-lifecycle-transition-1.3",
         "certification_key": args.key,
         "from_status": event["from_status"],
         "to_status": event["to_status"],
@@ -146,6 +146,7 @@ def main(argv=None) -> int:
         "incident_ref": event.get("incident_ref"),
         "runtime_authority_after_transition": event["runtime_authority_after_transition"],
         "invalidated_evidence_sha256": event.get("invalidated_evidence_sha256"),
+        "invalidated_evidence_match_mode": event.get("invalidated_evidence_match_mode"),
         "retirement_tombstone": args.key in proposed.get("retired_certification_keys", []),
         "applied": bool(args.apply),
         "automatic_time_expiry": "NOT_DEFINED_BY_ARCHITECTURE",
