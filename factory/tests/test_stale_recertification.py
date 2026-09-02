@@ -6,6 +6,8 @@ import unittest
 from benchmarks_ext.manage_certification_lifecycle import propose_transition
 from hermes_factory.certification_authority import canonical_projection_sha256
 from hermes_factory.certification_state import (
+    MATCH_FALLBACK,
+    MATCH_FULL,
     aggregate_role_status,
     certification_evidence_sha256,
     recertification_block_reason,
@@ -77,7 +79,9 @@ class EvidenceFingerprintTests(unittest.TestCase):
             now_epoch=10.0,
         )
         self.assertEqual(event["invalidated_evidence_sha256"], original_sha)
+        self.assertEqual(event["invalidated_evidence_match_mode"], MATCH_FULL)
         self.assertEqual(proposed["invalidated_certification_evidence"][0]["evidence_sha256"], original_sha)
+        self.assertEqual(proposed["invalidated_certification_evidence"][0]["match_mode"], MATCH_FULL)
         self.assertEqual(proposed["invalidated_certification_evidence"][0]["lifecycle_event_id"], event["event_id"])
 
     def test_exact_stale_evidence_cannot_restore_authority(self):
@@ -92,6 +96,7 @@ class EvidenceFingerprintTests(unittest.TestCase):
         reason = recertification_block_reason(proposed, PRIMARY_KEY, stale)
         self.assertIsNotNone(reason)
         self.assertIn("certification_evidence_previously_invalidated", reason)
+        self.assertIn("mode=FULL_FINGERPRINT", reason)
 
     def test_new_candidate_evidence_can_reactivate_nonretired_role(self):
         proposed, _ = propose_transition(
@@ -126,6 +131,40 @@ class EvidenceFingerprintTests(unittest.TestCase):
             certification_evidence_sha256(BLIND_KEY, second),
         )
 
+    def test_legacy_blind_without_primary_baseline_uses_fallback_and_is_still_blocked(self):
+        legacy = _entry(model="blind", role="BLIND_RECALL", candidate="e", primary_candidate="d")
+        legacy.pop("primary_candidate_file_sha256")
+        registry = {
+            "certifications": {BLIND_KEY: legacy},
+            "role_status": {"BLIND_RECALL_W2": "CERTIFIED_WITH_LIMITS"},
+            "certification_lifecycle_events": [],
+            "invalidated_certification_evidence": [],
+            "retired_certification_keys": [],
+        }
+        suspended, event = propose_transition(
+            registry=registry,
+            key=BLIND_KEY,
+            target_status="SUSPENDED",
+            reason="legacy blind regression",
+            expected_status="CERTIFIED_WITH_LIMITS",
+        )
+        self.assertEqual(event["invalidated_evidence_match_mode"], MATCH_FALLBACK)
+        self.assertEqual(suspended["invalidated_certification_evidence"][0]["match_mode"], MATCH_FALLBACK)
+
+        modern_same_scored_output = _entry(
+            model="blind", role="BLIND_RECALL", candidate="e", primary_candidate="f",
+            status="CERTIFIED_WITH_LIMITS",
+        )
+        reason = recertification_block_reason(suspended, BLIND_KEY, modern_same_scored_output)
+        self.assertIsNotNone(reason)
+        self.assertIn("mode=CANDIDATE_FILE_FALLBACK", reason)
+
+        fresh_scored_output = _entry(
+            model="blind", role="BLIND_RECALL", candidate="f", primary_candidate="f",
+            status="CERTIFIED_WITH_LIMITS",
+        )
+        self.assertIsNone(recertification_block_reason(suspended, BLIND_KEY, fresh_scored_output))
+
     def test_invalidated_evidence_deduplicates_across_downward_transitions(self):
         suspended, _ = propose_transition(
             registry=_registry(), key=PRIMARY_KEY, target_status="SUSPENDED",
@@ -137,6 +176,7 @@ class EvidenceFingerprintTests(unittest.TestCase):
         )
         self.assertEqual(len(demoted["invalidated_certification_evidence"]), 1)
         self.assertIsNotNone(event["invalidated_evidence_sha256"])
+        self.assertEqual(event["invalidated_evidence_match_mode"], MATCH_FULL)
 
 
 class AggregateRoleStatusTests(unittest.TestCase):
