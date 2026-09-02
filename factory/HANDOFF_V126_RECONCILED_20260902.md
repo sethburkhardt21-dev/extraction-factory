@@ -8,10 +8,6 @@ Authoritative integration branch for further v1.26 work:
 
 `chatgpt-v126-reconciled-20260902`
 
-Current branch head after this handoff:
-
-`7bd5ed2fcb42238c80533757e537df4fa01eb085`
-
 Reconciliation merge commit:
 
 `ce6f9e709b33d9265bc2e7e1074a9f17d00977da`
@@ -24,7 +20,9 @@ Draft integration PR:
 
 `#28 — v1.26: reconcile certification strata and W3 Tier-B routing`
 
-At handoff time GitHub reported no workflow runs or combined status checks yet for the reconciled head. Treat verification as NOT YET PROVEN.
+The branch head can advance as verification/handoff commits are added. Resolve the live head with `git rev-parse origin/chatgpt-v126-reconciled-20260902` or the PR head before recording test receipts.
+
+At initial handoff time GitHub reported no workflow runs or combined status checks for the reconciled branch. Treat verification as NOT YET PROVEN until fresh receipts say otherwise.
 
 Do not advance `master` until the reconciled branch passes the repository's full required test/CI/E2E/certification gates.
 
