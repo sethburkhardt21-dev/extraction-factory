@@ -8,6 +8,10 @@ Authoritative integration branch for further v1.26 work:
 
 `chatgpt-v126-reconciled-20260902`
 
+Current branch head after this handoff:
+
+`7bd5ed2fcb42238c80533757e537df4fa01eb085`
+
 Reconciliation merge commit:
 
 `ce6f9e709b33d9265bc2e7e1074a9f17d00977da`
@@ -15,6 +19,12 @@ Reconciliation merge commit:
 Canonical release branch remains:
 
 `master @ c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e`
+
+Draft integration PR:
+
+`#28 — v1.26: reconcile certification strata and W3 Tier-B routing`
+
+At handoff time GitHub reported no workflow runs or combined status checks yet for the reconciled head. Treat verification as NOT YET PROVEN.
 
 Do not advance `master` until the reconciled branch passes the repository's full required test/CI/E2E/certification gates.
 
@@ -61,6 +71,7 @@ The reconciled branch contains these material tree changes relative to `master`:
 - `factory/hermes_factory/union.py` carries/validates source-risk metadata into evidence families
 - `factory/hermes_factory/w3_policy.py` added
 - `factory/tests/test_w3_tierb_routing.py` added
+- `factory/HANDOFF_V126_RECONCILED_20260902.md` added
 
 The reconciled branch is ahead of master and not behind it. `master` was not modified.
 
@@ -110,6 +121,8 @@ Keep these historical branch identities intact for provenance:
 
 Do not delete or force-move them during verification. They are now parents of the reconciliation history, not competing integration authorities.
 
+A temporary branch named `tmp` was created during the reconciliation operation and then force-moved to exactly `master @ c35ad383...`. It carries no unique work and is safe to delete when convenient; do not treat it as an integration branch.
+
 Older v1.x branches/PRs may remain visible but are not automatically evidence of missing current work. Compare them to current master before using anything from them.
 
 ## Short form
@@ -117,6 +130,8 @@ Older v1.x branches/PRs may remain visible but are not automatically evidence of
 `master` = stable v1.25 release frontier.
 
 `chatgpt-v126-reconciled-20260902` = current v1.26 integration frontier.
+
+PR #28 = draft verification/merge surface.
 
 W3 routing boundary = implemented candidate awaiting full green verification.
 
