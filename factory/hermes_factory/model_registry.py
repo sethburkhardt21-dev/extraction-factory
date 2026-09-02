@@ -4,6 +4,11 @@ import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from .certification_authority import (
+    certificate_projection_valid,
+    current_registry_identity_matches_certificate,
+)
+
 ALLOWED = {"UNBENCHMARKED", "BENCHMARKING", "CERTIFIED", "CERTIFIED_WITH_LIMITS", "REJECTED", "EXPIRED", "BLOCKED_EXTERNAL", "FIXTURE_NOT_EMPIRICAL"}
 CERTIFIED_STATUSES = {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}
 VERSION_PLACEHOLDERS = {"", "UNKNOWN", "UNCONFIGURED", "CLI_OBSERVED", "UNOBSERVED"}
@@ -76,30 +81,19 @@ def is_certified_for_source(
     model_alias: str,
     observed_version: str,
 ) -> bool:
-    """Require role certification to match exact source scope and model version.
-
-    The historical certification key contains work/source *classes* (e.g. W2/S1),
-    not source identity or model bytes. Runtime therefore additionally binds the
-    certification to the exact source-units artifact, unit scope, scored provider,
-    model alias, and certifiable observed model version recorded by benchmark
-    scoring. This prevents either source-scope expansion or changed model weights
-    from inheriting a prior certificate.
-    """
+    """Require certification to match source, model version, and protected identity."""
     entry = certification_entry(registry, key)
     if entry is None:
         return False
     status = entry.get("status", "UNBENCHMARKED")
     if status not in ALLOWED:
         raise ValueError(f"invalid_certification_status:{status}")
-    if status not in CERTIFIED_STATUSES:
-        return False
-    if entry.get("benchmark_inputs_verified") is not True:
+    if status not in CERTIFIED_STATUSES or entry.get("benchmark_inputs_verified") is not True:
         return False
 
     expected_source_hash = str(entry.get("source_units_sha256") or "")
     if not expected_source_hash or expected_source_hash != str(source_units_sha256):
         return False
-
     units = entry.get("units_in_scope")
     if not isinstance(units, list) or not units or source_unit_id not in units:
         return False
@@ -119,7 +113,13 @@ def is_certified_for_source(
     if certified_version != str(observed_version or "").strip():
         return False
 
-    # Applied benchmark certifications must retain their source/gold evidence chain.
+    if not certificate_projection_valid(entry, scored_identity):
+        return False
+    if not current_registry_identity_matches_certificate(
+        registry, scored_identity, provider, model_alias, resolve_model_identity
+    ):
+        return False
+
     for required in ("gold_reference_sha256", "gold_manifest_sha256", "candidate_file_sha256"):
         value = entry.get(required)
         if not isinstance(value, str) or len(value) != 64:
