@@ -9,8 +9,25 @@ from .certification_authority import (
     current_registry_identity_matches_certificate,
 )
 
-ALLOWED = {"UNBENCHMARKED", "BENCHMARKING", "CERTIFIED", "CERTIFIED_WITH_LIMITS", "REJECTED", "EXPIRED", "BLOCKED_EXTERNAL", "FIXTURE_NOT_EMPIRICAL"}
+# The architecture defines the model-profile lifecycle states below. Historical
+# implementation statuses are retained for compatibility. Only CERTIFIED and
+# CERTIFIED_WITH_LIMITS confer runtime certification authority.
+ALLOWED = {
+    "UNBENCHMARKED",
+    "BENCHMARKING",
+    "PROVISIONAL",
+    "CERTIFIED",
+    "CERTIFIED_WITH_LIMITS",
+    "SUSPENDED",
+    "DEMOTED",
+    "RETIRED",
+    "REJECTED",
+    "EXPIRED",
+    "BLOCKED_EXTERNAL",
+    "FIXTURE_NOT_EMPIRICAL",
+}
 CERTIFIED_STATUSES = {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}
+NON_AUTHORITATIVE_LIFECYCLE_STATUSES = {"PROVISIONAL", "SUSPENDED", "DEMOTED", "RETIRED", "EXPIRED"}
 VERSION_PLACEHOLDERS = {"", "UNKNOWN", "UNCONFIGURED", "CLI_OBSERVED", "UNOBSERVED"}
 OLLAMA_DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$", re.IGNORECASE)
 
