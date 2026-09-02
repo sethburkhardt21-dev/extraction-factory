@@ -4,6 +4,11 @@ This closes the readiness reachability gap without weakening the cold-audit gate
 The certifier never trusts a hand-edited score JSON: it rebuilds the report from
 the frozen source-first gold, deterministic cold benchmark cases, and recorded
 verdict artifacts, then applies fixed thresholds and model-version authority.
+
+The auditor task itself is generic skeptical review, but the current runtime keys
+certification by source W/S stratum. One verified qualification decision is
+therefore projected into only the exact W/S strata and source units present in
+the benchmark. This does not broaden PRIMARY/BLIND extraction certification.
 """
 from __future__ import annotations
 
@@ -11,23 +16,23 @@ import argparse
 import json
 import sys
 import time
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 FACTORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FACTORY_ROOT))
 
-from benchmarks_ext.cold_audit_score import (  # noqa: E402
-    BENCHMARK_VERSION,
-    build_report_from_artifacts,
-)
+from benchmarks_ext.cold_audit_score import BENCHMARK_VERSION, build_report_from_artifacts  # noqa: E402
 from benchmarks_ext.replay_authority import (  # noqa: E402
     scoring_authority_projection,
     scoring_authority_sha256,
     verify_replay_equivalence,
 )
-from hermes_factory.certification_state import aggregate_role_status, recertification_block_reason  # noqa: E402
+from benchmarks_ext.score_role import load_source_units_verified  # noqa: E402
+from hermes_factory.certification_state import recertification_block_reason  # noqa: E402
 from hermes_factory.model_registry import load_registry  # noqa: E402
+from hermes_factory.risk import classify_source_unit  # noqa: E402
 
 DEFAULT_REGISTRY = FACTORY_ROOT / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json"
 DECISION_RULE = "CERT-COLD-AUDIT-v1"
@@ -35,7 +40,7 @@ LIMITS = [
     "qualification corpus = frozen Machines/Dorsch p299-301 source-first gold plus deterministic unsupported mutations",
     "supported positives inherit AI-authored source-first gold label MECHANICALLY_CHECKED; this is not independent clinical truth",
     "negative cases test preservation/adversarial detection, not every possible hallucination class",
-    "certificate is exact source, model-version, protected-identity, and benchmark scoped",
+    "certificate is exact source, model-version, protected-identity, benchmark, W/S-stratum and unit scoped",
     "runtime still requires auditor independence from the active PRIMARY and BLIND_RECALL groups",
     "a clean cold audit is sampled review evidence and never canonicalizes an assertion",
 ]
@@ -135,7 +140,7 @@ def recompute_and_verify(score_path: Path, paths: dict[str, Path]) -> tuple[dict
     )
     replay = verify_replay_equivalence(stored, recomputed)
     return recomputed, {
-        "verification_schema_version": "hermes-cold-audit-certification-input-verification-1.0",
+        "verification_schema_version": "hermes-cold-audit-certification-input-verification-1.1",
         "recomputation_verified": True,
         "cases_sha256": recomputed["cold_benchmark_cases_sha256"],
         "verdicts_sha256": recomputed["cold_benchmark_verdicts_sha256"],
@@ -143,7 +148,8 @@ def recompute_and_verify(score_path: Path, paths: dict[str, Path]) -> tuple[dict
     }
 
 
-def build_entry(score: dict, status: str, failures: list[str], verification: dict) -> dict[str, Any]:
+def build_entry(score: dict, status: str, failures: list[str], verification: dict,
+                *, units_in_scope: list[str]) -> dict[str, Any]:
     projection = scoring_authority_projection(score)
     return {
         "status": status,
@@ -155,19 +161,29 @@ def build_entry(score: dict, status: str, failures: list[str], verification: dic
         "gold_reference_sha256": score["reference_sha256"],
         "gold_manifest_sha256": score["gold_manifest_sha256"],
         "source_units_sha256": score["source_units_sha256"],
-        # candidate_file_sha256 is retained for shared lifecycle migration policy;
-        # for COLD_AUDIT it identifies the deterministic benchmark case artifact.
+        # Shared lifecycle policy names this field candidate_file_sha256; for
+        # COLD_AUDIT it identifies the deterministic benchmark-case artifact.
         "candidate_file_sha256": score["cold_benchmark_cases_sha256"],
         "candidate_semantic_sha256": score["candidate_semantic_sha256"],
         "cold_benchmark_cases_sha256": score["cold_benchmark_cases_sha256"],
         "cold_benchmark_verdicts_sha256": score["cold_benchmark_verdicts_sha256"],
         "gold_label": score["gold_label"],
-        "units_in_scope": score["units_in_scope"],
+        "units_in_scope": sorted(units_in_scope),
         "scored_identity": score["scored_identity"],
         "registry_authority_projection": projection,
         "registry_authority_sha256": scoring_authority_sha256(score),
         "benchmark_inputs_verified": bool(verification.get("recomputation_verified")),
     }
+
+
+def risk_scopes(source_units_path: Path, manifest_path: Path) -> dict[tuple[str, str], list[str]]:
+    manifest = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
+    source_by_id, _ = load_source_units_verified(source_units_path, manifest)
+    grouped: dict[tuple[str, str], list[str]] = defaultdict(list)
+    for uid, unit in source_by_id.items():
+        risk = classify_source_unit(unit)
+        grouped[(str(risk["work_class"]), str(risk["source_class"]))].append(uid)
+    return {key: sorted(value) for key, value in sorted(grouped.items())}
 
 
 def main(argv=None) -> int:
@@ -205,23 +221,37 @@ def main(argv=None) -> int:
         status, failures = apply_version_gate(score, status, failures)
         identity = score["scored_identity"]
         provider = str(identity["provider"]); model = str(identity["model_alias"])
-        key = "|".join([provider, model, "COLD_AUDIT", "AUDIT", "AUDIT", BENCHMARK_VERSION])
-        entry = build_entry(score, status, failures, verification)
+        scopes = risk_scopes(paths["source_units"], paths["gold_manifest"])
+        if not scopes:
+            raise ValueError("cold_certification_risk_scopes_empty")
         registry_path = Path(args.registry)
         registry = load_registry(registry_path)
-        reason = recertification_block_reason(registry, key, entry)
-        if reason and status in {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}:
-            entry["status"] = "BLOCKED_EXTERNAL"
-            entry["threshold_failures"] = [*entry["threshold_failures"], reason]
-            status = "BLOCKED_EXTERNAL"
+        proposed: dict[str, dict[str, Any]] = {}
+        key_statuses: dict[str, str] = {}
+        for (work_class, source_class), units in scopes.items():
+            key = "|".join([provider, model, "COLD_AUDIT", work_class, source_class, BENCHMARK_VERSION])
+            entry = build_entry(score, status, failures, verification, units_in_scope=units)
+            reason = recertification_block_reason(registry, key, entry)
+            if reason and entry["status"] in {"CERTIFIED", "CERTIFIED_WITH_LIMITS"}:
+                entry["status"] = "BLOCKED_EXTERNAL"
+                entry["threshold_failures"] = [*entry["threshold_failures"], reason]
+            proposed[key] = entry
+            key_statuses[key] = str(entry["status"])
+
+        authoritative = all(x in {"CERTIFIED", "CERTIFIED_WITH_LIMITS"} for x in key_statuses.values())
+        overall_status = status if authoritative else (
+            "REJECTED" if any(x == "REJECTED" for x in key_statuses.values()) else "BLOCKED_EXTERNAL"
+        )
         output = {
             "role": "COLD_AUDIT",
             "provider": provider,
             "model": model,
             "observed_version": identity.get("observed_version"),
-            "status": status,
-            "failures": entry["threshold_failures"],
-            "certification_key": key,
+            "status": overall_status,
+            "base_decision_status": status,
+            "failures": failures,
+            "certification_keys": key_statuses,
+            "risk_scopes": {f"{w}|{s}": units for (w, s), units in scopes.items()},
             "input_recomputation_verified": True,
             "verification": verification,
             "applied": bool(args.apply),
@@ -230,21 +260,20 @@ def main(argv=None) -> int:
             certs = registry.setdefault("certifications", {})
             if not isinstance(certs, dict):
                 raise ValueError("registry_certifications_not_object")
-            certs[key] = entry
+            certs.update(proposed)
             registry["benchmark_version"] = BENCHMARK_VERSION
-            registry.setdefault("role_status", {})["COLD_AUDIT"] = aggregate_role_status(
-                certs, role="COLD_AUDIT", work_class="AUDIT", benchmark_version=BENCHMARK_VERSION
-            )
+            registry.setdefault("role_status", {})["COLD_AUDIT"] = overall_status
             registry["cold_audit_claim_boundary"] = (
-                "COLD_AUDIT certification is source-first benchmark evidence over supported gold assertions and "
-                "deterministic unsupported mutations. Runtime still enforces model-version authority and independence "
-                "from the active primary/blind groups. It does not certify canonical medical truth."
+                "COLD_AUDIT qualification is one source-first skeptical-review benchmark projected only into the "
+                "exact source W/S strata present in its source scope. Runtime still enforces source-unit membership, "
+                "model-version authority, protected identity, and independence from active primary/blind groups. "
+                "It does not certify PRIMARY/BLIND W3 extraction or canonical medical truth."
             )
             registry_path.write_text(json.dumps(registry, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
             print(f"registry updated: {registry_path}", file=sys.stderr)
             print("NOTE: registry is protected production state — rerun tests and certify-build after this change.", file=sys.stderr)
         print(json.dumps(output, indent=2, ensure_ascii=False))
-        return 0 if status in {"CERTIFIED", "CERTIFIED_WITH_LIMITS", "BLOCKED_EXTERNAL", "REJECTED"} else 4
+        return 0 if overall_status in {"CERTIFIED", "CERTIFIED_WITH_LIMITS", "BLOCKED_EXTERNAL", "REJECTED"} else 4
     except (ValueError, KeyError, OSError, json.JSONDecodeError) as exc:
         print(f"cold certification refused: {exc}", file=sys.stderr)
         return 4
