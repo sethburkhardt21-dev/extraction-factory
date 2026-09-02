@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from .certification_authority import (
+    MODEL_IDENTITY_AUTHORITY_FIELDS,
     certificate_projection_valid,
     current_registry_identity_matches_certificate,
 )
@@ -99,6 +100,51 @@ def observed_version_is_certifiable(policy: str, observed_version: str) -> bool:
     return False
 
 
+def _blind_primary_baseline_matches_runtime(
+    registry: Dict[str, Any],
+    entry: Dict[str, Any],
+    *,
+    primary_provider: str | None,
+    primary_model_alias: str | None,
+    primary_observed_version: str | None,
+) -> bool:
+    """Bind BLIND_RECALL authority to the exact PRIMARY baseline used for scoring.
+
+    Blind omission-recovery and useful-new precision are pair-dependent metrics.
+    A blind certificate measured behind Primary A must not be reused behind a
+    different Primary B, even when both models are individually certified.
+    """
+    if not primary_provider or not primary_model_alias or not primary_observed_version:
+        return False
+    projection = entry.get("registry_authority_projection")
+    if not isinstance(projection, dict):
+        return False
+    baseline = projection.get("primary_baseline_identity")
+    if not isinstance(baseline, dict):
+        return False
+
+    if str(baseline.get("provider") or "").upper() != str(primary_provider).upper():
+        return False
+    if str(baseline.get("model_alias") or "") != str(primary_model_alias):
+        return False
+    if str(baseline.get("observed_version") or "").strip() != str(primary_observed_version).strip():
+        return False
+    baseline_policy = str(baseline.get("observed_version_policy") or "").strip()
+    if baseline.get("version_binding_certifiable") is not True:
+        return False
+    if not observed_version_is_certifiable(baseline_policy, str(primary_observed_version)):
+        return False
+
+    try:
+        current_primary = resolve_model_identity(registry, primary_provider, primary_model_alias)
+    except (KeyError, ValueError):
+        return False
+    for field in MODEL_IDENTITY_AUTHORITY_FIELDS:
+        if current_primary.get(field) != baseline.get(field):
+            return False
+    return True
+
+
 def is_certified_for_source(
     registry: Dict[str, Any],
     key: str,
@@ -108,8 +154,17 @@ def is_certified_for_source(
     provider: str,
     model_alias: str,
     observed_version: str,
+    primary_provider: str | None = None,
+    primary_model_alias: str | None = None,
+    primary_observed_version: str | None = None,
 ) -> bool:
-    """Require certification to match source, model version, lifecycle, and protected identity."""
+    """Require certification to match source, model version, lifecycle, and protected identity.
+
+    BLIND_RECALL additionally requires the current runtime PRIMARY to match the
+    exact primary baseline identity recorded when blind-recall performance was
+    benchmarked. This prevents pair-dependent blind metrics from being replayed
+    behind a different primary model.
+    """
     if is_retired_certification_key(registry, key):
         return False
     entry = certification_entry(registry, key)
@@ -147,6 +202,17 @@ def is_certified_for_source(
         return False
     if not current_registry_identity_matches_certificate(
         registry, scored_identity, provider, model_alias, resolve_model_identity
+    ):
+        return False
+
+    key_parts = str(key or "").split("|")
+    role = key_parts[2] if len(key_parts) == 6 else ""
+    if role == "BLIND_RECALL" and not _blind_primary_baseline_matches_runtime(
+        registry,
+        entry,
+        primary_provider=primary_provider,
+        primary_model_alias=primary_model_alias,
+        primary_observed_version=primary_observed_version,
     ):
         return False
 
