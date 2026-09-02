@@ -12,6 +12,7 @@ from benchmarks_ext.certify_cold_audit import (
     challenge_semantic_sha256,
     decide,
     score_results,
+    validate_gold_construction_disjointness,
 )
 from hermes_factory.hashing import sha256_text
 from hermes_factory.model_registry import certification_key, is_certified_for_source
@@ -108,6 +109,29 @@ class ColdAuditChallengeTests(unittest.TestCase):
             challenge_semantic_sha256(challenges, results),
             challenge_semantic_sha256(challenges, changed_decision),
         )
+
+
+class ColdAuditGoldIndependenceTests(unittest.TestCase):
+    def test_auditor_must_be_disjoint_from_all_gold_construction_groups(self):
+        manifest = {"gold_construction_independence_groups": ["GOLD_A", "GOLD_B", "GOLD_C"]}
+        identity = _ollama_identity()
+        self.assertEqual(
+            validate_gold_construction_disjointness(manifest, identity),
+            ["GOLD_A", "GOLD_B", "GOLD_C"],
+        )
+        contaminated = dict(identity)
+        contaminated["independence_group"] = "GOLD_B"
+        with self.assertRaisesRegex(ValueError, "gold_construction_contamination"):
+            validate_gold_construction_disjointness(manifest, contaminated)
+
+    def test_missing_or_non_distinct_gold_lineage_fails_closed(self):
+        identity = _ollama_identity()
+        with self.assertRaisesRegex(ValueError, "missing_or_incomplete"):
+            validate_gold_construction_disjointness({}, identity)
+        with self.assertRaisesRegex(ValueError, "not_distinct"):
+            validate_gold_construction_disjointness(
+                {"gold_construction_independence_groups": ["A", "A", "B"]}, identity
+            )
 
 
 class ColdAuditProviderAuthorityTests(unittest.TestCase):
