@@ -6,6 +6,7 @@ from .blindness import build_blind_worker_request
 from .hashing import sha256_json, sha256_text
 from .models import AssertionCandidate, SourceUnit, WorkerIdentity
 from .providers.base import SemanticProvider
+from .risk import classify_source_unit
 
 OUTPUT_SCHEMA = {
     "type": "object",
@@ -77,6 +78,7 @@ def normalize_provider_output(
 ) -> List[AssertionCandidate]:
     if not isinstance(output, dict) or not isinstance(output.get("assertions"), list):
         raise ValueError("provider_output_missing_assertions")
+    source_risk = classify_source_unit(unit)
     candidates: List[AssertionCandidate] = []
     for ordinal, raw in enumerate(output["assertions"]):
         if not isinstance(raw, dict):
@@ -117,7 +119,14 @@ def normalize_provider_output(
             worker_identity=worker.to_dict(),
             origin_pass=origin_pass,
             uncertainty_flags=list(raw.get("uncertainty_flags") or []),
-            metadata={"provider_output_hash": sha256_json(raw)},
+            metadata={
+                "provider_output_hash": sha256_json(raw),
+                "source_risk_work_class": source_risk.get("work_class"),
+                "source_risk_source_class": source_risk.get("source_class"),
+                "source_risk_reasons": list(source_risk.get("reasons") or []),
+                "source_unit_type": unit.unit_type,
+                "source_content_representation": unit.content_representation,
+            },
         )
         errors = candidate.validate_invariants()
         if errors:
