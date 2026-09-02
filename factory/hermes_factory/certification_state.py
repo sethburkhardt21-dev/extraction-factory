@@ -6,7 +6,9 @@ restore runtime authority. Reactivation through the benchmark certifier therefor
 requires a new evidence fingerprint. RETIRED certification keys remain terminal.
 
 The fingerprint is deliberately evidence-oriented, not wall-clock-oriented. No
-automatic TTL is invented here.
+automatic TTL is invented here. Current BLIND certificates bind the exact PRIMARY
+baseline candidate file. Older certificates that predate that field use a narrower
+fallback fingerprint so their scored candidate artifact still cannot be replayed.
 """
 from __future__ import annotations
 
@@ -23,7 +25,11 @@ STATUS_PRIORITY = (
     "FIXTURE_NOT_EMPIRICAL", "RETIRED", "UNBENCHMARKED",
 )
 EVIDENCE_SCHEMA = "hermes-certification-evidence-1.0"
-INVALIDATION_SCHEMA = "hermes-certification-evidence-invalidation-1.0"
+FALLBACK_EVIDENCE_SCHEMA = "hermes-certification-evidence-fallback-1.0"
+INVALIDATION_SCHEMA = "hermes-certification-evidence-invalidation-1.1"
+MATCH_FULL = "FULL_FINGERPRINT"
+MATCH_FALLBACK = "CANDIDATE_FILE_FALLBACK"
+MATCH_MODES = {MATCH_FULL, MATCH_FALLBACK}
 
 
 def parse_certification_key(key: str) -> tuple[str, str, str, str, str, str]:
@@ -61,21 +67,15 @@ def _required_sha(entry: dict, field: str) -> str:
     return value
 
 
-def certification_evidence_projection(certification_key: str, entry: dict) -> dict[str, Any]:
-    """Project the benchmark evidence whose reuse can restore a role certificate."""
+def _base_evidence_projection(certification_key: str, entry: dict, *, schema_version: str) -> tuple[dict[str, Any], str]:
     if not isinstance(entry, dict):
         raise ValueError("certification_entry_not_object")
     provider, model, role, work_class, source_class, benchmark_version = parse_certification_key(certification_key)
     units = entry.get("units_in_scope")
     if not isinstance(units, list) or not units or any(not isinstance(x, str) or not x for x in units):
         raise ValueError("certification_evidence_units_in_scope_invalid")
-    primary_candidate_sha = None
-    if role == "BLIND_RECALL":
-        primary_candidate_sha = _required_sha(entry, "primary_candidate_file_sha256")
-    elif entry.get("primary_candidate_file_sha256"):
-        primary_candidate_sha = _required_sha(entry, "primary_candidate_file_sha256")
-    return {
-        "schema_version": EVIDENCE_SCHEMA,
+    return ({
+        "schema_version": schema_version,
         "certification_key": certification_key,
         "provider": provider,
         "model_alias": model,
@@ -85,25 +85,59 @@ def certification_evidence_projection(certification_key: str, entry: dict) -> di
         "benchmark_version": benchmark_version,
         "source_units_sha256": _required_sha(entry, "source_units_sha256"),
         "candidate_file_sha256": _required_sha(entry, "candidate_file_sha256"),
-        "primary_candidate_file_sha256": primary_candidate_sha,
         "gold_reference_sha256": _required_sha(entry, "gold_reference_sha256"),
         "gold_manifest_sha256": _required_sha(entry, "gold_manifest_sha256"),
         "registry_authority_sha256": _required_sha(entry, "registry_authority_sha256"),
         "units_in_scope": sorted(set(units)),
-    }
+    }, role)
 
 
-def certification_evidence_sha256(certification_key: str, entry: dict) -> str:
-    projection = certification_evidence_projection(certification_key, entry)
+def certification_evidence_projection(certification_key: str, entry: dict) -> dict[str, Any]:
+    """Project the complete current benchmark evidence that can restore authority."""
+    projection, role = _base_evidence_projection(certification_key, entry, schema_version=EVIDENCE_SCHEMA)
+    primary_candidate_sha = None
+    if role == "BLIND_RECALL":
+        primary_candidate_sha = _required_sha(entry, "primary_candidate_file_sha256")
+    elif entry.get("primary_candidate_file_sha256"):
+        primary_candidate_sha = _required_sha(entry, "primary_candidate_file_sha256")
+    projection["primary_candidate_file_sha256"] = primary_candidate_sha
+    return projection
+
+
+def fallback_evidence_projection(certification_key: str, entry: dict) -> dict[str, Any]:
+    """Compatibility projection for certificates created before BLIND baseline binding.
+
+    It intentionally omits primary_candidate_file_sha256 but still binds the role
+    key, source artifact, scored candidate file, gold, model-authority projection,
+    and unit scope. A fresh run produces a different run-bound candidate file.
+    """
+    projection, _ = _base_evidence_projection(
+        certification_key, entry, schema_version=FALLBACK_EVIDENCE_SCHEMA
+    )
+    return projection
+
+
+def _projection_sha256(projection: dict[str, Any]) -> str:
     canonical = json.dumps(projection, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
-def maybe_certification_evidence_sha256(certification_key: str, entry: dict) -> str | None:
+def certification_evidence_sha256(certification_key: str, entry: dict) -> str:
+    return _projection_sha256(certification_evidence_projection(certification_key, entry))
+
+
+def fallback_evidence_sha256(certification_key: str, entry: dict) -> str:
+    return _projection_sha256(fallback_evidence_projection(certification_key, entry))
+
+
+def _best_available_evidence_sha256(certification_key: str, entry: dict) -> tuple[str | None, str | None]:
     try:
-        return certification_evidence_sha256(certification_key, entry)
+        return certification_evidence_sha256(certification_key, entry), MATCH_FULL
     except ValueError:
-        return None
+        try:
+            return fallback_evidence_sha256(certification_key, entry), MATCH_FALLBACK
+        except ValueError:
+            return None, None
 
 
 def invalidated_evidence_rows(registry: dict) -> list[dict]:
@@ -117,6 +151,8 @@ def invalidated_evidence_rows(registry: dict) -> list[dict]:
             raise ValueError("invalidated_certification_evidence_row_not_object")
         if row.get("schema_version") != INVALIDATION_SCHEMA:
             raise ValueError("invalidated_certification_evidence_schema_invalid")
+        if row.get("match_mode") not in MATCH_MODES:
+            raise ValueError("invalidated_certification_evidence_match_mode_invalid")
         if not isinstance(row.get("certification_key"), str) or not row["certification_key"]:
             raise ValueError("invalidated_certification_evidence_key_invalid")
         if not SHA256_RE.fullmatch(str(row.get("evidence_sha256") or "")):
@@ -125,19 +161,16 @@ def invalidated_evidence_rows(registry: dict) -> list[dict]:
 
 
 def record_evidence_invalidation(registry: dict, *, certification_key: str, entry: dict, event: dict) -> str | None:
-    """Record the exact evidence invalidated by a downward lifecycle action.
-
-    Broken/legacy non-authoritative entries may not have enough evidence to form a
-    fingerprint; the lifecycle action must still be allowed. Authoritative entries
-    created by the current certifier do have the required evidence chain.
-    """
-    evidence_sha = maybe_certification_evidence_sha256(certification_key, entry)
+    """Record the strongest available evidence invalidated by a lifecycle action."""
+    evidence_sha, match_mode = _best_available_evidence_sha256(certification_key, entry)
     event["invalidated_evidence_sha256"] = evidence_sha
-    if evidence_sha is None:
+    event["invalidated_evidence_match_mode"] = match_mode
+    if evidence_sha is None or match_mode is None:
         return None
     rows = invalidated_evidence_rows(registry)
     duplicate = any(
         row.get("certification_key") == certification_key and
+        row.get("match_mode") == match_mode and
         str(row.get("evidence_sha256") or "").lower() == evidence_sha.lower()
         for row in rows
     )
@@ -146,6 +179,7 @@ def record_evidence_invalidation(registry: dict, *, certification_key: str, entr
             "schema_version": INVALIDATION_SCHEMA,
             "certification_key": certification_key,
             "evidence_sha256": evidence_sha,
+            "match_mode": match_mode,
             "lifecycle_event_id": event.get("event_id"),
             "invalidated_at_epoch": event.get("at_epoch"),
             "to_status": event.get("to_status"),
@@ -165,9 +199,15 @@ def recertification_block_reason(registry: dict, certification_key: str, propose
         raise ValueError("retired_certification_keys_not_string_array")
     if certification_key in retired:
         return "retired_certification_key_is_terminal"
-    evidence_sha = certification_evidence_sha256(certification_key, proposed_entry)
+
+    full_sha = certification_evidence_sha256(certification_key, proposed_entry)
+    fallback_sha = fallback_evidence_sha256(certification_key, proposed_entry)
     for row in invalidated_evidence_rows(registry):
-        if row.get("certification_key") == certification_key and str(row.get("evidence_sha256") or "").lower() == evidence_sha:
+        if row.get("certification_key") != certification_key:
+            continue
+        mode = row.get("match_mode")
+        expected = full_sha if mode == MATCH_FULL else fallback_sha
+        if str(row.get("evidence_sha256") or "").lower() == expected:
             event_id = str(row.get("lifecycle_event_id") or "UNKNOWN")
-            return f"certification_evidence_previously_invalidated:{evidence_sha}:event={event_id}"
+            return f"certification_evidence_previously_invalidated:{expected}:mode={mode}:event={event_id}"
     return None
