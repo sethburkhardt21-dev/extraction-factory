@@ -1,217 +1,173 @@
 # MAINLINE RECONCILIATION REPORT
 
-## Project / repository
+## Repository and scope
 
 - Repository: `sethburkhardt21-dev/extraction-factory`
 - Campaign date: `2026-09-10`
 - Scope: **GitHub remote universe only**.
-- Final Machine-A/Machine-B clone/worktree/stash/reflog/unreachable-object reconciliation is deliberately deferred by the owner until the GitHub repositories are normalized.
-- This campaign performs reconciliation, not new extraction feature development.
-- Canonical `master` is not moved by this campaign.
-- No historical branch is deleted or force-pushed.
+- Final Machine-A/Machine-B checkout/worktree/stash/reflog/unreachable-object reconciliation is deliberately deferred until the GitHub repositories are normalized.
+- Canonical `master` is not moved here.
+- Historical branches are preserved; no force-push or branch deletion is part of this reconciliation.
 
-## Source and candidate
+## Canonical source and candidate
 
-- Default branch: `master`
-- Source `master`: `c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e`
-- Existing strongest broad integration branch: `chatgpt-v126-reconciled-20260902`
-- Existing v1.26 head: `4071c18e740339a72363ba9246311398c2d80904`
-- Existing v1.26 relationship to `master`: **13 ahead / 0 behind**
-- Candidate branch: `reconcile/mainline-20260910`
-- Candidate runtime/implementation payload starts from exact v1.26 head `4071c18e740339a72363ba9246311398c2d80904`.
-- Reconciliation adds evidence/orientation plus one exact historical operational runbook blob; it does not replace the current runtime with an older branch.
+- `master`: `c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e`
+- strongest pre-reconciliation runtime frontier: `chatgpt-v126-reconciled-20260902@4071c18e740339a72363ba9246311398c2d80904`
+- v1.26 relationship to `master`: **13 ahead / 0 behind**
+- reconciliation candidate: `reconcile/mainline-20260910`
+- draft promotion/CI surface: PR **#29**
 
-## Remote ref census
+The candidate preserves the v1.26 runtime as its base, preserves one valuable historical owner-runbook blob, and contains one narrowly scoped runtime repair for an already-existing W3 source-risk policy bug found by the previous CI run.
 
-The pre-campaign GitHub branch universe was exhaustively enumerated: **37 heads**. A second branch page was empty.
+## Remote branch census
 
-### Refs already contained by v1.26
+The pre-campaign remote branch universe was exhaustively enumerated: **37 heads**. A second branch page was empty.
 
-The following refs are literal ancestors of `chatgpt-v126-reconciled-20260902@4071c18...` and therefore require no content harvest:
+Most heads are literal ancestors of v1.26 and therefore contain no unique remote implementation requiring harvest. The materially relevant divergent heads were:
 
-| Ref | Relationship to v1.26 |
-|---|---:|
-| `chatgpt-09d-authority-binding-v18-20260901` | 0 ahead / 183 behind |
-| `chatgpt-09d-context-guard-v19-20260901` | 0 / 177 |
-| `chatgpt-09d-contract-v17-20260901` | 0 / 188 |
-| `chatgpt-09d-cycle-safe-v15-20260901` | 0 / 199 |
-| `chatgpt-09d-numeric-v16-20260901` | 0 / 194 |
-| `chatgpt-09d-optimization-20260901` | 0 / 206 |
-| `chatgpt-benchmark-certification-v113-20260901` | 0 / 138 |
-| `chatgpt-blind-pair-binding-v123-20260901` | 0 / 39 |
-| `chatgpt-cert-lifecycle-v120-20260901` | 0 / 71 |
-| `chatgpt-certification-strata-v126-20260902` | 0 / 12 |
-| `chatgpt-cold-audit-cert-v124-20260902` | 0 / 29 |
-| `chatgpt-cold-audit-dimensions-v125-20260902` | 0 / 14 |
-| `chatgpt-e2e-validation-v110-20260901` | 0 / 164 |
-| `chatgpt-gold-integrity-v112-20260901` | 0 / 147 |
-| `chatgpt-gold-predispatch-v114-20260901` | 0 / 137 |
-| `chatgpt-hermes-kanban-hardening-20260831` | 0 / 229 |
-| `chatgpt-hermes-kanban-v19-sync-20260901` | 0 / 175 |
-| `chatgpt-hermes-v114-sync-20260901` | 0 / 128 |
-| `chatgpt-model-version-binding-v118-20260901` | 0 / 95 |
-| `chatgpt-pipeline-optimization-20260901` | 0 / 215 |
-| `chatgpt-real-validation-v111-20260901` | 0 / 158 |
-| `chatgpt-registry-failclosed-v115-20260901` | 0 / 124 |
-| `chatgpt-runtime-independence-v114-20260901` | 0 / 129 |
-| `chatgpt-score-replay-v119-20260901` | 0 / 84 |
-| `chatgpt-semantic-freshness-v122-20260901` | 0 / 49 |
-| `chatgpt-sourcebound-cert-v116-20260901` | 0 / 118 |
-| `chatgpt-stale-recertification-v121-20260901` | 0 / 60 |
-| `chatgpt-test-suite-binding-v117-20260901` | 0 / 113 |
-| `chatgpt-w3-tierb-v126-20260902` | 0 / 5 |
-| `master` | 0 / 13 |
-| `tmp` | 0 / 13 |
+1. `chatgpt-09d-schema-hardening-v14-20260901@a80121b0add62585886b615e84e8acd483ca48f3`
+2. `chatgpt-cold-audit-certification-v124-20260901@22209d496fb95c032e672df4217ec6c5c2daad24`
+3. `chatgpt-cold-runtime-w4-v125-20260902@6766238ec34d9c0e8d7ffe43037d677a60bf7bc9`
+4. `chatgpt-owner-validation-runbook-v111-20260901@6f65949ff48e4e140cd11eec8c691805b6d5fd50`
+5. `chatgpt-owner-validation-runbook-v112-20260901@bcf9301e176b27503383f934de52d4f852c5ebb6`
 
-`tmp` and `master` resolve to the same old base lineage relative to the current v1.26 integration and contain no unique remote work.
+## Divergent-ref adjudication
 
-## Divergent refs adjudicated
+### v1.14 09D schema-hardening line
 
-Five historical refs are not literal ancestors of current v1.26 and therefore required semantic/content adjudication.
+**Classification: SUPERSEDED / SEMANTICALLY ABSORBED BY STRONGER CURRENT 09D ARCHITECTURE.**
 
-### 1. `chatgpt-09d-schema-hardening-v14-20260901`
+The old branch introduced an earlier sealed-r3 contract, controller variant, identity/schema helpers, Motion-2 projection, and related tests. Its material safety and authority guarantees are represented in later stronger code now present in v1.26/master ancestry:
 
-- Tip: `a80121b0add62585886b615e84e8acd483ca48f3`
-- Relationship: **19 ahead / 214 behind** v1.26.
-- Classification: **SUPERSEDED / SEMANTICALLY ABSORBED BY STRONGER 09D ARCHITECTURE**.
+- exact sealed-r3 identity and audit evidence in `AUDIT/09d_target_state.md`;
+- immutable/read-only 09D open, `PRAGMA query_only`, write blocking, witness partitioning, schema fingerprinting, and focused Motion-2 target contract in `factory/hermes_factory/bridge_09d.py`;
+- cycle-safe `MOTION1_AUTHORITY` comparison and exact r3 SHA binding in `factory/stages_ext/compare_09d.py`;
+- projection binding to comparison bytes, database hash, schema fingerprint and target-contract hash in `factory/stages_ext/project_09d_motion2.py`;
+- regression surfaces in `test_09d_optimization.py`, `test_09d_target_contract.py`, `test_09d_authority_binding.py`, `test_09d_numeric_context_guard.py`, owner-validation tests, and integrity/read-only tests.
 
-The branch introduced an early fail-closed sealed-r3 contract (`contract_09d.py`), `controller_v14.py`, identity/schema helpers, a Motion-2 projection and related tests. The literal old module layout is not retained, but its material safety/authority intent is present in later stronger current code:
+Restoring `controller_v14.py` or the old module graph would create a stale second control path, so no runtime harvest is performed.
 
-- `AUDIT/09d_target_state.md` pins the same sealed r3 `final_s03.sqlite`, SHA-256 `fa7a97313dc5bbd9b2fbb61b9124a4ecef5c318ad5d070eeefe67816a210f4a3`, size `1760145408`, ledger identity and fresh verifier evidence.
-- `factory/hermes_factory/bridge_09d.py` implements immutable read-only opening, `PRAGMA query_only`, write blocking, witness partitioning, schema fingerprinting and a focused Motion-2 target contract.
-- `factory/stages_ext/project_09d_motion2.py` explicitly states the later v1.8 binding: exact comparison artifact bytes are bound to verified DB hash, focused target-contract hash, schema fingerprint and cycle-safe `MOTION1_AUTHORITY` scope before handoff can be ready.
-- Current tests include `test_09d_optimization.py`, `test_09d_target_contract.py`, `test_09d_authority_binding.py`, `test_09d_numeric_context_guard.py`, owner-validation 09D checks and read-only integrity coverage.
-- The later v15-v19 09D branches are literal ancestors of current v1.26.
+### v1.24 cold-audit certification line
 
-Blindly restoring `controller_v14.py` or the hard-coded v1.14 module graph would create a second, stale control path. No runtime harvest is warranted.
+**Classification: SUPERSEDED BY CURRENT DIMENSION-AWARE COLD-AUDIT CERTIFIER.**
 
-### 2. `chatgpt-cold-audit-certification-v124-20260901`
+The old branch's source-first positive/negative mutation scorer is represented in stronger current form by:
 
-- Tip: `22209d496fb95c032e672df4217ec6c5c2daad24`
-- Relationship: **9 ahead / 38 behind** v1.26.
-- Classification: **SUPERSEDED BY CURRENT DIMENSION-AWARE COLD-AUDIT CERTIFIER**.
+- `factory/benchmarks_ext/cold_audit_challenge_dimensions.py`
+- `factory/benchmarks_ext/cold_audit_certifier.py`
+- compatibility entrypoint `factory/benchmarks_ext/certify_cold_audit.py`
 
-The branch's `cold_audit_score.py` built source-first positive controls plus deterministic numeric/relationship/qualifier/negation/unsupported-addition mutations. Current v1.26 contains the evolved split architecture:
+Current authority includes explicit semantic dimensions, per-dimension coverage, exact source/model/version binding, gold-family disjointness, lifecycle/reactivation checks, and provider-verified immutable-version requirements. The old scorer is not restored as a second authority.
 
-- `factory/benchmarks_ext/cold_audit_challenge_dimensions.py` constructs explicit `SUPPORTED`, `UNSUPPORTED_ADDITION`, `NUMERIC`, `NEGATION`, `QUALIFIER`, and `RELATIONSHIP_DIRECTION` dimensions from verified source-first gold.
-- `factory/benchmarks_ext/cold_audit_certifier.py` requires dimension coverage, perfect per-dimension classification where applicable, exact source/model-version/registry identity, gold-family disjointness, lifecycle/reactivation gates and provider-verified immutable model version before applied certification.
-- `factory/benchmarks_ext/certify_cold_audit.py` is retained as the compatibility entrypoint delegating to the canonical certifier.
-- Current tests exercise cold-audit certification, semantic/provider behavior, runtime independence and pipeline policy.
+### v1.25 cold-runtime W4 line
 
-The old standalone scorer would be a weaker second authority surface. It is left historical.
+**Classification: SEMANTICALLY ABSORBED / CURRENT CERTIFIER STRONGER.**
 
-### 3. `chatgpt-cold-runtime-w4-v125-20260902`
+Its unique `certify_cold_audit_dimensions.py` wrapper has been folded into the canonical current certifier. Restoring it would duplicate certification authority.
 
-- Tip: `6766238ec34d9c0e8d7ffe43037d677a60bf7bc9`
-- Relationship: **8 ahead / 25 behind** v1.26.
-- Classification: **SEMANTICALLY ABSORBED / CURRENT CANONICAL FILE STRONGER**.
+### owner-validation runbook v1.11
 
-Its unique `factory/benchmarks_ext/certify_cold_audit_dimensions.py` describes itself as the authoritative v1.25 dimension-complete W4 entrypoint and combines challenge dimensions with strict coverage/per-dimension accuracy gating. That functionality has been folded into current `cold_audit_certifier.py`: the canonical current file imports the dimension builder directly, carries coverage inside metrics/registry entries, and refuses certification when required dimensions are missing or imperfect. Restoring the old wrapper would duplicate authority and regress the single-canonical-certifier design.
+**Classification: SUPERSEDED BY v1.12.**
 
-### 4. `chatgpt-owner-validation-runbook-v111-20260901`
+No runtime harvest.
 
-- Tip: `6f65949ff48e4e140cd11eec8c691805b6d5fd50`
-- Relationship: **2 ahead / 157 behind** v1.26.
-- Classification: **SUPERSEDED BY v1.12 RUNBOOK**.
+### owner-validation runbook v1.12
 
-Its unique value is operator documentation plus stale Kanban text. v1.12 is the later, stronger runbook line.
+**Classification: RUNTIME ALREADY ABSORBED; OPERATIONAL KNOWLEDGE WORTH PRESERVING HISTORICALLY.**
 
-### 5. `chatgpt-owner-validation-runbook-v112-20260901`
-
-- Tip: `bcf9301e176b27503383f934de52d4f852c5ebb6`
-- Relationship: **2 ahead / 146 behind** v1.26.
-- Classification: **OPERATIONAL KNOWLEDGE WORTH PRESERVING; RUNTIME ALREADY ABSORBED**.
-
-The current runtime already contains the owner validation implementation and associated tests, but the 431-line owner-machine runbook itself is absent from current v1.26. To preserve its operational knowledge without making stale v1.12 instructions current authority, the reconciliation candidate copies its exact Git blob (`02890529f3b5ed2ee414053a881543076d7cdd72`) to:
+The exact runbook blob is preserved at:
 
 `AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md`
 
-The stale `HERMES_KANBAN_TASK.md` variant is deliberately not restored.
+It is historical evidence/operator knowledge, not current version authority. The stale Kanban variant is deliberately not restored.
 
-## Existing v1.26 reconciliation
+## Feature-loss audit
 
-The v1.26 branch was itself a bounded reconciliation of:
+**Remote GitHub feature-loss result: PASS, with verification still open.**
 
-- `chatgpt-certification-strata-v126-20260902@32b54ef40d8eea027406e1570c9a8e0d61527f0a`
-- `chatgpt-w3-tierb-v126-20260902@c79ea0c44a6a2bc507331827c573ee6763ca2247`
+No material strongest-known remote capability was identified as missing from the candidate after:
 
-with reconciliation merge `ce6f9e709b33d9265bc2e7e1074a9f17d00977da`.
+- exhaustive remote-head enumeration;
+- literal-ancestor comparison for the non-divergent heads;
+- individual semantic adjudication of the five divergent heads;
+- preservation of the one unique operational document worth retaining;
+- explicit refusal to resurrect stale duplicate controller/certifier authority surfaces.
 
-Its existing handoff explicitly refused to retain an incompatible standalone `certification_strata.py` authority surface and warned not to advance `master` until the full test/CI/E2E/certification matrix is green. This remote-wide reconciliation preserves that conservative boundary.
+This is a capability-preservation conclusion, not a test-pass conclusion.
 
-## Remote feature-loss audit
+## Previous v1.26 CI failure — exact root cause
 
-Mandatory question:
+GitHub Actions run `33667868250` on exact v1.26 head `4071c18e740339a72363ba9246311398c2d80904` ran **250 tests** and ended with **2 failures / 1 skip**. The clean-checkout E2E job was skipped because the unit-test matrix failed.
 
-> What functionality, guarantee, test, proof, schema, script, or operational knowledge exists on an eligible GitHub ref but is not preserved by the candidate in a stronger/equivalent active form or deliberately retained historical form?
+Both failures were in `test_w3_tierb_routing.py`:
 
-**Result: PASS for remote GitHub reconciliation, with one explicit verification caveat.**
+1. `test_primary_request_remains_w2_candidate_generation_for_w3_equation_source`
+   - expected candidate metadata `source_risk_work_class == W3`
+   - observed `W2`
+2. `test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags`
+   - expected `SPECIALIST_REVIEW_REQUIRED`
+   - observed `LOCAL_PRECISION_COMPLETE`
 
-Evidence:
+The failure was traced mechanically to `classify_source_unit()` in `factory/hermes_factory/risk.py`: equation escalation checked `content_representation == "EQUATION"`, while the governed test/source shape used `unit_type == "EQUATION"` with `content_representation == "TEXT"`.
 
-1. 31 non-candidate historical refs plus `master` and `tmp` are literal ancestors of current v1.26.
-2. The five divergent refs were individually adjudicated.
-3. The v1.14 09D branch's material authority/safety behavior is present in later stronger 09D target/authority-binding architecture and tests.
-4. The two divergent cold-audit lines are folded into the stronger current dimension-aware certifier/challenge architecture.
-5. v1.11 owner-runbook knowledge is superseded by v1.12; the exact v1.12 runbook blob is preserved historically in the candidate.
-6. No old runtime/controller/version tree is blindly merged over v1.26.
-7. All source branches remain intact as historical evidence.
+## Targeted repair
 
-This means no **material strongest-known remote capability** is identified as missing from the candidate. It does not mean every historical byte is copied into the candidate.
+Candidate commit:
 
-## Verification state — important
+`e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11`
 
-The remote source reconciliation is stronger than the existing test state.
+Repair:
 
-GitHub Actions run `33667868250` against exact v1.26 head `4071c18e740339a72363ba9246311398c2d80904` completed **FAILURE**:
+- preserve W2 candidate-generation request semantics;
+- classify source risk as W3 when **either** `content_representation` or `unit_type` is `EQUATION`;
+- reuse the existing regression tests; no new feature or parallel authority was introduced.
 
-- `unit-tests-py3.13`: failure in the unit-test step;
-- `unit-tests-py3.12.13`: failure in the unit-test step;
-- `clean-checkout-e2e-py3.12.13`: skipped because upstream unit jobs failed.
+This is a minimal repair of already-declared v1.26 policy, not greenfield functionality.
 
-The available GitHub status surface has no separate combined-status entries for that SHA. The failure is therefore preserved as a real unresolved verification gate. This campaign does **not** relabel it as a pass.
+## Fresh candidate CI status
 
-The reconciliation-only changes do not modify current runtime source, but the candidate still inherits the red verification state until a fresh exact-candidate run proves otherwise.
+PR #29 was opened as a **draft** specifically to provide an exact-candidate GitHub verification surface without moving `master`.
 
-Because the owner explicitly deferred local work until GitHub normalization is complete, this campaign does not use Machine A/B to repair or rerun the suite now.
+Two PR-triggered attempts observed so far failed at GitHub Actions startup before creating any jobs:
 
-## Local-universe status
+- run `34406883546` on `e562d8af...`: `startup_failure`, 0 jobs;
+- run `34407014258` on the subsequent documentation commit: `startup_failure`, 0 jobs.
 
-`DEFERRED_BY_OWNER`.
+The first run also refused a failed-jobs retry with HTTP 403 (`workflow run cannot be retried`). These startup failures are **not code-test evidence** and are not relabeled as test failures or passes.
 
-Not certified in this pass:
+Therefore the candidate still lacks a fresh exact-candidate unit/E2E receipt.
 
-- Machine-A/Machine-B checkout equality;
-- local-only branches/worktrees/stashes;
-- dirty or untracked state;
-- reflog/unreachable objects;
-- local owner assets/models;
-- exact owner-machine E2E/certification execution.
+## Promotion posture
 
-These belong to the final local reconciliation after all GitHub candidates are established.
+**NOT READY FOR PROMOTION.**
 
-## Authority / claim boundaries
+Reason: the known v1.26 code defect has been repaired, but the candidate has not yet received a successful exact-head verification run. `master` must remain unchanged until:
 
-- 09D remains read-only downstream authority; no write/canonicalization/automatic identity merge is authorized.
-- Extraction candidates remain non-canonical review candidates unless separately governed/promoted.
-- Model certification claims remain exact provider/model/version/source-class/benchmark scoped.
-- A GitHub reconciliation result is not clinical correctness, model-quality certification, current owner-asset validation, or production acceptance.
-- Historical runbooks are evidence/operational knowledge, not automatic current instructions.
+1. exact-candidate unit tests pass;
+2. clean-checkout E2E passes;
+3. any repository-required build/certification integrity gates pass;
+4. independent promotion review confirms no feature loss or authority regression.
+
+If GitHub Actions remains unable to start, verification can be completed during the owner-deferred final Machine-A/Machine-B local reconciliation, but that local phase should occur only after GitHub normalization across the repository universe is complete.
+
+## Authority boundaries
+
+- 09D remains read-only downstream authority; no write, canonicalization, or automatic identity merge is authorized.
+- Extraction output remains non-canonical review material unless separately governed and promoted.
+- Model certification remains exact provider/model/version/source/benchmark scoped.
+- Historical runbooks remain historical evidence, not automatic current instructions.
+- GitHub reconciliation is not clinical correctness or production acceptance.
 
 ## Zero-context continuation
 
-1. Resolve `reconcile/mainline-20260910` to an exact SHA.
-2. Read `MAINLINE_RECONCILIATION_REPORT.md` and `MAINLINE_RECONCILIATION_MANIFEST.json` first.
-3. Read root `README.md`, then the existing `factory/HANDOFF_V126_RECONCILED_20260902.md` as historical v1.26 context.
-4. Treat `chatgpt-v126-reconciled-20260902@4071c18...` as the runtime payload underneath this reconciliation unless later reconciliation commits explicitly modify runtime code.
-5. Do not resurrect old v1.14 controller or old cold-audit certification authorities merely because those branches contain unique filenames.
-6. Do not treat `AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md` as current version authority; it is preserved historical operator knowledge.
-7. Before promotion, reproduce/fix the exact current unit-test failures and rerun the full required unit/clean-checkout/E2E/certification gates on the exact candidate.
-8. Do not move `master` inside that repair until independent promotion review.
-9. After all GitHub repos are normalized, perform the owner-requested final Machine-A/Machine-B local reconciliation before changing local canonical checkouts.
+1. Resolve `reconcile/mainline-20260910` to its live SHA.
+2. Read this report and `MAINLINE_RECONCILIATION_MANIFEST.json` first.
+3. Treat v1.26 as the pre-repair runtime base and `e562d8af...` as the minimal W3 equation-classification repair.
+4. Do not resurrect the old v1.14 controller or old cold-audit certifier wrappers as competing authorities.
+5. Do not treat the preserved v1.12 runbook as current runtime version authority.
+6. Use PR #29 only as a candidate/verification surface; do not merge while verification is unresolved.
+7. Once all GitHub repositories are normalized, perform the final local Machine-A/Machine-B reconciliation before moving local canonical checkouts.
 
 ## Final recommendation
 
-**GITHUB_REMOTE_RECONCILIATION_COMPLETE — NOT READY FOR PROMOTION**
-
-Reason: the 37-head GitHub universe has been classified and reconciled without identified material capability loss, but the strongest active runtime payload has a real failing GitHub Actions run. The next requirement for this repository is exact-candidate verification/repair, deliberately deferred to the later local verification phase unless a GitHub-only verifier becomes available.
+**GITHUB_REMOTE_RECONCILIATION COMPLETE; PROMOTION BLOCKED ONLY ON FRESH EXACT-CANDIDATE VERIFICATION / INDEPENDENT REVIEW.**
