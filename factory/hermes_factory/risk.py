@@ -10,6 +10,7 @@ def classify_source_unit(unit: SourceUnit) -> Dict[str, str | list[str]]:
     source_class = "S1"
     priority = "P2"
     rep = unit.content_representation.upper()
+    unit_type = unit.unit_type.upper()
     pages = unit.locator.get("pdf_pages", [])
     if rep in {"TABLE", "FIGURE", "IMAGE_REGION", "MIXED_LAYOUT"}:
         source_class = "S3"
@@ -25,7 +26,7 @@ def classify_source_unit(unit: SourceUnit) -> Dict[str, str | list[str]]:
         triggers.append("NUMERIC_PRESENT")
     if re.search(r"\b(?:not|no|except|unless|only|may|might|should|if|when)\b", unit.content, re.I):
         triggers.append("QUALIFIER_PRESENT")
-    if rep == "EQUATION":
+    if rep == "EQUATION" or unit_type == "EQUATION":
         work_class = "W3"
         priority = "P1"
         triggers.append("EQUATION")
