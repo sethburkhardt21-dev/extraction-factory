@@ -1,5 +1,5 @@
 {
-  "format_version": 1,
+  "format_version": 2,
   "repository": "sethburkhardt21-dev/extraction-factory",
   "campaign_date": "2026-09-10",
   "scope": "GITHUB_REMOTE_ONLY",
@@ -7,7 +7,7 @@
   "canonical_default_branch": "master",
   "canonical_default_branch_modified": false,
   "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
-  "strongest_runtime_payload": {
+  "strongest_pre_reconciliation_runtime_payload": {
     "ref": "chatgpt-v126-reconciled-20260902",
     "sha": "4071c18e740339a72363ba9246311398c2d80904",
     "version": "1.26.0",
@@ -15,106 +15,67 @@
     "behind_master": 0
   },
   "candidate_branch": "reconcile/mainline-20260910",
-  "candidate_runtime_payload_sha": "4071c18e740339a72363ba9246311398c2d80904",
+  "candidate_head_before_manifest_v2": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+  "draft_pr": 29,
   "pre_campaign_remote_head_count": 37,
   "remote_heads_exhaustively_enumerated": true,
   "second_branch_page_empty": true,
   "remote_feature_loss_audit": "PASS_NO_MATERIAL_STRONGEST_KNOWN_REMOTE_CAPABILITY_LOSS_IDENTIFIED",
-  "literal_ancestor_refs": {
-    "chatgpt-09d-authority-binding-v18-20260901": 183,
-    "chatgpt-09d-context-guard-v19-20260901": 177,
-    "chatgpt-09d-contract-v17-20260901": 188,
-    "chatgpt-09d-cycle-safe-v15-20260901": 199,
-    "chatgpt-09d-numeric-v16-20260901": 194,
-    "chatgpt-09d-optimization-20260901": 206,
-    "chatgpt-benchmark-certification-v113-20260901": 138,
-    "chatgpt-blind-pair-binding-v123-20260901": 39,
-    "chatgpt-cert-lifecycle-v120-20260901": 71,
-    "chatgpt-certification-strata-v126-20260902": 12,
-    "chatgpt-cold-audit-cert-v124-20260902": 29,
-    "chatgpt-cold-audit-dimensions-v125-20260902": 14,
-    "chatgpt-e2e-validation-v110-20260901": 164,
-    "chatgpt-gold-integrity-v112-20260901": 147,
-    "chatgpt-gold-predispatch-v114-20260901": 137,
-    "chatgpt-hermes-kanban-hardening-20260831": 229,
-    "chatgpt-hermes-kanban-v19-sync-20260901": 175,
-    "chatgpt-hermes-v114-sync-20260901": 128,
-    "chatgpt-model-version-binding-v118-20260901": 95,
-    "chatgpt-pipeline-optimization-20260901": 215,
-    "chatgpt-real-validation-v111-20260901": 158,
-    "chatgpt-registry-failclosed-v115-20260901": 124,
-    "chatgpt-runtime-independence-v114-20260901": 129,
-    "chatgpt-score-replay-v119-20260901": 84,
-    "chatgpt-semantic-freshness-v122-20260901": 49,
-    "chatgpt-sourcebound-cert-v116-20260901": 118,
-    "chatgpt-stale-recertification-v121-20260901": 60,
-    "chatgpt-test-suite-binding-v117-20260901": 113,
-    "chatgpt-w3-tierb-v126-20260902": 5,
-    "master": 13,
-    "tmp": 13
+  "divergent_ref_adjudication": {
+    "chatgpt-09d-schema-hardening-v14-20260901": "SUPERSEDED_SEMANTICALLY_ABSORBED_BY_STRONGER_09D_ARCHITECTURE",
+    "chatgpt-cold-audit-certification-v124-20260901": "SUPERSEDED_BY_CURRENT_DIMENSION_AWARE_COLD_AUDIT_CERTIFIER",
+    "chatgpt-cold-runtime-w4-v125-20260902": "SEMANTICALLY_ABSORBED_CURRENT_CANONICAL_CERTIFIER_STRONGER",
+    "chatgpt-owner-validation-runbook-v111-20260901": "SUPERSEDED_BY_V112_RUNBOOK",
+    "chatgpt-owner-validation-runbook-v112-20260901": "RUNTIME_ABSORBED_OPERATIONAL_KNOWLEDGE_PRESERVED_HISTORICALLY"
   },
-  "divergent_refs": {
-    "chatgpt-09d-schema-hardening-v14-20260901": {
-      "sha": "a80121b0add62585886b615e84e8acd483ca48f3",
-      "ahead_of_v126": 19,
-      "behind_v126": 214,
-      "classification": "SUPERSEDED_SEMANTICALLY_ABSORBED_BY_STRONGER_09D_ARCHITECTURE",
-      "harvest": "NONE_RUNTIME"
-    },
-    "chatgpt-cold-audit-certification-v124-20260901": {
-      "sha": "22209d496fb95c032e672df4217ec6c5c2daad24",
-      "ahead_of_v126": 9,
-      "behind_v126": 38,
-      "classification": "SUPERSEDED_BY_CURRENT_DIMENSION_AWARE_COLD_AUDIT_CERTIFIER",
-      "harvest": "NONE_RUNTIME"
-    },
-    "chatgpt-cold-runtime-w4-v125-20260902": {
-      "sha": "6766238ec34d9c0e8d7ffe43037d677a60bf7bc9",
-      "ahead_of_v126": 8,
-      "behind_v126": 25,
-      "classification": "SEMANTICALLY_ABSORBED_CURRENT_CANONICAL_CERTIFIER_STRONGER",
-      "harvest": "NONE_RUNTIME"
-    },
-    "chatgpt-owner-validation-runbook-v111-20260901": {
-      "sha": "6f65949ff48e4e140cd11eec8c691805b6d5fd50",
-      "ahead_of_v126": 2,
-      "behind_v126": 157,
-      "classification": "SUPERSEDED_BY_V112_RUNBOOK"
-    },
-    "chatgpt-owner-validation-runbook-v112-20260901": {
-      "sha": "bcf9301e176b27503383f934de52d4f852c5ebb6",
-      "ahead_of_v126": 2,
-      "behind_v126": 146,
-      "classification": "RUNTIME_ABSORBED_OPERATIONAL_KNOWLEDGE_PRESERVED_HISTORICALLY",
-      "source_blob_sha": "02890529f3b5ed2ee414053a881543076d7cdd72",
-      "candidate_path": "AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md"
-    }
+  "historical_preservation": {
+    "source_ref": "chatgpt-owner-validation-runbook-v112-20260901",
+    "source_sha": "bcf9301e176b27503383f934de52d4f852c5ebb6",
+    "source_blob_sha": "02890529f3b5ed2ee414053a881543076d7cdd72",
+    "candidate_path": "AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md",
+    "authority_status": "HISTORICAL_EVIDENCE_NOT_CURRENT_RUNTIME_AUTHORITY"
   },
-  "v126_prior_reconciliation": {
-    "parent_a": "chatgpt-certification-strata-v126-20260902@32b54ef40d8eea027406e1570c9a8e0d61527f0a",
-    "parent_b": "chatgpt-w3-tierb-v126-20260902@c79ea0c44a6a2bc507331827c573ee6763ca2247",
-    "merge_commit": "ce6f9e709b33d9265bc2e7e1074a9f17d00977da"
-  },
-  "verification": {
+  "prior_v126_verification": {
     "source_runtime_sha": "4071c18e740339a72363ba9246311398c2d80904",
     "github_actions_run_id": 33667868250,
     "workflow": "Factory tests",
     "conclusion": "FAILURE",
-    "unit_tests_py313": "FAILURE",
-    "unit_tests_py31213": "FAILURE",
-    "clean_checkout_e2e_py31213": "SKIPPED_DUE_TO_UPSTREAM_FAILURE",
-    "combined_status_entries": 0,
-    "fresh_local_rerun_in_this_campaign": false,
-    "verification_disposition": "UNRESOLVED_REAL_GATE_PRESERVED_NOT_RELABELED"
+    "tests_run": 250,
+    "failures": 2,
+    "skipped": 1,
+    "first_failure": "test_primary_request_remains_w2_candidate_generation_for_w3_equation_source",
+    "second_failure": "test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags",
+    "observed_root_cause": "classify_source_unit inspected content_representation for EQUATION but not unit_type; test/source unit used unit_type=EQUATION with content_representation=TEXT",
+    "clean_checkout_e2e": "SKIPPED_DUE_TO_UPSTREAM_UNIT_FAILURE"
+  },
+  "targeted_repair": {
+    "commit": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+    "file": "factory/hermes_factory/risk.py",
+    "change": "equation source risk is W3 when either content_representation or unit_type is EQUATION",
+    "scope": "MINIMAL_EXISTING_POLICY_REPAIR",
+    "new_feature": false,
+    "existing_regression_tests_cover_repair": true
+  },
+  "fresh_candidate_ci_attempt": {
+    "pull_request": 29,
+    "run_id": 34406883546,
+    "head_sha": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+    "event": "pull_request",
+    "conclusion": "STARTUP_FAILURE",
+    "jobs_created": 0,
+    "retry_result": "403_WORKFLOW_RUN_CANNOT_BE_RETRIED",
+    "interpretation": "INFRASTRUCTURE_OR_WORKFLOW_STARTUP_FAILURE_NOT_CODE_TEST_EVIDENCE"
   },
   "reconciliation_changes": {
-    "runtime_code_changed": false,
+    "runtime_code_changed": true,
+    "runtime_change_count": 1,
     "historical_blob_preserved": true,
-    "reports_added": [
+    "reports_present": [
       "MAINLINE_RECONCILIATION_REPORT.md",
       "MAINLINE_RECONCILIATION_MANIFEST.json"
     ]
   },
-  "recommendation": "GITHUB_REMOTE_RECONCILIATION_COMPLETE_NOT_READY_FOR_PROMOTION",
-  "next_gate": "Reproduce/fix exact candidate test failures and rerun required unit, clean-checkout, E2E and certification gates during the owner-deferred final local verification phase or another exact-candidate verifier."
+  "promotion_state": "NOT_READY_FOR_PROMOTION",
+  "reason": "The exact known W3 unit-test defect was repaired on the candidate, but no fresh successful exact-candidate CI or local verification receipt exists yet; the first PR-triggered run failed before creating jobs.",
+  "next_gate": "Obtain fresh exact-candidate unit and clean-checkout/E2E verification. Do not move master until those gates pass and an independent promotion review approves the candidate. Final Machine-A/Machine-B local reconciliation remains deferred until GitHub normalization is complete."
 }
