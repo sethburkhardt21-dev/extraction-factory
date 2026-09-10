@@ -4,7 +4,7 @@
   "canonical_default_branch": "master",
   "canonical_default_branch_modified": false,
   "draft_pr": 29,
-  "format_version": 5,
+  "format_version": 6,
   "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
   "strongest_pre_reconciliation_runtime_payload": {
     "ref": "chatgpt-v126-reconciled-20260902",
@@ -51,7 +51,7 @@
     ],
     "behavior": "bounded retry/backoff on PermissionError around os.replace; exhausted retries re-raise; regression forces first replace failure then success",
     "authority_model_changed": false,
-    "verification_status": "PENDING_FINAL_EXACT_HEAD_REPLAY"
+    "verification_status": "VERIFIED_ON_MACHINE_B_IN_EXACT_4D82F0F_GITHUB_HEAD"
   },
   "historical_preservation": {
     "source_ref": "chatgpt-owner-validation-runbook-v112-20260901",
@@ -73,13 +73,15 @@
     "role": "AUTHORING_MACHINE_MECHANICAL_EVIDENCE_NOT_INDEPENDENT_CERTIFICATION"
   },
   "machine_b_verification": {
-    "exact_candidate_sha": "6d9358da22b2d76fd4dc765b7407a16391da918f",
-    "archive_sha256": "6dbee070c6fa1ca8a67e64799606425d4ddc8291dc6861fab23a53e4d7861293",
+    "exact_candidate_sha": "4d82f0fc3e003b71c5c0b2df0a17a842762189f5",
+    "archive_sha256": "fea904ccc23f6ad4a97c6a5aae2379c2859b28fa5512da6dce9521268469db76",
+    "archive_bytes": 2155448,
     "python": "3.14.2",
     "isolated_pypdf": "6.18.0",
-    "reconciliation_regressions": "PASS_9_OF_9",
-    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "reconciliation_regressions": "PASS_10_OF_10",
+    "full_suite": "PASS_260_TESTS_1_SKIP",
     "deterministic_e2e": "PASS",
+    "e2e_core_readiness": "READY_FOR_PROVIDER",
     "receipt": "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json",
     "role": "INDEPENDENT_SECOND_MACHINE_MECHANICAL_REPLAY"
   },
@@ -114,7 +116,7 @@
     ]
   },
   "local_universe_status": "DEFERRED_BY_OWNER_UNTIL_ALL_GITHUB_REPOS_NORMALIZED",
-  "promotion_state": "PENDING_FINAL_EXACT_HEAD_REPLAY_AND_INDEPENDENT_REVIEW",
-  "reason": "Machine B independently verified 6d9358d, but runtime commit 5221ada landed afterward. The final candidate head must therefore be replayed exactly before promotion.",
-  "next_gate": "Resolve the final candidate SHA, replay that exact head on Machine B with targeted reconciliation tests + full suite + deterministic E2E, then perform independent promotion review. Canonical local checkout reconciliation remains deferred."
+  "promotion_state": "READY_FOR_INDEPENDENT_PROMOTION_REVIEW_AFTER_DOCUMENTATION_ONLY_FINALIZATION",
+  "reason": "Machine B replayed exact GitHub head 4d82f0f including runtime hardening 5221ada; targeted reconciliation, full suite, and deterministic E2E all passed. Remaining finalization commit is documentation/receipt only.",
+  "next_gate": "Commit documentation-only finalization, prove no runtime/test files changed after verified head 4d82f0f, perform independent PR diff/authority review, then promote master if green. Canonical local checkout reconciliation remains deferred."
 }
