@@ -1,29 +1,24 @@
 # MAINLINE RECONCILIATION REPORT
 
-## Repository and scope
+## Scope
 
-- Repository: `sethburkhardt21-dev/extraction-factory`
-- Campaign date: `2026-09-10`
-- Scope: **GitHub remote universe only**.
-- Final Machine-A/Machine-B checkout/worktree/stash/reflog/unreachable-object reconciliation is deliberately deferred until the GitHub repositories are normalized.
-- Canonical `master` is not moved here.
-- Historical branches are preserved; no force-push or branch deletion is part of this reconciliation.
+Repository: `sethburkhardt21-dev/extraction-factory`
+
+Campaign date: `2026-09-10`
+
+Scope is the GitHub remote universe only. Final Machine-A/Machine-B checkout/worktree/stash/reflog/unreachable-object reconciliation is deliberately deferred until GitHub normalization is complete. `master` has not yet been moved by this reconciliation.
 
 ## Canonical source and candidate
 
-- `master`: `c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e`
-- strongest pre-reconciliation runtime frontier: `chatgpt-v126-reconciled-20260902@4071c18e740339a72363ba9246311398c2d80904`
-- v1.26 relationship to `master`: **13 ahead / 0 behind**
-- reconciliation candidate: `reconcile/mainline-20260910`
-- draft promotion/CI surface: PR **#29**
+- source `master`: `c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e`
+- strongest pre-reconciliation runtime: `chatgpt-v126-reconciled-20260902@4071c18e740339a72363ba9246311398c2d80904`
+- v1.26 relation to source master: 13 ahead / 0 behind
+- candidate: `reconcile/mainline-20260910`
+- draft PR: #29
 
-The candidate preserves the v1.26 runtime as its base, preserves one valuable historical owner-runbook blob, repairs the already-declared W3 equation-source policy defect, and selectively restores stronger safety invariants from the divergent v1.14 line.
+## Remote ref audit
 
-## Remote branch census
-
-The pre-campaign remote branch universe was exhaustively enumerated: **37 heads**. A second branch page was empty.
-
-Most heads are literal ancestors of v1.26 and therefore contain no unique remote implementation requiring harvest. The materially relevant divergent heads were:
+The pre-campaign remote universe was exhaustively enumerated: 37 heads; second page empty. Most non-candidate heads are literal ancestors of the v1.26 line. Five materially divergent historical heads required semantic adjudication:
 
 1. `chatgpt-09d-schema-hardening-v14-20260901@a80121b0add62585886b615e84e8acd483ca48f3`
 2. `chatgpt-cold-audit-certification-v124-20260901@22209d496fb95c032e672df4217ec6c5c2daad24`
@@ -31,172 +26,118 @@ Most heads are literal ancestors of v1.26 and therefore contain no unique remote
 4. `chatgpt-owner-validation-runbook-v111-20260901@6f65949ff48e4e140cd11eec8c691805b6d5fd50`
 5. `chatgpt-owner-validation-runbook-v112-20260901@bcf9301e176b27503383f934de52d4f852c5ebb6`
 
-## Divergent-ref adjudication
+## Adjudication
 
-### v1.14 09D schema-hardening line
+### v1.14 09D hardening
 
-**Classification after second-pass audit: PARTIAL_ABSORPTION -> SELECTIVE_INTEGRATION.**
+**PARTIAL_ABSORPTION -> SELECTIVE_INTEGRATION.**
 
-The first reconciliation incorrectly classified this branch as fully superseded. Direct content inspection showed that v1.26 retained the stronger overall architecture but had lost several v1.14 invariants. Those invariants were selectively integrated into the v1.26 control path at runtime commit `e97a6dccc06f07b24f091f8b3198997e2f75b281`:
+The first reconciliation incorrectly called this line fully superseded. Direct content inspection found real invariants missing from v1.26. Commit `e97a6dccc06f07b24f091f8b3198997e2f75b281` selectively restored them into the stronger current control path:
 
-- stable source-grounded witness and claim identities independent of run/model IDs;
-- backward-compatible default-preserving deserialization for old artifacts;
-- crash-safe atomic JSON/JSONL/TSV controller writes;
-- semantic lease TTL derived to outlive provider timeout plus margin;
+- stable source-grounded witness and claim identity across run IDs;
+- default-preserving deserialization of older artifacts;
+- crash-safe atomic JSON/JSONL/TSV writes;
+- lease TTL derived to outlive provider timeout plus safety margin;
 - sealed 09D identity/schema/witness verification before external semantic dispatch;
-- robust terminal-JSON parsing in the appliance wrapper;
-- fail-closed appliance status/exit code when a requested 09D post-stage fails.
+- robust terminal JSON parsing;
+- fail-closed status/exit behavior when requested 09D post-stages fail.
 
-The stale `controller_v14.py` path was deliberately NOT restored. Existing v1.26 09D comparison/projection/certification machinery remains authoritative; only missing invariants were harvested into that stronger architecture.
+The stale `controller_v14.py` authority path was not resurrected.
 
-### v1.24 cold-audit certification line
+### v1.24 cold-audit certification
 
-**Classification: SUPERSEDED BY CURRENT DIMENSION-AWARE COLD-AUDIT CERTIFIER.**
+**SUPERSEDED_BY_STRONGER_CURRENT_SPLIT_ARCHITECTURE.**
 
-The old branch's source-first positive/negative mutation scorer is represented in stronger current form by:
+Its mutation/challenge/scoring/certification intent is represented by the current dimension-aware challenge builder/certifier plus runtime certification authority. Current code additionally binds required dimensions, source/model/version identity, gold-family disjointness, lifecycle freshness and provider-version authority.
 
-- `factory/benchmarks_ext/cold_audit_challenge_dimensions.py`
-- `factory/benchmarks_ext/cold_audit_certifier.py`
-- compatibility entrypoint `factory/benchmarks_ext/certify_cold_audit.py`
+### v1.25 cold-runtime W4
 
-Current authority includes explicit semantic dimensions, per-dimension coverage, exact source/model/version binding, gold-family disjointness, lifecycle/reactivation checks, and provider-verified immutable-version requirements. The old scorer is not restored as a second authority.
+**SEMANTICALLY_ABSORBED_CURRENT_RUNTIME_AUTHORITY_STRONGER.**
 
-### v1.25 cold-runtime W4 line
+Its dimension gate/W4 checks are represented by current certifier and runtime certificate-policy/authority code. Restoring the old wrapper would create duplicate authority.
 
-**Classification: SEMANTICALLY ABSORBED / CURRENT CERTIFIER STRONGER.**
+### owner-validation v1.11/v1.12
 
-Its unique `certify_cold_audit_dimensions.py` wrapper has been folded into the canonical current certifier. Restoring it would duplicate certification authority.
+v1.11 is superseded by v1.12. The exact v1.12 runbook is preserved at `AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md` as historical operator evidence, not current runtime authority.
 
-### owner-validation runbook v1.11
+## W3 policy defect and repair
 
-**Classification: SUPERSEDED BY v1.12.**
+Historical v1.26 GitHub Actions run `33667868250` executed 250 tests and failed 2 tests because equation risk escalation checked `content_representation == "EQUATION"` but governed test/source shape used `unit_type == "EQUATION"` with text representation.
 
-No runtime harvest.
+Commit `e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11` repairs that declared policy by classifying source risk W3 when either field denotes an equation. Candidate-generation semantics remain W2; no new authority path was introduced.
 
-### owner-validation runbook v1.12
+## Mechanical verification before later Windows hardening
 
-**Classification: RUNTIME ALREADY ABSORBED; OPERATIONAL KNOWLEDGE WORTH PRESERVING HISTORICALLY.**
+Machine A disposable checkout:
 
-The exact runbook blob is preserved at:
+- 9/9 reconciliation regressions PASS
+- 259/259 full factory tests PASS, 1 justified skip
+- governed reporter PASS
+- deterministic E2E PASS
 
-`AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md`
+Machine B independently replayed exact candidate `6d9358da22b2d76fd4dc765b7407a16391da918f`:
 
-It is historical evidence/operator knowledge, not current version authority. The stale Kanban variant is deliberately not restored.
+- 9/9 reconciliation regressions PASS
+- 259/259 full factory tests PASS, 1 justified skip
+- deterministic E2E PASS
+- `overall=PASS`
+- `core_readiness_status=READY_FOR_PROVIDER`
 
-## Feature-loss audit
+The first Machine-B E2E attempt was setup-blocked only by missing `pypdf`. An isolated disposable `.venv` with `pypdf 6.18.0` was created and the same candidate passed. No canonical local checkout was changed. See `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`.
 
-**Corrected remote GitHub feature-loss result: PASS AFTER SELECTIVE HARVEST.**
+## Verification-frontier change after Machine B
 
-The first pass was not sufficient: it missed real v1.14 safety invariants. After reopening that branch at content level, selectively harvesting the missing invariants, and separately adjudicating v1.24/v1.25, no remaining material strongest-known remote capability was identified as missing from the candidate after:
+Commit `5221ada186bfedf9a0b9de7401cee874bc68a1d6` landed after `6d9358d...`:
 
-- exhaustive remote-head enumeration;
-- literal-ancestor comparison for the non-divergent heads;
-- individual semantic adjudication of the five divergent heads;
-- preservation of the one unique operational document worth retaining;
-- explicit refusal to resurrect stale duplicate controller/certifier authority surfaces.
+`fix: retry transient Windows atomic replace locks`
 
-This is a capability-preservation conclusion, not a test-pass conclusion.
+It adds `_replace_with_retry()` around `os.replace()` for transient Windows `PermissionError` sharing locks and routes the atomic text/JSONL writers through it. Retry count is bounded, backoff is finite, and exhausted retries re-raise. A regression test forces the first replacement attempt to fail and requires successful retry.
 
-## Previous v1.26 CI failure — exact root cause
-
-GitHub Actions run `33667868250` on exact v1.26 head `4071c18e740339a72363ba9246311398c2d80904` ran **250 tests** and ended with **2 failures / 1 skip**. The clean-checkout E2E job was skipped because the unit-test matrix failed.
-
-Both failures were in `test_w3_tierb_routing.py`:
-
-1. `test_primary_request_remains_w2_candidate_generation_for_w3_equation_source`
-   - expected candidate metadata `source_risk_work_class == W3`
-   - observed `W2`
-2. `test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags`
-   - expected `SPECIALIST_REVIEW_REQUIRED`
-   - observed `LOCAL_PRECISION_COMPLETE`
-
-The failure was traced mechanically to `classify_source_unit()` in `factory/hermes_factory/risk.py`: equation escalation checked `content_representation == "EQUATION"`, while the governed test/source shape used `unit_type == "EQUATION"` with `content_representation == "TEXT"`.
-
-## Targeted repair
-
-Candidate commit:
-
-`e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11`
-
-Repair:
-
-- preserve W2 candidate-generation request semantics;
-- classify source risk as W3 when **either** `content_representation` or `unit_type` is `EQUATION`;
-- reuse the existing regression tests; no new feature or parallel authority was introduced.
-
-This is a minimal repair of already-declared v1.26 policy, not greenfield functionality.
-
-## Mechanical verification
-
-### Machine A
-
-A disposable Machine-A checkout verified the repaired/harvested runtime:
-
-- 9/9 reconciliation regressions PASS;
-- 259/259 full factory tests PASS with 1 justified skip;
-- governed reporter PASS;
-- deterministic E2E PASS;
-- build certification, preflight, package integrity/tamper rejection, ledger resume, provider-wrapper smoke, read-only 09D comparison/projection, and fail-closed untrusted-target behavior all PASS.
-
-Machine A is the authoring/repair machine, so these results are evidence but not independent certification.
-
-### Machine B
-
-Exact runtime candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` was replayed independently on Machine B from a disposable extracted archive whose recorded SHA-256 is `6dbee070c6fa1ca8a67e64799606425d4ddc8291dc6861fab23a53e4d7861293`.
-
-Results:
-
-- 9/9 reconciliation regressions PASS;
-- 259/259 full factory tests PASS with 1 justified skip;
-- deterministic E2E PASS;
-- E2E `overall=PASS`;
-- E2E `core_readiness_status=READY_FOR_PROVIDER`.
-
-The first Machine-B E2E attempt failed only because `pypdf` was not installed in that machine's Python 3.14 environment. A disposable isolated `.venv` with `pypdf 6.18.0` was created and the exact same candidate then passed. No canonical local user checkout was modified.
-
-See `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`.
+This appears to be a narrow durability hardening rather than an authority change, but it is runtime code. Therefore the prior Machine-B result does **not** certify the final current branch head. The exact final candidate must be replayed again before promotion.
 
 ## GitHub Actions status
 
-PR #29 was opened as a draft specifically to provide a candidate/verification surface without moving `master`.
+Earlier PR-triggered runs failed at Actions startup with zero jobs created. These are `SETUP_ERROR` / infrastructure failures, not code-test passes or failures.
 
-Two PR-triggered attempts observed earlier failed at GitHub Actions startup before creating any jobs:
+## Feature-loss result
 
-- run `34406883546` on `e562d8af...`: `startup_failure`, 0 jobs;
-- run `34407014258` on the subsequent documentation commit: `startup_failure`, 0 jobs.
+**PASS AFTER SECOND-PASS SELECTIVE HARVEST, subject to final-head replay.**
 
-These startup failures are **not code-test evidence** and are not relabeled as test failures or passes.
+No remaining material strongest-known GitHub-remote capability from the enumerated divergent refs is known to require a second authority path. This is a capability-preservation conclusion, not semantic-quality certification.
 
 ## Promotion posture
 
-**PENDING ONE FINAL DOCUMENTATION-COMPLETE EXACT-HEAD REPLAY, THEN INDEPENDENT PROMOTION REVIEW.**
+**PENDING FINAL EXACT-HEAD REPLAY + INDEPENDENT PROMOTION REVIEW.**
 
-The runtime candidate itself has passed independent Machine-B replay. Since recording those receipts and cold-start instructions creates documentation-only commits after `6d9358d...`, the remaining gate is intentionally narrow:
+Required next steps:
 
-1. resolve the final candidate branch to its exact GitHub SHA;
-2. mechanically compare that final SHA to `6d9358d...` and require that the delta is audit/verification/cold-start documentation only;
-3. replay the exact final SHA on Machine B;
-4. independently review the reconciliation and verification evidence;
-5. only then promote `master`.
+1. Resolve `reconcile/mainline-20260910` to its final live GitHub SHA.
+2. Replay that exact final SHA on Machine B in a disposable checkout/archive.
+3. Require targeted reconciliation tests, the full factory suite, and deterministic E2E to pass.
+4. Independently inspect the final diff and authority implications, including `5221ada...`.
+5. Only then promote `master`.
 
-## Authority boundaries
+## Fable reasoning frontier
 
-- 09D remains read-only downstream authority; no write, canonicalization, or automatic identity merge is authorized.
-- Extraction output remains non-canonical review material unless separately governed and promoted.
-- Model certification remains exact provider/model/version/source/benchmark scoped.
-- Historical runbooks remain historical evidence, not automatic current instructions.
-- GitHub reconciliation is not clinical correctness or production acceptance.
+Fable should not repeat remote branch archaeology unless refs changed. It should instead verify or challenge the supplied evidence and spend reasoning on:
+
+- whether the selectively restored v1.14 invariants compose correctly with v1.26;
+- whether the Windows atomic-replace retry is safe and sufficient;
+- whether any cross-repo DLE/EI capability remains worth absorbing;
+- whether operational/semantic claims match actual authority paths and proof strength;
+- any contradiction between the handoff, code, tests and receipts.
+
+Normalization is not semantic-quality certification, clinical correctness, or production acceptance.
 
 ## Zero-context continuation
 
-1. Resolve `reconcile/mainline-20260910` to its live SHA.
-2. Read `FABLE_AUDIT_HANDOFF.md`, `CURRENT_VERIFICATION_20260910.json`, and `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json` first.
-3. Treat v1.26 as the pre-repair runtime base; `e562d8af...` is the W3 equation-classification repair and `e97a6dc...` is the selective v1.14 safety-invariant harvest.
-4. Do not resurrect the old v1.14 controller or old cold-audit certifier wrappers as competing authorities; the missing v1.14 invariants were already integrated into the v1.26 path.
-5. Do not treat the preserved v1.12 runbook as current runtime version authority.
-6. Verify that commits after `6d9358d...` are documentation/receipt only, then replay the exact final head on Machine B.
-7. Once all GitHub repositories are normalized, perform the final local Machine-A/Machine-B reconciliation before moving canonical local checkouts.
+Read first:
 
-## Final recommendation
+1. `FABLE_AUDIT_HANDOFF.md`
+2. `CURRENT_VERIFICATION_20260910.json`
+3. `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`
+4. `DIVERGENT_REF_AUDIT_20260910.md`
+5. this report
+6. `MAINLINE_RECONCILIATION_MANIFEST.json`
 
-**GITHUB REMOTE CONTENT RECONCILIATION IS COMPLETE AFTER SECOND-PASS CORRECTION. RUNTIME VERIFICATION HAS PASSED ON TWO MACHINES. PROMOTION IS BLOCKED ONLY ON FINAL DOCUMENTATION-COMPLETE EXACT-HEAD REPLAY AND INDEPENDENT REVIEW.**
+Do not move canonical local Machine-A/Machine-B checkouts until the GitHub normalization campaign is complete.
