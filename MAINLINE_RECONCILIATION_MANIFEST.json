@@ -4,7 +4,7 @@
   "canonical_default_branch": "master",
   "canonical_default_branch_modified": false,
   "draft_pr": 29,
-  "format_version": 4,
+  "format_version": 5,
   "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
   "strongest_pre_reconciliation_runtime_payload": {
     "ref": "chatgpt-v126-reconciled-20260902",
@@ -41,6 +41,17 @@
       "terminal_json_parser",
       "requested_09d_poststage_fail_closed_status"
     ]
+  },
+  "post_machine_b_runtime_hardening": {
+    "commit": "5221ada186bfedf9a0b9de7401cee874bc68a1d6",
+    "message": "fix: retry transient Windows atomic replace locks",
+    "files": [
+      "factory/hermes_factory/controller.py",
+      "factory/tests/test_reconciliation_v14_harvest.py"
+    ],
+    "behavior": "bounded retry/backoff on PermissionError around os.replace; exhausted retries re-raise; regression forces first replace failure then success",
+    "authority_model_changed": false,
+    "verification_status": "PENDING_FINAL_EXACT_HEAD_REPLAY"
   },
   "historical_preservation": {
     "source_ref": "chatgpt-owner-validation-runbook-v112-20260901",
@@ -86,7 +97,8 @@
     "runtime_code_changed": true,
     "runtime_change_classes": [
       "W3_POLICY_REPAIR",
-      "SELECTIVE_V14_SAFETY_INVARIANT_HARVEST"
+      "SELECTIVE_V14_SAFETY_INVARIANT_HARVEST",
+      "WINDOWS_ATOMIC_REPLACE_TRANSIENT_LOCK_RETRY"
     ],
     "historical_blob_preserved": true,
     "fable_handoff_present": true,
@@ -102,7 +114,7 @@
     ]
   },
   "local_universe_status": "DEFERRED_BY_OWNER_UNTIL_ALL_GITHUB_REPOS_NORMALIZED",
-  "promotion_state": "PENDING_FINAL_DOCUMENTATION_COMPLETE_HEAD_REPLAY_AND_INDEPENDENT_REVIEW",
-  "reason": "The exact runtime candidate passed independent Machine-B replay. Verification and cold-start documentation commits intentionally do not change runtime code, but that claim and the final branch head must be mechanically rechecked before promotion.",
-  "next_gate": "Resolve the final documentation-complete candidate SHA; compare it against 6d9358d and require documentation/receipt-only delta; replay that exact final head on Machine B; then perform independent promotion review. Canonical local checkout reconciliation remains deferred."
+  "promotion_state": "PENDING_FINAL_EXACT_HEAD_REPLAY_AND_INDEPENDENT_REVIEW",
+  "reason": "Machine B independently verified 6d9358d, but runtime commit 5221ada landed afterward. The final candidate head must therefore be replayed exactly before promotion.",
+  "next_gate": "Resolve the final candidate SHA, replay that exact head on Machine B with targeted reconciliation tests + full suite + deterministic E2E, then perform independent promotion review. Canonical local checkout reconciliation remains deferred."
 }
