@@ -23,11 +23,31 @@ def deterministic_union(*populations: Iterable[AssertionCandidate]) -> List[Asse
     return sorted(out, key=lambda c: (c.source_unit_id, c.origin_pass, c.candidate_id))
 
 
+def _family_risk_metadata(members: List[AssertionCandidate]) -> dict:
+    work = {str(m.metadata.get("source_risk_work_class")) for m in members if m.metadata.get("source_risk_work_class")}
+    source = {str(m.metadata.get("source_risk_source_class")) for m in members if m.metadata.get("source_risk_source_class")}
+    unit_types = {str(m.metadata.get("source_unit_type")) for m in members if m.metadata.get("source_unit_type")}
+    representations = {
+        str(m.metadata.get("source_content_representation"))
+        for m in members if m.metadata.get("source_content_representation")
+    }
+    return {
+        "family_rule": "EXACT_NORMALIZED_EVIDENCE_WITHIN_SOURCE_UNIT",
+        "source_risk_work_class": next(iter(work)) if len(work) == 1 else ("CONFLICT" if len(work) > 1 else None),
+        "source_risk_source_class": next(iter(source)) if len(source) == 1 else ("CONFLICT" if len(source) > 1 else None),
+        "source_unit_type": next(iter(unit_types)) if len(unit_types) == 1 else ("CONFLICT" if len(unit_types) > 1 else None),
+        "source_content_representation": next(iter(representations)) if len(representations) == 1 else ("CONFLICT" if len(representations) > 1 else None),
+        "source_risk_metadata_complete": len(work) == 1 and len(source) == 1,
+    }
+
+
 def build_evidence_families(candidates: Iterable[AssertionCandidate]) -> List[EvidenceFamily]:
     """Build conservative evidence families.
 
     Candidates are grouped only when they share the exact normalized evidence span
     in the same source unit. This intentionally avoids semantic fuzzy merging.
+    Governed source-risk metadata is carried forward when present so W3 families
+    cannot later appear locally safe merely because narrower specialist flags are absent.
     """
     buckets: Dict[Tuple[str, str], List[AssertionCandidate]] = defaultdict(list)
     for c in candidates:
@@ -68,6 +88,6 @@ def build_evidence_families(candidates: Iterable[AssertionCandidate]) -> List[Ev
             evidence_hashes=sorted({m.evidence_sha256 for m in members}),
             disagreement_types=sorted(set(disagreements)),
             specialist_requirements=sorted(set(requirements)),
-            metadata={"family_rule": "EXACT_NORMALIZED_EVIDENCE_WITHIN_SOURCE_UNIT"},
+            metadata=_family_risk_metadata(members),
         ))
     return families

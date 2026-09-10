@@ -5,13 +5,13 @@ from .models import EvidenceFamily, SpecialistReceipt
 
 HARD_P0 = {
     "SOURCE_SHA_MISMATCH", "EVIDENCE_HASH_MISMATCH", "LEDGER_INTEGRITY_FAILURE",
-    "BUILD_INTEGRITY_FAILURE", "AUTHORITY_BOUNDARY_VIOLATION",
+    "BUILD_INTEGRITY_FAILURE", "AUTHORITY_BOUNDARY_VIOLATION", "SOURCE_RISK_METADATA_CONFLICT",
 }
 
 HARD_W3_CODES = {
     "UNBOUND_NUMERIC", "TABLE_BINDING_REQUIRES_SEMANTIC_OR_VISUAL_REVIEW",
     "IMAGE_AVAILABLE_NOT_MODEL_REVIEWED", "CROSS_PAGE_SEMANTIC_REVIEW_REQUIRED",
-    "DIRECTION_CUE_LOST", "QUALIFIER_NOT_PRESERVED",
+    "DIRECTION_CUE_LOST", "QUALIFIER_NOT_PRESERVED", "W3_TIER_B_REVIEW_REQUIRED",
 }
 
 
@@ -30,6 +30,23 @@ def _flag_code(flag: str) -> str:
     return parts[-1] if parts else str(flag)
 
 
+def _source_risk_codes(family: EvidenceFamily) -> set[str]:
+    """Convert governed candidate-stamped source risk into routing authority.
+
+    Missing metadata is tolerated for legacy fixture/test candidates, but a live
+    family explicitly stamped W3 can never be locally closed. Conflicting risk
+    stamps inside one exact-evidence family are an integrity failure.
+    """
+    metadata = family.metadata if isinstance(family.metadata, dict) else {}
+    work_class = metadata.get("source_risk_work_class")
+    source_class = metadata.get("source_risk_source_class")
+    if work_class == "CONFLICT" or source_class == "CONFLICT":
+        return {"SOURCE_RISK_METADATA_CONFLICT"}
+    if work_class == "W3":
+        return {"W3_TIER_B_REVIEW_REQUIRED"}
+    return set()
+
+
 def route_families(families: Iterable[EvidenceFamily], receipts: Iterable[SpecialistReceipt]) -> List[Dict]:
     by_family: Dict[str, List[SpecialistReceipt]] = defaultdict(list)
     for r in receipts:
@@ -42,7 +59,9 @@ def route_families(families: Iterable[EvidenceFamily], receipts: Iterable[Specia
         priority = "P2"
         action = "LOCAL_PRECISION_COMPLETE"
         reason = "deterministic checks supported or no higher-risk trigger"
-        flag_codes = {_flag_code(flag) for flag in flags}
+        flag_codes = {_flag_code(flag) for flag in flags} | _source_risk_codes(f)
+        if "W3_TIER_B_REVIEW_REQUIRED" in flag_codes:
+            flags.append("W3_TIER_B_REVIEW_REQUIRED")
         if flag_codes & HARD_W3_CODES:
             priority = "P1"
             action = "SPECIALIST_REVIEW_REQUIRED"
@@ -51,10 +70,11 @@ def route_families(families: Iterable[EvidenceFamily], receipts: Iterable[Specia
             priority = "P0"
             action = "FAIL_BLOCKING"
             reason = "authority/integrity hard stop"
-        if "UNSUPPORTED" in outcomes:
+        if "UNSUPPORTED" in outcomes and action != "FAIL_BLOCKING":
             priority = "P1"
             action = "FRONTIER_OR_HUMAN_ADJUDICATION"
             reason = "unsupported candidate family"
+        metadata = f.metadata if isinstance(f.metadata, dict) else {}
         routes.append({
             "family_id": f.family_id,
             "priority": priority,
@@ -62,6 +82,8 @@ def route_families(families: Iterable[EvidenceFamily], receipts: Iterable[Specia
             "reason": reason,
             "unresolved_flags": sorted(set(flags)),
             "unresolved_codes": sorted(flag_codes),
+            "source_risk_work_class": metadata.get("source_risk_work_class"),
+            "source_risk_source_class": metadata.get("source_risk_source_class"),
             "experimental_soft_thresholds_used": False,
         })
     return routes

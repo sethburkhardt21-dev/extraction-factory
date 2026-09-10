@@ -1,0 +1,49 @@
+{
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "candidate_branch": "reconcile/mainline-20260910",
+  "machine_a": {
+    "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+    "machine": "Machine A / SethsPC disposable checkout",
+    "python": "3.12.10",
+    "tests": {
+      "post_harvest_targeted_reconciliation": "PASS_9_OF_9",
+      "post_harvest_full_suite": "PASS_259_TESTS_1_SKIP",
+      "post_harvest_governed_reporter": "PASS",
+      "post_harvest_e2e": "PASS"
+    }
+  },
+  "machine_b": {
+    "verified_candidate_sha": "6d9358da22b2d76fd4dc765b7407a16391da918f",
+    "python": "3.14.2",
+    "isolated_pypdf": "6.18.0",
+    "targeted_reconciliation": "PASS_9_OF_9",
+    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "deterministic_e2e": "PASS",
+    "receipt": "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json"
+  },
+  "post_machine_b_runtime_change": {
+    "sha": "5221ada186bfedf9a0b9de7401cee874bc68a1d6",
+    "message": "fix: retry transient Windows atomic replace locks",
+    "files": [
+      "factory/hermes_factory/controller.py",
+      "factory/tests/test_reconciliation_v14_harvest.py"
+    ],
+    "status": "PENDING_FINAL_EXACT_HEAD_REPLAY"
+  },
+  "e2e_checks": [
+    "unit_tests",
+    "certify_build",
+    "preflight_verify",
+    "canonical_appliance_echo",
+    "packaged_run_summary",
+    "ledger_status_and_resume",
+    "package_tamper_rejected",
+    "provider_wrapper_smoke",
+    "09d_comparison_read_only",
+    "strict_09d_target_binding_fail_closed",
+    "09d_projection_and_context_guard_read_only",
+    "repackaged_09d_review_artifacts_verified"
+  ],
+  "github_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS",
+  "promotion_note": "Machine B independently verified 6d9358d. A later runtime hardening commit 5221ada landed before the documentation updates and must be included in the final exact-head replay before promotion."
+}

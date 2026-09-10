@@ -82,7 +82,8 @@ class SourceUnit:
 
     @classmethod
     def from_dict(cls, value: Dict[str, Any]) -> "SourceUnit":
-        return cls(**{k: value.get(k) for k in cls.__dataclass_fields__})
+        # Preserve dataclass defaults for fields absent from older artifacts.
+        return cls(**{k: value[k] for k in cls.__dataclass_fields__ if k in value})
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -122,6 +123,8 @@ class AssertionCandidate:
     review_state: str = ReviewState.UNREVIEWED.value
     canonical_state: str = CanonicalState.NON_CANONICAL.value
     uncertainty_flags: List[str] = field(default_factory=list)
+    stable_witness_sha256: str = ""
+    stable_claim_sha256: str = ""
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -130,7 +133,7 @@ class AssertionCandidate:
     @classmethod
     def from_dict(cls, value: Dict[str, Any]) -> "AssertionCandidate":
         fields = cls.__dataclass_fields__
-        return cls(**{k: value.get(k) for k in fields})
+        return cls(**{k: value[k] for k in fields if k in value})
 
     def validate_invariants(self) -> List[str]:
         errors: List[str] = []
@@ -148,6 +151,10 @@ class AssertionCandidate:
             errors.append("missing_proposition")
         if not self.originating_run_id:
             errors.append("missing_originating_run_id")
+        for name, value in (("stable_witness_sha256", self.stable_witness_sha256),
+                            ("stable_claim_sha256", self.stable_claim_sha256)):
+            if value and (len(value) != 64 or any(c not in "0123456789abcdef" for c in value)):
+                errors.append(f"invalid_{name}")
         return errors
 
 

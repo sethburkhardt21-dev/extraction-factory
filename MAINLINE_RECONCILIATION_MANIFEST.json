@@ -1,0 +1,120 @@
+{
+  "campaign_date": "2026-09-10",
+  "candidate_branch": "reconcile/mainline-20260910",
+  "canonical_default_branch": "master",
+  "canonical_default_branch_modified": false,
+  "draft_pr": 29,
+  "format_version": 5,
+  "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
+  "strongest_pre_reconciliation_runtime_payload": {
+    "ref": "chatgpt-v126-reconciled-20260902",
+    "sha": "4071c18e740339a72363ba9246311398c2d80904",
+    "version": "1.26.0",
+    "ahead_of_master": 13,
+    "behind_master": 0
+  },
+  "divergent_ref_adjudication": {
+    "chatgpt-09d-schema-hardening-v14-20260901": "PARTIAL_ABSORPTION_SELECTIVELY_INTEGRATED_INTO_V126",
+    "chatgpt-cold-audit-certification-v124-20260901": "SUPERSEDED_BY_CURRENT_DIMENSION_AWARE_COLD_AUDIT_CERTIFIER",
+    "chatgpt-cold-runtime-w4-v125-20260902": "SEMANTICALLY_ABSORBED_CURRENT_CANONICAL_CERTIFIER_STRONGER",
+    "chatgpt-owner-validation-runbook-v111-20260901": "SUPERSEDED_BY_V112_RUNBOOK",
+    "chatgpt-owner-validation-runbook-v112-20260901": "RUNTIME_ABSORBED_OPERATIONAL_KNOWLEDGE_PRESERVED_HISTORICALLY"
+  },
+  "targeted_repair": {
+    "commit": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+    "file": "factory/hermes_factory/risk.py",
+    "change": "equation source risk is W3 when either content_representation or unit_type is EQUATION",
+    "scope": "MINIMAL_EXISTING_POLICY_REPAIR",
+    "new_feature": false,
+    "existing_regression_tests_cover_repair": true
+  },
+  "second_pass_correction": {
+    "first_pass_error": "v1.14 was incorrectly classified as fully semantically absorbed",
+    "runtime_harvest_commit": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+    "stale_controller_restored": false,
+    "harvested_invariants": [
+      "stable_cross_run_witness_and_claim_identity",
+      "default_preserving_old_artifact_deserialization",
+      "atomic_controller_artifact_writes",
+      "lease_ttl_derived_from_provider_timeout",
+      "sealed_09d_predispatch_verification",
+      "terminal_json_parser",
+      "requested_09d_poststage_fail_closed_status"
+    ]
+  },
+  "post_machine_b_runtime_hardening": {
+    "commit": "5221ada186bfedf9a0b9de7401cee874bc68a1d6",
+    "message": "fix: retry transient Windows atomic replace locks",
+    "files": [
+      "factory/hermes_factory/controller.py",
+      "factory/tests/test_reconciliation_v14_harvest.py"
+    ],
+    "behavior": "bounded retry/backoff on PermissionError around os.replace; exhausted retries re-raise; regression forces first replace failure then success",
+    "authority_model_changed": false,
+    "verification_status": "PENDING_FINAL_EXACT_HEAD_REPLAY"
+  },
+  "historical_preservation": {
+    "source_ref": "chatgpt-owner-validation-runbook-v112-20260901",
+    "source_sha": "bcf9301e176b27503383f934de52d4f852c5ebb6",
+    "source_blob_sha": "02890529f3b5ed2ee414053a881543076d7cdd72",
+    "candidate_path": "AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md",
+    "authority_status": "HISTORICAL_EVIDENCE_NOT_CURRENT_RUNTIME_AUTHORITY"
+  },
+  "pre_campaign_remote_head_count": 37,
+  "remote_heads_exhaustively_enumerated": true,
+  "second_branch_page_empty": true,
+  "remote_feature_loss_audit": "PASS_AFTER_SECOND_PASS_SELECTIVE_HARVEST",
+  "machine_a_verification": {
+    "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+    "reconciliation_regressions": "PASS_9_OF_9",
+    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "governed_reporter": "PASS",
+    "deterministic_e2e": "PASS",
+    "role": "AUTHORING_MACHINE_MECHANICAL_EVIDENCE_NOT_INDEPENDENT_CERTIFICATION"
+  },
+  "machine_b_verification": {
+    "exact_candidate_sha": "6d9358da22b2d76fd4dc765b7407a16391da918f",
+    "archive_sha256": "6dbee070c6fa1ca8a67e64799606425d4ddc8291dc6861fab23a53e4d7861293",
+    "python": "3.14.2",
+    "isolated_pypdf": "6.18.0",
+    "reconciliation_regressions": "PASS_9_OF_9",
+    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "deterministic_e2e": "PASS",
+    "receipt": "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json",
+    "role": "INDEPENDENT_SECOND_MACHINE_MECHANICAL_REPLAY"
+  },
+  "fresh_candidate_ci_attempt": {
+    "pull_request": 29,
+    "run_id": 34406883546,
+    "head_sha": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+    "event": "pull_request",
+    "conclusion": "STARTUP_FAILURE",
+    "jobs_created": 0,
+    "retry_result": "403_WORKFLOW_RUN_CANNOT_BE_RETRIED",
+    "interpretation": "INFRASTRUCTURE_OR_WORKFLOW_STARTUP_FAILURE_NOT_CODE_TEST_EVIDENCE"
+  },
+  "reconciliation_changes": {
+    "runtime_code_changed": true,
+    "runtime_change_classes": [
+      "W3_POLICY_REPAIR",
+      "SELECTIVE_V14_SAFETY_INVARIANT_HARVEST",
+      "WINDOWS_ATOMIC_REPLACE_TRANSIENT_LOCK_RETRY"
+    ],
+    "historical_blob_preserved": true,
+    "fable_handoff_present": true,
+    "reports_present": [
+      "README.md",
+      "FABLE_AUDIT_HANDOFF.md",
+      "FABLE_AUDIT_INDEX.json",
+      "CURRENT_VERIFICATION_20260910.json",
+      "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json",
+      "DIVERGENT_REF_AUDIT_20260910.md",
+      "MAINLINE_RECONCILIATION_REPORT.md",
+      "MAINLINE_RECONCILIATION_MANIFEST.json"
+    ]
+  },
+  "local_universe_status": "DEFERRED_BY_OWNER_UNTIL_ALL_GITHUB_REPOS_NORMALIZED",
+  "promotion_state": "PENDING_FINAL_EXACT_HEAD_REPLAY_AND_INDEPENDENT_REVIEW",
+  "reason": "Machine B independently verified 6d9358d, but runtime commit 5221ada landed afterward. The final candidate head must therefore be replayed exactly before promotion.",
+  "next_gate": "Resolve the final candidate SHA, replay that exact head on Machine B with targeted reconciliation tests + full suite + deterministic E2E, then perform independent promotion review. Canonical local checkout reconciliation remains deferred."
+}

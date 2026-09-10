@@ -1,5 +1,6 @@
 from __future__ import annotations
 import csv
+import io
 import json
 import os
 import shutil
@@ -10,8 +11,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
 
 from .build_integrity import verify_build, write_current_manifest
+from .bridge_09d import inventory_schema_readonly
 from .cold_audit import deterministic_cold_audit
 from .cold_audit_semantic import run_semantic_cold_audit
+from .contract_09d import verify_09d_contract
 from .hashing import sha256_file, sha256_json, sha256_text
 from .ledger import Ledger
 from .literal import numeric_inventory, qualifier_inventory, relationship_inventory
@@ -33,36 +36,89 @@ from .staging import stage_artifact, verify_staged_artifact
 from .union import build_evidence_families, deterministic_union
 
 
-def _write_json(path: Path, value: Any) -> None:
+def _replace_with_retry(src: Path, dst: Path, *, attempts: int = 8, delay_seconds: float = 0.05) -> None:
+    last_error = None
+    for attempt in range(attempts):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError as exc:
+            last_error = exc
+            if attempt + 1 >= attempts:
+                raise
+            time.sleep(delay_seconds * (attempt + 1))
+    if last_error is not None:
+        raise last_error
+
+
+def _atomic_replace_text(path: Path, text: str) -> None:
+    path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    tmp = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    try:
+        with tmp.open("w", encoding="utf-8", newline="") as f:
+            f.write(text)
+            f.flush()
+            os.fsync(f.fileno())
+        _replace_with_retry(tmp, path)
+        # Best-effort directory fsync on platforms that support opening folders.
+        try:
+            fd = os.open(str(path.parent), os.O_RDONLY)
+            try:
+                os.fsync(fd)
+            finally:
+                os.close(fd)
+        except (OSError, AttributeError):
+            pass
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def _write_json(path: Path, value: Any) -> None:
+    _atomic_replace_text(Path(path), json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True))
 
 
 def _write_jsonl(path: Path, rows: Iterable[Any]) -> None:
+    path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            if hasattr(row, "to_dict"):
-                row = row.to_dict()
-            f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+    tmp = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    try:
+        with tmp.open("w", encoding="utf-8", newline="\n") as f:
+            for row in rows:
+                if hasattr(row, "to_dict"):
+                    row = row.to_dict()
+                f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+        _replace_with_retry(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def _write_tsv(path: Path, rows: List[Dict[str, Any]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
     if not rows:
-        path.write_text("", encoding="utf-8")
+        _atomic_replace_text(Path(path), "")
         return
     keys = sorted({k for r in rows for k in r})
-    with path.open("w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, delimiter="\t", extrasaction="ignore")
-        w.writeheader()
-        for row in rows:
-            w.writerow({k: json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else v for k, v in row.items()})
+    buf = io.StringIO(newline="")
+    writer = csv.DictWriter(buf, fieldnames=keys, delimiter="\t", extrasaction="ignore")
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({
+            k: json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else v
+            for k, v in row.items()
+        })
+    _atomic_replace_text(Path(path), buf.getvalue())
+
+
+# ---------- deterministic integrity / scheduling ----------
+
+
 
 
 def _candidate_integrity(candidates: List[AssertionCandidate], units: List[SourceUnit]) -> Dict[str, bool]:
     udict = {u.source_unit_id: u for u in units}
-    spans = True; hashes = True; lineage = True; provenance = True; schema = True
+    spans = True; hashes = True; lineage = True; provenance = True; schema = True; stable_identity = True
     for c in candidates:
         u = udict.get(c.source_unit_id)
         if not u or c.evidence not in u.content:
@@ -73,9 +129,12 @@ def _candidate_integrity(candidates: List[AssertionCandidate], units: List[Sourc
             lineage = False
         if not c.source_id or not c.source_version_id or not c.source_sha256:
             provenance = False
+        if not c.stable_witness_sha256 or not c.stable_claim_sha256:
+            stable_identity = False
         if c.validate_invariants():
             schema = False
-    return {"spans": spans, "hashes": hashes, "lineage": lineage, "provenance": provenance, "schema": schema}
+    return {"spans": spans, "hashes": hashes, "lineage": lineage, "provenance": provenance, "schema": schema,
+            "stable_identity": stable_identity}
 
 
 def _work_id(role: str, unit_id: str) -> str:
@@ -140,13 +199,14 @@ def _provider_telemetry(receipts: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def _dispatch_role(ledger_path: Path, staging_root: Path, provider: SemanticProvider, units: List[SourceUnit],
-                   role: str, risks: Dict[str, Dict[str, Any]], concurrency: int) -> Tuple[List[AssertionCandidate], List[Dict[str, Any]]]:
+                   role: str, risks: Dict[str, Dict[str, Any]], concurrency: int,
+                   lease_ttl_seconds: int) -> Tuple[List[AssertionCandidate], List[Dict[str, Any]]]:
     candidates: List[AssertionCandidate] = []
     receipts: List[Dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=max(1, concurrency), thread_name_prefix=f"hermes-{role.lower()}") as pool:
         future_map = {
             pool.submit(_execute_semantic_work, ledger_path, staging_root, provider, unit, role,
-                        str(risks[unit.source_unit_id]["source_class"])): unit.source_unit_id
+                        str(risks[unit.source_unit_id]["source_class"]), 2, lease_ttl_seconds): unit.source_unit_id
             for unit in units
         }
         for fut in as_completed(future_map):
@@ -157,7 +217,10 @@ def _dispatch_role(ledger_path: Path, staging_root: Path, provider: SemanticProv
 
 
 def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: SemanticProvider, unit: SourceUnit,
-                           role: str, source_class: str, max_attempts: int = 2) -> Tuple[List[AssertionCandidate], Dict[str, Any]]:
+                           role: str, source_class: str, max_attempts: int = 2,
+                           lease_ttl_seconds: int = 1800) -> Tuple[List[AssertionCandidate], Dict[str, Any]]:
+    if lease_ttl_seconds < 60:
+        raise ValueError("lease_ttl_seconds_must_be_at_least_60")
     work_id = _work_id(role, unit.source_unit_id)
     started = time.perf_counter()
     last_error = None
@@ -173,7 +236,7 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
             work = ledger.get_work(work_id)
             if work["state"] == "ACCEPTED":
                 raise RuntimeError("accepted_work_must_be_loaded_not_reexecuted")
-            lease_id = ledger.issue_lease(work_id, provider.identity().model_alias, ttl_seconds=900)
+            lease_id = ledger.issue_lease(work_id, provider.identity().model_alias, ttl_seconds=lease_ttl_seconds)
             ledger.mark_running(work_id, lease_id)
             run_id = "SEM-" + uuid.uuid4().hex
             if role == "PRIMARY":
@@ -183,6 +246,7 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
             else:
                 raise ValueError("unknown_semantic_role")
             receipt["attempt"] = attempt
+            receipt["lease_ttl_seconds"] = lease_ttl_seconds
             receipt["controller_duration_seconds"] = round(time.perf_counter() - started, 3)
             payload = "".join(json.dumps(c.to_dict(), ensure_ascii=False, sort_keys=True) + "\n" for c in candidates)
             staged = stage_artifact(staging_root, work_id=work_id, run_id=run_id,
@@ -212,13 +276,32 @@ def _execute_semantic_work(ledger_path: Path, staging_root: Path, provider: Sema
     raise RuntimeError(f"semantic_work_failed:{last_error}")
 
 
+def _strict_09d_predispatch(database_09d: Path | None, run_dir: Path, *, external_semantic: bool) -> Dict[str, Any] | None:
+    if database_09d is None:
+        return None
+    report = verify_09d_contract(
+        Path(database_09d),
+        verify_identity=external_semantic,
+        strict_counts=external_semantic,
+        quick_check=False,
+    )
+    _write_json(run_dir / "09D" / "09d_contract_predispatch.json", report)
+    if report.get("ok"):
+        _write_json(run_dir / "09D" / "readonly_schema_inventory.json", inventory_schema_readonly(Path(database_09d)))
+    return report
+
+
+# ---------- canonical governed run ----------
+
+
 def run_factory(*, project_root: Path, source_units_path: Path, primary_provider: SemanticProvider,
                 blind_provider: SemanticProvider, output_root: Path, source_pdf: Path | None = None,
                 source_expected_sha256: str | None = None, database_09d: Path | None = None,
                 cold_audit_rate: float = 0.25, mode: str = "OFFLINE_FIXTURE", execution_mode: str = "LOCAL_ONLY",
                 workers: int = 4, cold_audit_provider: SemanticProvider | None = None,
                 provider_schedule: str = "AUTO", primary_concurrency: int | None = None,
-                blind_concurrency: int | None = None, cold_concurrency: int = 1) -> Dict[str, Any]:
+                blind_concurrency: int | None = None, cold_concurrency: int = 1,
+                lease_ttl_seconds: int = 1800) -> Dict[str, Any]:
     project_root = Path(project_root)
     output_root = Path(output_root)
     output_root.mkdir(parents=True, exist_ok=True)
@@ -248,6 +331,8 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
     current_manifest = write_current_manifest(project_root, project_root / "CURRENT" / "CURRENT_BUILD_MANIFEST.json")
     build_check = verify_build(project_root, project_root / "CURRENT" / "CERTIFIED_BUILD_MANIFEST.json")
     runtime_check = verify_runtime_lock(project_root / "CURRENT" / "RUNTIME_LOCK.json")
+    external_semantic = mode != "OFFLINE_FIXTURE"
+    contract_09d = _strict_09d_predispatch(database_09d, run_dir, external_semantic=external_semantic)
     runtime_registry = load_registry(project_root / "CURRENT" / "MODEL_CERTIFICATION_REGISTRY.json")
     runtime_topology: Dict[str, Dict[str, Any]] | None = None
     runtime_topology_error: str | None = None
@@ -271,6 +356,9 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             predispatch_failures.append({"gate": "BUILD_INTEGRITY", "result": build_check.get("result"), "detail": build_check.get("errors", [])})
         if runtime_check.get("result") != GateResult.PASS.value:
             predispatch_failures.append({"gate": "RUNTIME_LOCK", "result": runtime_check.get("result"), "detail": runtime_check.get("errors", [])})
+        if database_09d is not None and (not contract_09d or not contract_09d.get("ok") or not contract_09d.get("target_identity_verified")):
+            predispatch_failures.append({"gate": "09D_SEALED_SCHEMA_CONTRACT", "result": GateResult.FAIL_BLOCKING.value,
+                                         "detail": (contract_09d or {}).get("errors", ["09d_contract_not_run"])})
         if runtime_topology_error is not None:
             predispatch_failures.append({
                 "gate": "MODEL_IDENTITY_INDEPENDENCE",
@@ -286,6 +374,13 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             }
             _write_json(run_dir / "VALIDATION" / "predispatch_failure.json", failure)
             raise RuntimeError("predispatch_gate_failure:" + json.dumps(failure, sort_keys=True))
+
+    if lease_ttl_seconds < 60:
+        raise ValueError("lease_ttl_seconds_must_be_at_least_60")
+    _write_json(run_dir / "PROVENANCE" / "lease_policy.json", {
+        "lease_ttl_seconds": lease_ttl_seconds,
+        "policy": "semantic lease TTL is caller-derived from provider timeout plus safety margin",
+    })
 
     enforce_provider_network_policy(execution_mode, primary_provider)
     enforce_provider_network_policy(execution_mode, blind_provider)
@@ -328,10 +423,10 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
 
     if resolved_schedule == "PHASED":
         primary_candidates, primary_receipts = _dispatch_role(
-            ledger_path, run_dir / "staging", primary_provider, units, "PRIMARY", risks, primary_limit)
+            ledger_path, run_dir / "staging", primary_provider, units, "PRIMARY", risks, primary_limit, lease_ttl_seconds)
         worker_receipts.extend(primary_receipts)
         blind_candidates, blind_receipts = _dispatch_role(
-            ledger_path, run_dir / "staging", blind_provider, units, "BLIND_RECALL", risks, blind_limit)
+            ledger_path, run_dir / "staging", blind_provider, units, "BLIND_RECALL", risks, blind_limit, lease_ttl_seconds)
         worker_receipts.extend(blind_receipts)
     else:
         with ThreadPoolExecutor(max_workers=max(1, workers), thread_name_prefix="hermes-worker") as pool:
@@ -339,7 +434,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
             for unit, role in tasks:
                 provider = primary_provider if role == "PRIMARY" else blind_provider
                 fut = pool.submit(_execute_semantic_work, ledger_path, run_dir / "staging", provider, unit, role,
-                                  str(risks[unit.source_unit_id]["source_class"]))
+                                  str(risks[unit.source_unit_id]["source_class"]), 2, lease_ttl_seconds)
                 future_map[fut] = role
             for fut in as_completed(future_map):
                 role = future_map[fut]
@@ -525,6 +620,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         Gate("RUNTIME_LOCK", runtime_check["result"], ";".join(runtime_check.get("errors", [])) or "runtime matches lock"),
         Gate("SCHEMA", GateResult.PASS.value if integrity["schema"] else GateResult.FAIL_BLOCKING.value),
         Gate("PROVENANCE", GateResult.PASS.value if integrity["provenance"] else GateResult.FAIL_BLOCKING.value),
+            Gate("STABLE_SOURCE_IDENTITY", GateResult.PASS.value if integrity["stable_identity"] else GateResult.FAIL_BLOCKING.value),
         Gate("EVIDENCE_SPANS", GateResult.PASS.value if integrity["spans"] else GateResult.FAIL_BLOCKING.value),
         Gate("EVIDENCE_HASHES", GateResult.PASS.value if integrity["hashes"] else GateResult.FAIL_BLOCKING.value),
         Gate("LINEAGE", GateResult.PASS.value if integrity["lineage"] else GateResult.FAIL_BLOCKING.value),
@@ -556,6 +652,7 @@ def run_factory(*, project_root: Path, source_units_path: Path, primary_provider
         "mode": mode,
         "execution_mode": execution_mode,
         "workers": workers,
+        "lease_ttl_seconds": lease_ttl_seconds,
         "provider_schedule": resolved_schedule,
         "primary_concurrency": primary_limit,
         "blind_concurrency": blind_limit,

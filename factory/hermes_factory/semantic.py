@@ -4,8 +4,10 @@ import uuid
 from typing import Any, Dict, Iterable, List
 from .blindness import build_blind_worker_request
 from .hashing import sha256_json, sha256_text
+from .identity import stable_candidate_identities
 from .models import AssertionCandidate, SourceUnit, WorkerIdentity
 from .providers.base import SemanticProvider
+from .risk import classify_source_unit
 
 OUTPUT_SCHEMA = {
     "type": "object",
@@ -77,6 +79,7 @@ def normalize_provider_output(
 ) -> List[AssertionCandidate]:
     if not isinstance(output, dict) or not isinstance(output.get("assertions"), list):
         raise ValueError("provider_output_missing_assertions")
+    source_risk = classify_source_unit(unit)
     candidates: List[AssertionCandidate] = []
     for ordinal, raw in enumerate(output["assertions"]):
         if not isinstance(raw, dict):
@@ -87,6 +90,19 @@ def normalize_provider_output(
             raise ValueError("provider_assertion_missing_proposition_or_evidence")
         if evidence not in unit.content:
             raise ValueError(f"evidence_not_exact_source_substring:{unit.source_unit_id}:{ordinal}")
+        evidence_sha = sha256_text(evidence)
+        identity_payload = {
+            "source_unit_id": unit.source_unit_id, "source_id": unit.source_id,
+            "source_version_id": unit.source_version_id, "source_sha256": unit.source_sha256,
+            "locator": unit.locator, "evidence_sha256": evidence_sha, "proposition": proposition,
+            "subject": raw.get("subject"), "predicate": raw.get("predicate"),
+            "object_value": raw.get("object_value"), "numeric_values": list(raw.get("numeric_values") or []),
+            "qualifiers": list(raw.get("qualifiers") or []), "polarity": str(raw.get("polarity") or "AFFIRMATIVE"),
+            "certainty": str(raw.get("certainty") or "ASSERTED"), "conditionality": raw.get("conditionality"),
+            "temporality": raw.get("temporality"), "comparison": raw.get("comparison"),
+            "relationship_direction": raw.get("relationship_direction"),
+        }
+        witness_sha, claim_sha = stable_candidate_identities(identity_payload)
         candidate = AssertionCandidate(
             candidate_id=_candidate_id(run_id, unit.source_unit_id, origin_pass, proposition, evidence, ordinal),
             source_unit_id=unit.source_unit_id,
@@ -95,7 +111,7 @@ def normalize_provider_output(
             source_sha256=unit.source_sha256,
             locator=unit.locator,
             evidence=evidence,
-            evidence_sha256=sha256_text(evidence),
+            evidence_sha256=evidence_sha,
             proposition=proposition,
             subject=raw.get("subject"),
             predicate=raw.get("predicate"),
@@ -117,7 +133,17 @@ def normalize_provider_output(
             worker_identity=worker.to_dict(),
             origin_pass=origin_pass,
             uncertainty_flags=list(raw.get("uncertainty_flags") or []),
-            metadata={"provider_output_hash": sha256_json(raw)},
+            stable_witness_sha256=witness_sha,
+            stable_claim_sha256=claim_sha,
+            metadata={
+                "09d_projection_identity_version": "stable-candidate-identity-1.0",
+                "provider_output_hash": sha256_json(raw),
+                "source_risk_work_class": source_risk.get("work_class"),
+                "source_risk_source_class": source_risk.get("source_class"),
+                "source_risk_reasons": list(source_risk.get("reasons") or []),
+                "source_unit_type": unit.unit_type,
+                "source_content_representation": unit.content_representation,
+            },
         )
         errors = candidate.validate_invariants()
         if errors:
