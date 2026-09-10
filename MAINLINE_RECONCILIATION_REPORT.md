@@ -66,34 +66,17 @@ Historical v1.26 GitHub Actions run `33667868250` executed 250 tests and failed 
 
 Commit `e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11` repairs that declared policy by classifying source risk W3 when either field denotes an equation. Candidate-generation semantics remain W2; no new authority path was introduced.
 
-## Mechanical verification before later Windows hardening
+## Mechanical verification
 
-Machine A disposable checkout:
+Machine A established the repaired/harvested baseline: 9/9 reconciliation regressions PASS, 259/259 full factory tests PASS with 1 justified skip, governed reporter PASS, deterministic E2E PASS.
 
-- 9/9 reconciliation regressions PASS
-- 259/259 full factory tests PASS, 1 justified skip
-- governed reporter PASS
-- deterministic E2E PASS
+Machine B independently replayed exact GitHub head `4d82f0fc3e003b71c5c0b2df0a17a842762189f5` from archive SHA-256 `fea904ccc23f6ad4a97c6a5aae2379c2859b28fa5512da6dce9521268469db76`. That exact head includes Windows runtime hardening commit `5221ada186bfedf9a0b9de7401cee874bc68a1d6`.
 
-Machine B independently replayed exact candidate `6d9358da22b2d76fd4dc765b7407a16391da918f`:
+Machine-B result: 10/10 reconciliation regressions PASS; 260/260 full factory tests PASS with 1 justified skip; deterministic E2E PASS; `overall=PASS`; `core_readiness_status=READY_FOR_PROVIDER`. The system interpreter lacked `pypdf`, so the first E2E attempt was setup-blocked; a disposable `.verify-venv` with `pypdf 6.18.0` passed. No canonical local checkout was changed.
 
-- 9/9 reconciliation regressions PASS
-- 259/259 full factory tests PASS, 1 justified skip
-- deterministic E2E PASS
-- `overall=PASS`
-- `core_readiness_status=READY_FOR_PROVIDER`
+### Windows atomic-replace hardening
 
-The first Machine-B E2E attempt was setup-blocked only by missing `pypdf`. An isolated disposable `.venv` with `pypdf 6.18.0` was created and the same candidate passed. No canonical local checkout was changed. See `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`.
-
-## Verification-frontier change after Machine B
-
-Commit `5221ada186bfedf9a0b9de7401cee874bc68a1d6` landed after `6d9358d...`:
-
-`fix: retry transient Windows atomic replace locks`
-
-It adds `_replace_with_retry()` around `os.replace()` for transient Windows `PermissionError` sharing locks and routes the atomic text/JSONL writers through it. Retry count is bounded, backoff is finite, and exhausted retries re-raise. A regression test forces the first replacement attempt to fail and requires successful retry.
-
-This appears to be a narrow durability hardening rather than an authority change, but it is runtime code. Therefore the prior Machine-B result does **not** certify the final current branch head. The exact final candidate must be replayed again before promotion.
+Commit `5221ada...` adds bounded retry/backoff around transient Windows `PermissionError` from `os.replace()` and a regression forcing first-attempt failure then successful retry. Exhausted retries still re-raise. Machine B's exact-head replay includes this commit, so the previous verification gap is closed.
 
 ## GitHub Actions status
 
@@ -101,21 +84,20 @@ Earlier PR-triggered runs failed at Actions startup with zero jobs created. Thes
 
 ## Feature-loss result
 
-**PASS AFTER SECOND-PASS SELECTIVE HARVEST, subject to final-head replay.**
+**PASS AFTER SECOND-PASS SELECTIVE HARVEST AND INDEPENDENT MACHINE-B EXACT-HEAD REPLAY.**
 
 No remaining material strongest-known GitHub-remote capability from the enumerated divergent refs is known to require a second authority path. This is a capability-preservation conclusion, not semantic-quality certification.
 
 ## Promotion posture
 
-**PENDING FINAL EXACT-HEAD REPLAY + INDEPENDENT PROMOTION REVIEW.**
+**READY FOR INDEPENDENT PROMOTION REVIEW AFTER DOCUMENTATION-ONLY FINALIZATION.**
 
 Required next steps:
 
-1. Resolve `reconcile/mainline-20260910` to its final live GitHub SHA.
-2. Replay that exact final SHA on Machine B in a disposable checkout/archive.
-3. Require targeted reconciliation tests, the full factory suite, and deterministic E2E to pass.
-4. Independently inspect the final diff and authority implications, including `5221ada...`.
-5. Only then promote `master`.
+1. Commit only verification/cold-start documentation after verified head `4d82f0f...`.
+2. Prove the delta from `4d82f0f...` to final PR head contains no runtime or test changes.
+3. Independently inspect the complete PR diff and authority implications.
+4. Only then promote `master`.
 
 ## Fable reasoning frontier
 

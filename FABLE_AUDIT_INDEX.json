@@ -21,5 +21,8 @@
   ],
   "normalization_is_release_readiness": false,
   "normalization_is_semantic_quality_certification": false,
-  "local_machine_canonical_reconciliation": "DEFERRED_UNTIL_GITHUB_CAMPAIGN_COMPLETE"
+  "local_machine_canonical_reconciliation": "DEFERRED_UNTIL_GITHUB_CAMPAIGN_COMPLETE",
+  "machine_b_verified_candidate_sha": "4d82f0fc3e003b71c5c0b2df0a17a842762189f5",
+  "machine_b_exact_head_verification": "PASS_10_OF_10_TARGETED_260_OF_260_FULL_1_SKIP_E2E_PASS",
+  "promotion_frontier": "READY_FOR_INDEPENDENT_PROMOTION_REVIEW_AFTER_DOCUMENTATION_ONLY_FINALIZATION"
 }

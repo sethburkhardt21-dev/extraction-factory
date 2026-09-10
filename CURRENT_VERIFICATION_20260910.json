@@ -13,22 +13,19 @@
     }
   },
   "machine_b": {
-    "verified_candidate_sha": "6d9358da22b2d76fd4dc765b7407a16391da918f",
+    "verified_candidate_sha": "4d82f0fc3e003b71c5c0b2df0a17a842762189f5",
     "python": "3.14.2",
     "isolated_pypdf": "6.18.0",
-    "targeted_reconciliation": "PASS_9_OF_9",
-    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "targeted_reconciliation": "PASS_10_OF_10",
+    "full_suite": "PASS_260_TESTS_1_SKIP",
     "deterministic_e2e": "PASS",
+    "archive_sha256": "fea904ccc23f6ad4a97c6a5aae2379c2859b28fa5512da6dce9521268469db76",
     "receipt": "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json"
   },
   "post_machine_b_runtime_change": {
     "sha": "5221ada186bfedf9a0b9de7401cee874bc68a1d6",
     "message": "fix: retry transient Windows atomic replace locks",
-    "files": [
-      "factory/hermes_factory/controller.py",
-      "factory/tests/test_reconciliation_v14_harvest.py"
-    ],
-    "status": "PENDING_FINAL_EXACT_HEAD_REPLAY"
+    "status": "INCLUDED_IN_VERIFIED_4D82F0F_HEAD"
   },
   "e2e_checks": [
     "unit_tests",
@@ -45,5 +42,5 @@
     "repackaged_09d_review_artifacts_verified"
   ],
   "github_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS",
-  "promotion_note": "Machine B independently verified 6d9358d. A later runtime hardening commit 5221ada landed before the documentation updates and must be included in the final exact-head replay before promotion."
+  "promotion_note": "Machine B independently replayed exact GitHub head 4d82f0f including runtime hardening 5221ada: 10/10 targeted, 260/260 full suite with 1 justified skip, deterministic E2E PASS. Subsequent finalization must remain documentation-only."
 }

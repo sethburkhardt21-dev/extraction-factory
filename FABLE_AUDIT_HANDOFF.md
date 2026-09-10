@@ -8,8 +8,8 @@ Candidate branch: `reconcile/mainline-20260910`
 Source `master`: `c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e`
 Strongest pre-reconciliation runtime: `chatgpt-v126-reconciled-20260902@4071c18e740339a72363ba9246311398c2d80904`
 Selective safety-harvest runtime commit: `e97a6dccc06f07b24f091f8b3198997e2f75b281`
-Machine-B independently replayed runtime candidate: `6d9358da22b2d76fd4dc765b7407a16391da918f`
-Later runtime hardening commit requiring final-head replay: `5221ada186bfedf9a0b9de7401cee874bc68a1d6`
+Machine-B independently replayed exact GitHub head: `4d82f0fc3e003b71c5c0b2df0a17a842762189f5`
+Included Windows runtime hardening: `5221ada186bfedf9a0b9de7401cee874bc68a1d6`
 
 ## What the first reconciliation got wrong
 
@@ -37,21 +37,21 @@ Machine A disposable checkout:
 - deterministic E2E PASS;
 - build certification, preflight, package integrity/tamper rejection, ledger resume, provider-wrapper smoke, read-only 09D comparison/projection, and fail-closed untrusted-target behavior PASS.
 
-Machine B independently replayed exact candidate `6d9358da22b2d76fd4dc765b7407a16391da918f`:
+Machine B independently replayed exact GitHub head `4d82f0fc3e003b71c5c0b2df0a17a842762189f5` in a disposable extracted archive:
 
-- 9/9 reconciliation regressions PASS;
-- 259/259 full factory tests PASS with 1 justified skip;
+- archive SHA-256 `fea904ccc23f6ad4a97c6a5aae2379c2859b28fa5512da6dce9521268469db76`;
+- 10/10 reconciliation regressions PASS;
+- 260/260 full factory tests PASS with 1 justified skip;
 - deterministic E2E PASS with `overall=PASS` and `core_readiness_status=READY_FOR_PROVIDER`;
-- first E2E attempt was setup-blocked only by missing `pypdf`; successful rerun used isolated disposable `.venv` with `pypdf 6.18.0`;
+- this exact head includes runtime hardening commit `5221ada...`;
+- isolated `.verify-venv` with `pypdf 6.18.0` resolved the only setup blocker;
 - no canonical local user checkout was changed.
 
 See `CURRENT_VERIFICATION_20260910.json` and `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`.
 
-## Verification-frontier change after Machine B
+## Verification frontier
 
-Commit `5221ada186bfedf9a0b9de7401cee874bc68a1d6` landed after the independently replayed `6d9358d...` head. It adds a bounded retry helper around Windows `os.replace()` PermissionError sharing locks and rewires the atomic text/JSONL writers to use it. A regression test forces the first replace call to fail and requires the second to succeed.
-
-This appears directionally correct and fail-loud: retry count is bounded, backoff is finite, and exhausted retries re-raise. However, because it is runtime code, it invalidates any statement that everything after `6d9358d...` is documentation-only. The exact final branch head must be replayed on Machine B before promotion.
+The runtime/test frontier is independently mechanically verified through `4d82f0f...`. Finalization after that SHA must remain documentation/receipt-only; prove that delta before promotion.
 
 GitHub Actions attempts on earlier candidate heads failed at startup with zero jobs. Treat those as setup/infrastructure failures, not test results.
 
@@ -77,6 +77,6 @@ A disagreement is welcome, but it should identify the exact invariant, carrier, 
 
 ## Promotion boundary
 
-Resolve the final live candidate SHA, replay that exact head on Machine B, and independently review before moving `master`.
+The runtime/test tree through `4d82f0f...` has been independently replayed on Machine B. Prove all later finalization commits are documentation-only, then independently review the PR before moving `master`.
 
 Normalization is not semantic-quality certification, clinical correctness, or production acceptance. Final Machine-A/Machine-B canonical checkout reconciliation remains deferred until the GitHub normalization campaign is complete.

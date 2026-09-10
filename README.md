@@ -20,20 +20,16 @@ The candidate uses v1.26 as the strongest runtime base, includes the existing W3
 Mechanical evidence already obtained:
 
 - Machine A: 259/259 factory tests PASS with 1 justified skip, 9/9 reconciliation regressions PASS, governed reporter PASS, deterministic E2E PASS.
-- Machine B: exact candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` independently replayed; 9/9 reconciliation regressions PASS, 259/259 full suite PASS with 1 justified skip, deterministic E2E PASS.
+- Machine B: exact GitHub head `4d82f0fc3e003b71c5c0b2df0a17a842762189f5` independently replayed; 10/10 reconciliation regressions PASS, 260/260 full suite PASS with 1 justified skip, deterministic E2E PASS. This exact head includes Windows hardening commit `5221ada186bfedf9a0b9de7401cee874bc68a1d6`.
 - GitHub Actions attempts on earlier heads failed before jobs were created and are setup/infrastructure failures, not test evidence.
 
 The Machine-B replay used a disposable extracted archive and isolated `.venv`; the first E2E attempt exposed only a missing `pypdf` dependency, and the rerun with `pypdf 6.18.0` passed. No canonical local checkout was changed.
 
-### Verification frontier changed after that replay
+### Promotion frontier
 
-A later runtime hardening commit landed on the same reconciliation branch:
+Machine B independently replayed exact GitHub head `4d82f0fc3e003b71c5c0b2df0a17a842762189f5`, including the bounded Windows atomic-replace retry hardening in `5221ada...`. The targeted regression count increased to 10 and the full suite to 260; all passed, and deterministic E2E passed.
 
-`5221ada186bfedf9a0b9de7401cee874bc68a1d6` — `fix: retry transient Windows atomic replace locks`
-
-It adds bounded fail-loud retry/backoff around `os.replace()` for transient Windows `PermissionError` sharing locks and a regression test that forces the first replacement attempt to fail. It does not change the authority model, but it is runtime code and therefore invalidates any claim that commits after `6d9358d...` are documentation-only.
-
-**The final exact candidate head must therefore be replayed on Machine B before promotion.**
+This finalization occurs after that verified code/test head. Before promotion, prove the final branch delta after `4d82f0f...` is documentation/receipt-only, then independently review the PR.
 
 ## Layout
 
