@@ -35,17 +35,19 @@ Most heads are literal ancestors of v1.26 and therefore contain no unique remote
 
 ### v1.14 09D schema-hardening line
 
-**Classification: SUPERSEDED / SEMANTICALLY ABSORBED BY STRONGER CURRENT 09D ARCHITECTURE.**
+**Classification after second-pass audit: PARTIAL_ABSORPTION -> SELECTIVE_INTEGRATION.**
 
-The old branch introduced an earlier sealed-r3 contract, controller variant, identity/schema helpers, Motion-2 projection, and related tests. Its material safety and authority guarantees are represented in later stronger code now present in v1.26/master ancestry:
+The first reconciliation incorrectly classified this branch as fully superseded. Direct content inspection showed that v1.26 retained the stronger overall architecture but had lost several v1.14 invariants. Those invariants were selectively integrated into the v1.26 control path at runtime commit `e97a6dccc06f07b24f091f8b3198997e2f75b281`:
 
-- exact sealed-r3 identity and audit evidence in `AUDIT/09d_target_state.md`;
-- immutable/read-only 09D open, `PRAGMA query_only`, write blocking, witness partitioning, schema fingerprinting, and focused Motion-2 target contract in `factory/hermes_factory/bridge_09d.py`;
-- cycle-safe `MOTION1_AUTHORITY` comparison and exact r3 SHA binding in `factory/stages_ext/compare_09d.py`;
-- projection binding to comparison bytes, database hash, schema fingerprint and target-contract hash in `factory/stages_ext/project_09d_motion2.py`;
-- regression surfaces in `test_09d_optimization.py`, `test_09d_target_contract.py`, `test_09d_authority_binding.py`, `test_09d_numeric_context_guard.py`, owner-validation tests, and integrity/read-only tests.
+- stable source-grounded witness and claim identities independent of run/model IDs;
+- backward-compatible default-preserving deserialization for old artifacts;
+- crash-safe atomic JSON/JSONL/TSV controller writes;
+- semantic lease TTL derived to outlive provider timeout plus margin;
+- sealed 09D identity/schema/witness verification before external semantic dispatch;
+- robust terminal-JSON parsing in the appliance wrapper;
+- fail-closed appliance status/exit code when a requested 09D post-stage fails.
 
-Restoring `controller_v14.py` or the old module graph would create a stale second control path, so no runtime harvest is performed.
+The stale `controller_v14.py` path was deliberately NOT restored. Existing v1.26 09D comparison/projection/certification machinery remains authoritative; only missing invariants were harvested into that stronger architecture.
 
 ### v1.24 cold-audit certification line
 
@@ -83,9 +85,9 @@ It is historical evidence/operator knowledge, not current version authority. The
 
 ## Feature-loss audit
 
-**Remote GitHub feature-loss result: PASS, with verification still open.**
+**Corrected remote GitHub feature-loss result: PASS AFTER SELECTIVE HARVEST; independent exact-head replay still required.**
 
-No material strongest-known remote capability was identified as missing from the candidate after:
+The first pass was not sufficient: it missed real v1.14 safety invariants. After reopening that branch at content level, selectively harvesting the missing invariants, and separately adjudicating v1.24/v1.25, no remaining material strongest-known remote capability was identified as missing from the candidate after:
 
 - exhaustive remote-head enumeration;
 - literal-ancestor comparison for the non-divergent heads;
@@ -135,17 +137,17 @@ Two PR-triggered attempts observed so far failed at GitHub Actions startup befor
 
 The first run also refused a failed-jobs retry with HTTP 403 (`workflow run cannot be retried`). These startup failures are **not code-test evidence** and are not relabeled as test failures or passes.
 
-Therefore the candidate still lacks a fresh exact-candidate unit/E2E receipt.
+GitHub Actions still lacks a usable exact-head receipt because those runs failed before jobs were created. Machine-A disposable-checkout verification now supplies local mechanical evidence for the repaired candidate: 259/259 factory tests PASS with 1 justified skip, 9/9 new reconciliation regressions PASS, governed reporter PASS, and deterministic E2E PASS.
 
 ## Promotion posture
 
-**NOT READY FOR PROMOTION.**
+**NOT READY FOR PROMOTION — independent Machine-B exact-GitHub-head replay remains.**
 
-Reason: the known v1.26 code defect has been repaired, but the candidate has not yet received a successful exact-head verification run. `master` must remain unchanged until:
+Reason: the candidate now passes the maintained mechanical suite on Machine A, including new regressions for the harvested invariants, but the authoring/repair machine must not certify itself. `master` remains unchanged until:
 
-1. exact-candidate unit tests pass;
-2. clean-checkout E2E passes;
-3. any repository-required build/certification integrity gates pass;
+1. the final candidate is pushed and resolved to an exact GitHub SHA;
+2. Machine B replays the exact GitHub SHA in a disposable clean checkout;
+3. full unit suite, reconciliation regressions, E2E, build/certification integrity and repository-required gates pass there;
 4. independent promotion review confirms no feature loss or authority regression.
 
 If GitHub Actions remains unable to start, verification can be completed during the owner-deferred final Machine-A/Machine-B local reconciliation, but that local phase should occur only after GitHub normalization across the repository universe is complete.
@@ -162,12 +164,12 @@ If GitHub Actions remains unable to start, verification can be completed during 
 
 1. Resolve `reconcile/mainline-20260910` to its live SHA.
 2. Read this report and `MAINLINE_RECONCILIATION_MANIFEST.json` first.
-3. Treat v1.26 as the pre-repair runtime base and `e562d8af...` as the minimal W3 equation-classification repair.
-4. Do not resurrect the old v1.14 controller or old cold-audit certifier wrappers as competing authorities.
+3. Treat v1.26 as the pre-repair runtime base; `e562d8af...` is the W3 equation-classification repair and `e97a6dc...` is the selective v1.14 safety-invariant harvest.
+4. Do not resurrect the old v1.14 controller or old cold-audit certifier wrappers as competing authorities; the missing v1.14 invariants were already integrated into the v1.26 path.
 5. Do not treat the preserved v1.12 runbook as current runtime version authority.
 6. Use PR #29 only as a candidate/verification surface; do not merge while verification is unresolved.
 7. Once all GitHub repositories are normalized, perform the final local Machine-A/Machine-B reconciliation before moving local canonical checkouts.
 
 ## Final recommendation
 
-**GITHUB_REMOTE_RECONCILIATION COMPLETE; PROMOTION BLOCKED ONLY ON FRESH EXACT-CANDIDATE VERIFICATION / INDEPENDENT REVIEW.**
+**GITHUB REMOTE CONTENT RECONCILIATION COMPLETE AFTER SECOND-PASS CORRECTION; PROMOTION BLOCKED ON INDEPENDENT MACHINE-B REPLAY OF THE FINAL PUSHED SHA AND FINAL REVIEW.**

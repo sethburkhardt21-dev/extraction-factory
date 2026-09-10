@@ -1,0 +1,29 @@
+{
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "candidate_branch": "reconcile/mainline-20260910",
+  "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+  "machine": "Machine A / SethsPC disposable checkout C:/efv",
+  "python": "3.12.10",
+  "tests": {
+    "pre_harvest_candidate_full_suite": "PASS_250_TESTS_1_SKIP",
+    "post_harvest_targeted_reconciliation": "PASS_9_OF_9",
+    "post_harvest_full_suite": "PASS_259_TESTS_1_SKIP",
+    "post_harvest_governed_reporter": "PASS",
+    "post_harvest_e2e": "PASS"
+  },
+  "e2e_checks": [
+    "unit_tests",
+    "certify_build",
+    "preflight_verify",
+    "canonical_appliance_echo",
+    "packaged_run_summary",
+    "ledger_status_and_resume",
+    "package_tamper_rejected",
+    "provider_wrapper_smoke",
+    "09d_comparison_read_only",
+    "strict_09d_target_binding_fail_closed",
+    "09d_projection_and_context_guard_read_only",
+    "repackaged_09d_review_artifacts_verified"
+  ],
+  "gitHub_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS"
+}

@@ -1,81 +1,112 @@
 {
-  "format_version": 2,
-  "repository": "sethburkhardt21-dev/extraction-factory",
   "campaign_date": "2026-09-10",
-  "scope": "GITHUB_REMOTE_ONLY",
-  "local_universe_status": "DEFERRED_BY_OWNER_UNTIL_ALL_GITHUB_REPOS_NORMALIZED",
-  "canonical_default_branch": "master",
-  "canonical_default_branch_modified": false,
-  "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
-  "strongest_pre_reconciliation_runtime_payload": {
-    "ref": "chatgpt-v126-reconciled-20260902",
-    "sha": "4071c18e740339a72363ba9246311398c2d80904",
-    "version": "1.26.0",
-    "ahead_of_master": 13,
-    "behind_master": 0
-  },
   "candidate_branch": "reconcile/mainline-20260910",
   "candidate_head_before_manifest_v2": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
-  "draft_pr": 29,
-  "pre_campaign_remote_head_count": 37,
-  "remote_heads_exhaustively_enumerated": true,
-  "second_branch_page_empty": true,
-  "remote_feature_loss_audit": "PASS_NO_MATERIAL_STRONGEST_KNOWN_REMOTE_CAPABILITY_LOSS_IDENTIFIED",
+  "canonical_default_branch": "master",
+  "canonical_default_branch_modified": false,
   "divergent_ref_adjudication": {
-    "chatgpt-09d-schema-hardening-v14-20260901": "SUPERSEDED_SEMANTICALLY_ABSORBED_BY_STRONGER_09D_ARCHITECTURE",
+    "chatgpt-09d-schema-hardening-v14-20260901": "PARTIAL_ABSORPTION_SELECTIVELY_INTEGRATED_INTO_V126",
     "chatgpt-cold-audit-certification-v124-20260901": "SUPERSEDED_BY_CURRENT_DIMENSION_AWARE_COLD_AUDIT_CERTIFIER",
     "chatgpt-cold-runtime-w4-v125-20260902": "SEMANTICALLY_ABSORBED_CURRENT_CANONICAL_CERTIFIER_STRONGER",
     "chatgpt-owner-validation-runbook-v111-20260901": "SUPERSEDED_BY_V112_RUNBOOK",
     "chatgpt-owner-validation-runbook-v112-20260901": "RUNTIME_ABSORBED_OPERATIONAL_KNOWLEDGE_PRESERVED_HISTORICALLY"
   },
-  "historical_preservation": {
-    "source_ref": "chatgpt-owner-validation-runbook-v112-20260901",
-    "source_sha": "bcf9301e176b27503383f934de52d4f852c5ebb6",
-    "source_blob_sha": "02890529f3b5ed2ee414053a881543076d7cdd72",
-    "candidate_path": "AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md",
-    "authority_status": "HISTORICAL_EVIDENCE_NOT_CURRENT_RUNTIME_AUTHORITY"
-  },
-  "prior_v126_verification": {
-    "source_runtime_sha": "4071c18e740339a72363ba9246311398c2d80904",
-    "github_actions_run_id": 33667868250,
-    "workflow": "Factory tests",
-    "conclusion": "FAILURE",
-    "tests_run": 250,
-    "failures": 2,
-    "skipped": 1,
-    "first_failure": "test_primary_request_remains_w2_candidate_generation_for_w3_equation_source",
-    "second_failure": "test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags",
-    "observed_root_cause": "classify_source_unit inspected content_representation for EQUATION but not unit_type; test/source unit used unit_type=EQUATION with content_representation=TEXT",
-    "clean_checkout_e2e": "SKIPPED_DUE_TO_UPSTREAM_UNIT_FAILURE"
-  },
-  "targeted_repair": {
-    "commit": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
-    "file": "factory/hermes_factory/risk.py",
-    "change": "equation source risk is W3 when either content_representation or unit_type is EQUATION",
-    "scope": "MINIMAL_EXISTING_POLICY_REPAIR",
-    "new_feature": false,
-    "existing_regression_tests_cover_repair": true
-  },
+  "draft_pr": 29,
+  "format_version": 3,
   "fresh_candidate_ci_attempt": {
-    "pull_request": 29,
-    "run_id": 34406883546,
-    "head_sha": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
-    "event": "pull_request",
     "conclusion": "STARTUP_FAILURE",
+    "event": "pull_request",
+    "head_sha": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+    "interpretation": "INFRASTRUCTURE_OR_WORKFLOW_STARTUP_FAILURE_NOT_CODE_TEST_EVIDENCE",
     "jobs_created": 0,
+    "pull_request": 29,
     "retry_result": "403_WORKFLOW_RUN_CANNOT_BE_RETRIED",
-    "interpretation": "INFRASTRUCTURE_OR_WORKFLOW_STARTUP_FAILURE_NOT_CODE_TEST_EVIDENCE"
+    "run_id": 34406883546
   },
+  "historical_preservation": {
+    "authority_status": "HISTORICAL_EVIDENCE_NOT_CURRENT_RUNTIME_AUTHORITY",
+    "candidate_path": "AUDIT/HISTORICAL/OWNER_REAL_VALIDATION_RUNBOOK_v112_20260901.md",
+    "source_blob_sha": "02890529f3b5ed2ee414053a881543076d7cdd72",
+    "source_ref": "chatgpt-owner-validation-runbook-v112-20260901",
+    "source_sha": "bcf9301e176b27503383f934de52d4f852c5ebb6"
+  },
+  "local_universe_status": "DEFERRED_BY_OWNER_UNTIL_ALL_GITHUB_REPOS_NORMALIZED",
+  "machine_a_verification": {
+    "deterministic_e2e": "PASS",
+    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "governed_reporter": "PASS",
+    "reconciliation_regressions": "PASS_9_OF_9",
+    "role": "AUTHORING_MACHINE_MECHANICAL_EVIDENCE_NOT_INDEPENDENT_CERTIFICATION",
+    "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281"
+  },
+  "next_gate": "Push corrected candidate; resolve exact GitHub SHA; disposable clean checkout on Machine B; run full suite + targeted reconciliation + E2E/build integrity; then final independent promotion review. Final normalization of user canonical local checkouts remains deferred.",
+  "pre_campaign_remote_head_count": 37,
+  "prior_v126_verification": {
+    "clean_checkout_e2e": "SKIPPED_DUE_TO_UPSTREAM_UNIT_FAILURE",
+    "conclusion": "FAILURE",
+    "failures": 2,
+    "first_failure": "test_primary_request_remains_w2_candidate_generation_for_w3_equation_source",
+    "github_actions_run_id": 33667868250,
+    "observed_root_cause": "classify_source_unit inspected content_representation for EQUATION but not unit_type; test/source unit used unit_type=EQUATION with content_representation=TEXT",
+    "second_failure": "test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags",
+    "skipped": 1,
+    "source_runtime_sha": "4071c18e740339a72363ba9246311398c2d80904",
+    "tests_run": 250,
+    "workflow": "Factory tests"
+  },
+  "promotion_state": "NOT_READY_MACHINE_B_EXACT_GITHUB_HEAD_REPLAY_PENDING",
+  "reason": "Machine A passes the corrected candidate, but authoring-machine evidence is not independent certification. Push final candidate, replay exact GitHub SHA on Machine B, then independently review.",
   "reconciliation_changes": {
-    "runtime_code_changed": true,
-    "runtime_change_count": 1,
+    "fable_handoff_present": true,
     "historical_blob_preserved": true,
     "reports_present": [
+      "README.md",
+      "FABLE_AUDIT_HANDOFF.md",
+      "FABLE_AUDIT_INDEX.json",
+      "CURRENT_VERIFICATION_20260910.json",
+      "DIVERGENT_REF_AUDIT_20260910.md",
       "MAINLINE_RECONCILIATION_REPORT.md",
       "MAINLINE_RECONCILIATION_MANIFEST.json"
-    ]
+    ],
+    "runtime_change_classes": [
+      "W3_POLICY_REPAIR",
+      "SELECTIVE_V14_SAFETY_INVARIANT_HARVEST"
+    ],
+    "runtime_code_changed": true
   },
-  "promotion_state": "NOT_READY_FOR_PROMOTION",
-  "reason": "The exact known W3 unit-test defect was repaired on the candidate, but no fresh successful exact-candidate CI or local verification receipt exists yet; the first PR-triggered run failed before creating jobs.",
-  "next_gate": "Obtain fresh exact-candidate unit and clean-checkout/E2E verification. Do not move master until those gates pass and an independent promotion review approves the candidate. Final Machine-A/Machine-B local reconciliation remains deferred until GitHub normalization is complete."
+  "remote_feature_loss_audit": "PASS_AFTER_SECOND_PASS_SELECTIVE_HARVEST_MACHINE_B_REPLAY_PENDING",
+  "remote_heads_exhaustively_enumerated": true,
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "scope": "GITHUB_REMOTE_ONLY",
+  "second_branch_page_empty": true,
+  "second_pass_correction": {
+    "first_pass_error": "v1.14 was incorrectly classified as fully semantically absorbed",
+    "harvested_invariants": [
+      "stable_cross_run_witness_and_claim_identity",
+      "default_preserving_old_artifact_deserialization",
+      "atomic_controller_artifact_writes",
+      "lease_ttl_derived_from_provider_timeout",
+      "sealed_09d_predispatch_verification",
+      "terminal_json_parser",
+      "requested_09d_poststage_fail_closed_status"
+    ],
+    "runtime_harvest_commit": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+    "stale_controller_restored": false
+  },
+  "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
+  "strongest_pre_reconciliation_runtime_payload": {
+    "ahead_of_master": 13,
+    "behind_master": 0,
+    "ref": "chatgpt-v126-reconciled-20260902",
+    "sha": "4071c18e740339a72363ba9246311398c2d80904",
+    "version": "1.26.0"
+  },
+  "targeted_repair": {
+    "change": "equation source risk is W3 when either content_representation or unit_type is EQUATION",
+    "commit": "e562d8af372ede9c3b5a9df1a5d3f2aa9c9c5b11",
+    "existing_regression_tests_cover_repair": true,
+    "file": "factory/hermes_factory/risk.py",
+    "new_feature": false,
+    "scope": "MINIMAL_EXISTING_POLICY_REPAIR"
+  }
 }
