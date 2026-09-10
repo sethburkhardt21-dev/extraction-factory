@@ -1,12 +1,11 @@
 {
   "repository": "sethburkhardt21-dev/extraction-factory",
   "candidate_branch": "reconcile/mainline-20260910",
-  "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
   "machine_a": {
-    "machine": "Machine A / SethsPC disposable checkout C:/efv",
+    "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+    "machine": "Machine A / SethsPC disposable checkout",
     "python": "3.12.10",
     "tests": {
-      "pre_harvest_candidate_full_suite": "PASS_250_TESTS_1_SKIP",
       "post_harvest_targeted_reconciliation": "PASS_9_OF_9",
       "post_harvest_full_suite": "PASS_259_TESTS_1_SKIP",
       "post_harvest_governed_reporter": "PASS",
@@ -22,6 +21,15 @@
     "deterministic_e2e": "PASS",
     "receipt": "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json"
   },
+  "post_machine_b_runtime_change": {
+    "sha": "5221ada186bfedf9a0b9de7401cee874bc68a1d6",
+    "message": "fix: retry transient Windows atomic replace locks",
+    "files": [
+      "factory/hermes_factory/controller.py",
+      "factory/tests/test_reconciliation_v14_harvest.py"
+    ],
+    "status": "PENDING_FINAL_EXACT_HEAD_REPLAY"
+  },
   "e2e_checks": [
     "unit_tests",
     "certify_build",
@@ -36,6 +44,6 @@
     "09d_projection_and_context_guard_read_only",
     "repackaged_09d_review_artifacts_verified"
   ],
-  "gitHub_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS",
-  "promotion_note": "Machine B independently passed the exact runtime candidate. Documentation-only verification commits still require one final exact-head replay before promotion."
+  "github_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS",
+  "promotion_note": "Machine B independently verified 6d9358d. A later runtime hardening commit 5221ada landed before the documentation updates and must be included in the final exact-head replay before promotion."
 }
