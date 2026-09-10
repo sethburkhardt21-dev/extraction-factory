@@ -36,6 +36,21 @@ from .staging import stage_artifact, verify_staged_artifact
 from .union import build_evidence_families, deterministic_union
 
 
+def _replace_with_retry(src: Path, dst: Path, *, attempts: int = 8, delay_seconds: float = 0.05) -> None:
+    last_error = None
+    for attempt in range(attempts):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError as exc:
+            last_error = exc
+            if attempt + 1 >= attempts:
+                raise
+            time.sleep(delay_seconds * (attempt + 1))
+    if last_error is not None:
+        raise last_error
+
+
 def _atomic_replace_text(path: Path, text: str) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -45,7 +60,7 @@ def _atomic_replace_text(path: Path, text: str) -> None:
             f.write(text)
             f.flush()
             os.fsync(f.fileno())
-        os.replace(tmp, path)
+        _replace_with_retry(tmp, path)
         # Best-effort directory fsync on platforms that support opening folders.
         try:
             fd = os.open(str(path.parent), os.O_RDONLY)
@@ -75,7 +90,7 @@ def _write_jsonl(path: Path, rows: Iterable[Any]) -> None:
                 f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             f.flush()
             os.fsync(f.fileno())
-        os.replace(tmp, path)
+        _replace_with_retry(tmp, path)
     finally:
         tmp.unlink(missing_ok=True)
 

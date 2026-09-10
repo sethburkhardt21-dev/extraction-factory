@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import tempfile
 import unittest
@@ -132,6 +133,23 @@ class SafetyTests(unittest.TestCase):
             _write_json(path, {"a": 1})
             self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"a": 1})
             self.assertEqual(list(Path(td).glob("*.tmp")), [])
+
+    def test_atomic_json_retries_transient_windows_replace_lock(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "x.json"
+            real_replace = os.replace
+            calls = {"count": 0}
+
+            def flaky_replace(src, dst):
+                calls["count"] += 1
+                if calls["count"] == 1:
+                    raise PermissionError(32, "transient sharing violation")
+                return real_replace(src, dst)
+
+            with patch("hermes_factory.controller.os.replace", side_effect=flaky_replace):
+                _write_json(path, {"a": 2})
+            self.assertEqual(calls["count"], 2)
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"a": 2})
 
     def test_terminal_json_parser_ignores_prior_braces(self):
         value = _last_json_object('log {not json}\nmore\n{"run_id":"R","ok":true}\n')
