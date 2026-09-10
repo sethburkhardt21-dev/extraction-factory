@@ -2,14 +2,25 @@
   "repository": "sethburkhardt21-dev/extraction-factory",
   "candidate_branch": "reconcile/mainline-20260910",
   "runtime_commit_tested": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
-  "machine": "Machine A / SethsPC disposable checkout C:/efv",
-  "python": "3.12.10",
-  "tests": {
-    "pre_harvest_candidate_full_suite": "PASS_250_TESTS_1_SKIP",
-    "post_harvest_targeted_reconciliation": "PASS_9_OF_9",
-    "post_harvest_full_suite": "PASS_259_TESTS_1_SKIP",
-    "post_harvest_governed_reporter": "PASS",
-    "post_harvest_e2e": "PASS"
+  "machine_a": {
+    "machine": "Machine A / SethsPC disposable checkout C:/efv",
+    "python": "3.12.10",
+    "tests": {
+      "pre_harvest_candidate_full_suite": "PASS_250_TESTS_1_SKIP",
+      "post_harvest_targeted_reconciliation": "PASS_9_OF_9",
+      "post_harvest_full_suite": "PASS_259_TESTS_1_SKIP",
+      "post_harvest_governed_reporter": "PASS",
+      "post_harvest_e2e": "PASS"
+    }
+  },
+  "machine_b": {
+    "verified_candidate_sha": "6d9358da22b2d76fd4dc765b7407a16391da918f",
+    "python": "3.14.2",
+    "isolated_pypdf": "6.18.0",
+    "targeted_reconciliation": "PASS_9_OF_9",
+    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "deterministic_e2e": "PASS",
+    "receipt": "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json"
   },
   "e2e_checks": [
     "unit_tests",
@@ -25,5 +36,6 @@
     "09d_projection_and_context_guard_read_only",
     "repackaged_09d_review_artifacts_verified"
   ],
-  "gitHub_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS"
+  "gitHub_actions_exact_candidate": "SETUP_ERROR_STARTUP_FAILURE_ZERO_JOBS_ON_EARLIER_HEADS",
+  "promotion_note": "Machine B independently passed the exact runtime candidate. Documentation-only verification commits still require one final exact-head replay before promotion."
 }
