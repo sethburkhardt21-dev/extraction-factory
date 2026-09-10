@@ -1,0 +1,23 @@
+{
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "verified_candidate_sha": "6d9358da22b2d76fd4dc765b7407a16391da918f",
+  "machine": "Machine B / SethPC disposable extracted exact candidate archive",
+  "python": "3.14.2",
+  "isolated_dependency_setup": {
+    "pypdf": "6.18.0",
+    "scope": "disposable .venv only"
+  },
+  "archive": {
+    "bytes": 2153780,
+    "sha256": "6dbee070c6fa1ca8a67e64799606425d4ddc8291dc6861fab23a53e4d7861293"
+  },
+  "tests": {
+    "targeted_reconciliation": "PASS_9_OF_9",
+    "full_suite": "PASS_259_TESTS_1_SKIP",
+    "deterministic_e2e": "PASS"
+  },
+  "e2e_overall": "PASS",
+  "e2e_core_readiness": "READY_FOR_PROVIDER",
+  "environment_note": "First E2E attempt failed only because pypdf was absent on Machine B; rerun in a disposable venv with pypdf 6.18.0 passed. No canonical user checkout was changed.",
+  "role": "INDEPENDENT_SECOND_MACHINE_MECHANICAL_REPLAY"
+}
