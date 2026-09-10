@@ -10,13 +10,22 @@ Read these first, in order:
 
 1. `FABLE_AUDIT_HANDOFF.md`
 2. `CURRENT_VERIFICATION_20260910.json`
-3. `DIVERGENT_REF_AUDIT_20260910.md`
-4. `MAINLINE_RECONCILIATION_REPORT.md`
-5. `MAINLINE_RECONCILIATION_MANIFEST.json`
+3. `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`
+4. `DIVERGENT_REF_AUDIT_20260910.md`
+5. `MAINLINE_RECONCILIATION_REPORT.md`
+6. `MAINLINE_RECONCILIATION_MANIFEST.json`
 
 The candidate uses v1.26 as the strongest runtime base, includes the existing W3 equation-risk repair, and selectively restores safety invariants lost from the divergent v1.14 line. Historical controllers/certifiers are evidence, not competing authority paths.
 
-Current Machine-A mechanical evidence: 259/259 factory tests PASS with 1 justified skip, 9/9 reconciliation regressions PASS, governed reporter PASS, deterministic E2E PASS. Independent replay of the final pushed GitHub SHA on Machine B is the promotion gate.
+Current mechanical evidence:
+
+- Machine A: 259/259 factory tests PASS with 1 justified skip, 9/9 reconciliation regressions PASS, governed reporter PASS, deterministic E2E PASS.
+- Machine B: exact runtime candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` independently replayed; 9/9 reconciliation regressions PASS, 259/259 full suite PASS with 1 justified skip, deterministic E2E PASS.
+- GitHub Actions attempts on earlier candidate heads failed before jobs were created and are classified as setup/infrastructure failures, not test evidence.
+
+The Machine-B replay used a disposable extracted archive and isolated `.venv`; the first E2E attempt exposed only a missing `pypdf` dependency, and the rerun with `pypdf 6.18.0` passed. No canonical local checkout was changed.
+
+Because the verification receipts/documentation themselves move the candidate head, one final exact-head replay of the documentation-complete candidate remains before promotion review.
 
 ## Layout
 
@@ -24,7 +33,8 @@ Current Machine-A mechanical evidence: 259/259 factory tests PASS with 1 justifi
 | --- | --- |
 | `factory/` | Production extraction runtime and canonical execution path |
 | `factory/providers_ext/` | Provider adapters and model-version guards |
-| `factory/stages_ext/` | Read-only 09D comparison/projection and downstream guards || `factory/benchmarks_ext/` | Source-first gold, scoring, certification, lifecycle and replay authority |
+| `factory/stages_ext/` | Read-only 09D comparison/projection and downstream guards |
+| `factory/benchmarks_ext/` | Source-first gold, scoring, certification, lifecycle and replay authority |
 | `factory/run_appliance.py` | Canonical operator entrypoint |
 | `AUDIT/` | Intake, historical evidence, capability and reconciliation records |
 | `vendor/` | Preserved donor/source packs; do not treat as current runtime authority |
@@ -51,7 +61,8 @@ Readiness is derived mechanically from gate objects; no caller-authored status i
 ## Current safety/authority invariants
 
 - Extraction outputs remain `SOURCE_ASSERTION_CANDIDATE / UNREVIEWED / NON_CANONICAL` until separately governed.
-- 09D is read-only. Agreement does not prove truth and disagreement does not automatically refute it.- External semantic dispatch against 09D is blocked unless the sealed target contract passes identity/schema/witness checks.
+- 09D is read-only. Agreement does not prove truth and disagreement does not automatically refute it.
+- External semantic dispatch against 09D is blocked unless the sealed target contract passes identity/schema/witness checks.
 - Blindness is enforced by positive allowlisting; known contamination keys are rejected by regression tests.
 - Model certification is source-, role-, provider-, version-, benchmark-, and authority-projection-bound.
 - Cold-audit authority is dimension-complete and must remain independent from gold-construction groups.
