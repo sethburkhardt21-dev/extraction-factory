@@ -1,11 +1,15 @@
 {
   "purpose": "cold high-reasoning audit shortcut",
   "repository": "sethburkhardt21-dev/extraction-factory",
-  "candidate_branch": "reconcile/mainline-20260910",
-  "source_master_sha": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
+  "canonical_branch": "master",
+  "promoted_merge_commit": "1693a3cd444072b2bd9041ec2b6e345876f4a348",
+  "promoted_candidate_head": "4d82f0fc3e003b71c5c0b2df0a17a842762189f5",
+  "source_master_before_reconciliation": "c35ad38324029c7eef2ebe1e5b0f0086fbe3b73e",
   "pre_reconciliation_runtime_sha": "4071c18e740339a72363ba9246311398c2d80904",
   "selective_safety_harvest_commit": "e97a6dccc06f07b24f091f8b3198997e2f75b281",
+  "windows_atomic_replace_hardening_commit": "5221ada186bfedf9a0b9de7401cee874bc68a1d6",
   "read_first": [
+    "POST_PROMOTION_STATE_20260910.json",
     "FABLE_AUDIT_HANDOFF.md",
     "CURRENT_VERIFICATION_20260910.json",
     "MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json",
@@ -17,7 +21,8 @@
   "do_not_repeat_without_frontier_change": [
     "remote head enumeration",
     "initial v1.14 versus v1.26 feature-loss discovery",
-    "W3 equation-source root-cause analysis"
+    "W3 equation-source root-cause analysis",
+    "independent final-head replay"
   ],
   "normalization_is_release_readiness": false,
   "normalization_is_semantic_quality_certification": false,
