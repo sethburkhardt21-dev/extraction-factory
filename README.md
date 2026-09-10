@@ -17,15 +17,23 @@ Read these first, in order:
 
 The candidate uses v1.26 as the strongest runtime base, includes the existing W3 equation-risk repair, and selectively restores safety invariants lost from the divergent v1.14 line. Historical controllers/certifiers are evidence, not competing authority paths.
 
-Current mechanical evidence:
+Mechanical evidence already obtained:
 
 - Machine A: 259/259 factory tests PASS with 1 justified skip, 9/9 reconciliation regressions PASS, governed reporter PASS, deterministic E2E PASS.
-- Machine B: exact runtime candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` independently replayed; 9/9 reconciliation regressions PASS, 259/259 full suite PASS with 1 justified skip, deterministic E2E PASS.
-- GitHub Actions attempts on earlier candidate heads failed before jobs were created and are classified as setup/infrastructure failures, not test evidence.
+- Machine B: exact candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` independently replayed; 9/9 reconciliation regressions PASS, 259/259 full suite PASS with 1 justified skip, deterministic E2E PASS.
+- GitHub Actions attempts on earlier heads failed before jobs were created and are setup/infrastructure failures, not test evidence.
 
 The Machine-B replay used a disposable extracted archive and isolated `.venv`; the first E2E attempt exposed only a missing `pypdf` dependency, and the rerun with `pypdf 6.18.0` passed. No canonical local checkout was changed.
 
-Because the verification receipts/documentation themselves move the candidate head, one final exact-head replay of the documentation-complete candidate remains before promotion review.
+### Verification frontier changed after that replay
+
+A later runtime hardening commit landed on the same reconciliation branch:
+
+`5221ada186bfedf9a0b9de7401cee874bc68a1d6` — `fix: retry transient Windows atomic replace locks`
+
+It adds bounded fail-loud retry/backoff around `os.replace()` for transient Windows `PermissionError` sharing locks and a regression test that forces the first replacement attempt to fail. It does not change the authority model, but it is runtime code and therefore invalidates any claim that commits after `6d9358d...` are documentation-only.
+
+**The final exact candidate head must therefore be replayed on Machine B before promotion.**
 
 ## Layout
 
@@ -68,7 +76,7 @@ Readiness is derived mechanically from gate objects; no caller-authored status i
 - Cold-audit authority is dimension-complete and must remain independent from gold-construction groups.
 - Stable witness/claim identities survive run-ID changes and are separate from ephemeral per-run candidate IDs.
 - Semantic work leases must outlive provider timeout plus safety margin.
-- Controller JSON/JSONL/TSV writes use atomic replacement; package integrity is independently re-hashed and tamper-tested.
+- Controller JSON/JSONL/TSV writes use atomic replacement; Windows transient sharing-lock retries are bounded and re-raise on exhaustion.
 - Requested 09D downstream-stage failure cannot be hidden behind a successful core run.
 
 ## Historical evidence
