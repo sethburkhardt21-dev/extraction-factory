@@ -17,7 +17,7 @@
 - reconciliation candidate: `reconcile/mainline-20260910`
 - draft promotion/CI surface: PR **#29**
 
-The candidate preserves the v1.26 runtime as its base, preserves one valuable historical owner-runbook blob, and contains one narrowly scoped runtime repair for an already-existing W3 source-risk policy bug found by the previous CI run.
+The candidate preserves the v1.26 runtime as its base, preserves one valuable historical owner-runbook blob, repairs the already-declared W3 equation-source policy defect, and selectively restores stronger safety invariants from the divergent v1.14 line.
 
 ## Remote branch census
 
@@ -85,7 +85,7 @@ It is historical evidence/operator knowledge, not current version authority. The
 
 ## Feature-loss audit
 
-**Corrected remote GitHub feature-loss result: PASS AFTER SELECTIVE HARVEST; independent exact-head replay still required.**
+**Corrected remote GitHub feature-loss result: PASS AFTER SELECTIVE HARVEST.**
 
 The first pass was not sufficient: it missed real v1.14 safety invariants. After reopening that branch at content level, selectively harvesting the missing invariants, and separately adjudicating v1.24/v1.25, no remaining material strongest-known remote capability was identified as missing from the candidate after:
 
@@ -126,31 +126,58 @@ Repair:
 
 This is a minimal repair of already-declared v1.26 policy, not greenfield functionality.
 
-## Fresh candidate CI status
+## Mechanical verification
 
-PR #29 was opened as a **draft** specifically to provide an exact-candidate GitHub verification surface without moving `master`.
+### Machine A
 
-Two PR-triggered attempts observed so far failed at GitHub Actions startup before creating any jobs:
+A disposable Machine-A checkout verified the repaired/harvested runtime:
+
+- 9/9 reconciliation regressions PASS;
+- 259/259 full factory tests PASS with 1 justified skip;
+- governed reporter PASS;
+- deterministic E2E PASS;
+- build certification, preflight, package integrity/tamper rejection, ledger resume, provider-wrapper smoke, read-only 09D comparison/projection, and fail-closed untrusted-target behavior all PASS.
+
+Machine A is the authoring/repair machine, so these results are evidence but not independent certification.
+
+### Machine B
+
+Exact runtime candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` was replayed independently on Machine B from a disposable extracted archive whose recorded SHA-256 is `6dbee070c6fa1ca8a67e64799606425d4ddc8291dc6861fab23a53e4d7861293`.
+
+Results:
+
+- 9/9 reconciliation regressions PASS;
+- 259/259 full factory tests PASS with 1 justified skip;
+- deterministic E2E PASS;
+- E2E `overall=PASS`;
+- E2E `core_readiness_status=READY_FOR_PROVIDER`.
+
+The first Machine-B E2E attempt failed only because `pypdf` was not installed in that machine's Python 3.14 environment. A disposable isolated `.venv` with `pypdf 6.18.0` was created and the exact same candidate then passed. No canonical local user checkout was modified.
+
+See `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`.
+
+## GitHub Actions status
+
+PR #29 was opened as a draft specifically to provide a candidate/verification surface without moving `master`.
+
+Two PR-triggered attempts observed earlier failed at GitHub Actions startup before creating any jobs:
 
 - run `34406883546` on `e562d8af...`: `startup_failure`, 0 jobs;
 - run `34407014258` on the subsequent documentation commit: `startup_failure`, 0 jobs.
 
-The first run also refused a failed-jobs retry with HTTP 403 (`workflow run cannot be retried`). These startup failures are **not code-test evidence** and are not relabeled as test failures or passes.
-
-GitHub Actions still lacks a usable exact-head receipt because those runs failed before jobs were created. Machine-A disposable-checkout verification now supplies local mechanical evidence for the repaired candidate: 259/259 factory tests PASS with 1 justified skip, 9/9 new reconciliation regressions PASS, governed reporter PASS, and deterministic E2E PASS.
+These startup failures are **not code-test evidence** and are not relabeled as test failures or passes.
 
 ## Promotion posture
 
-**NOT READY FOR PROMOTION — independent Machine-B exact-GitHub-head replay remains.**
+**PENDING ONE FINAL DOCUMENTATION-COMPLETE EXACT-HEAD REPLAY, THEN INDEPENDENT PROMOTION REVIEW.**
 
-Reason: the candidate now passes the maintained mechanical suite on Machine A, including new regressions for the harvested invariants, but the authoring/repair machine must not certify itself. `master` remains unchanged until:
+The runtime candidate itself has passed independent Machine-B replay. Since recording those receipts and cold-start instructions creates documentation-only commits after `6d9358d...`, the remaining gate is intentionally narrow:
 
-1. the final candidate is pushed and resolved to an exact GitHub SHA;
-2. Machine B replays the exact GitHub SHA in a disposable clean checkout;
-3. full unit suite, reconciliation regressions, E2E, build/certification integrity and repository-required gates pass there;
-4. independent promotion review confirms no feature loss or authority regression.
-
-If GitHub Actions remains unable to start, verification can be completed during the owner-deferred final Machine-A/Machine-B local reconciliation, but that local phase should occur only after GitHub normalization across the repository universe is complete.
+1. resolve the final candidate branch to its exact GitHub SHA;
+2. mechanically compare that final SHA to `6d9358d...` and require that the delta is audit/verification/cold-start documentation only;
+3. replay the exact final SHA on Machine B;
+4. independently review the reconciliation and verification evidence;
+5. only then promote `master`.
 
 ## Authority boundaries
 
@@ -163,13 +190,13 @@ If GitHub Actions remains unable to start, verification can be completed during 
 ## Zero-context continuation
 
 1. Resolve `reconcile/mainline-20260910` to its live SHA.
-2. Read this report and `MAINLINE_RECONCILIATION_MANIFEST.json` first.
+2. Read `FABLE_AUDIT_HANDOFF.md`, `CURRENT_VERIFICATION_20260910.json`, and `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json` first.
 3. Treat v1.26 as the pre-repair runtime base; `e562d8af...` is the W3 equation-classification repair and `e97a6dc...` is the selective v1.14 safety-invariant harvest.
 4. Do not resurrect the old v1.14 controller or old cold-audit certifier wrappers as competing authorities; the missing v1.14 invariants were already integrated into the v1.26 path.
 5. Do not treat the preserved v1.12 runbook as current runtime version authority.
-6. Use PR #29 only as a candidate/verification surface; do not merge while verification is unresolved.
-7. Once all GitHub repositories are normalized, perform the final local Machine-A/Machine-B reconciliation before moving local canonical checkouts.
+6. Verify that commits after `6d9358d...` are documentation/receipt only, then replay the exact final head on Machine B.
+7. Once all GitHub repositories are normalized, perform the final local Machine-A/Machine-B reconciliation before moving canonical local checkouts.
 
 ## Final recommendation
 
-**GITHUB REMOTE CONTENT RECONCILIATION COMPLETE AFTER SECOND-PASS CORRECTION; PROMOTION BLOCKED ON INDEPENDENT MACHINE-B REPLAY OF THE FINAL PUSHED SHA AND FINAL REVIEW.**
+**GITHUB REMOTE CONTENT RECONCILIATION IS COMPLETE AFTER SECOND-PASS CORRECTION. RUNTIME VERIFICATION HAS PASSED ON TWO MACHINES. PROMOTION IS BLOCKED ONLY ON FINAL DOCUMENTATION-COMPLETE EXACT-HEAD REPLAY AND INDEPENDENT REVIEW.**
