@@ -1,0 +1,20 @@
+{
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "canonical_branch": "master",
+  "promotion_pr": 29,
+  "promoted_merge_commit": "1693a3cd444072b2bd9041ec2b6e345876f4a348",
+  "promoted_candidate_head": "4d82f0fc3e003b71c5c0b2df0a17a842762189f5",
+  "promoted_tree_sha": "edcd82a5b5107160fa89d7d5488835cc8ffce859",
+  "candidate_tree_equals_merge_tree": true,
+  "independent_machine_b_verification": {
+    "targeted_reconciliation": "PASS_10_OF_10",
+    "full_suite": "PASS_260_TESTS_1_SKIP",
+    "deterministic_e2e": "PASS",
+    "overall": "PASS",
+    "core_readiness_status": "READY_FOR_PROVIDER",
+    "archive_sha256": "fea904ccc23f6ad4a97c6a5aae2379c2859b28fa5512da6dce9521268469db76"
+  },
+  "github_actions": "STARTUP_FAILURE_ZERO_JOBS_ON_EXACT_FINAL_CANDIDATE_HEAD",
+  "promotion_verdict": "PROMOTED_AFTER_INDEPENDENT_REVIEW",
+  "local_canonical_checkout_reconciliation": "DEFERRED_UNTIL_GITHUB_NORMALIZATION_CAMPAIGN_COMPLETE"
+}
