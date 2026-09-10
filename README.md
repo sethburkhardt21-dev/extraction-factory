@@ -4,36 +4,48 @@ One governed extraction appliance reconciling the Meta semantic/literature desig
 
 ## Cold-start truth - 2026-09-10
 
-**Canonical GitHub target remains `master`. Do not treat `reconcile/mainline-20260910` as canonical until PR #29 passes independent review and is merged.**
+**Canonical GitHub truth is `master`. Mainline reconciliation PR #29 was independently reviewed and promoted.**
+
+Promotion lineage:
+
+- tested candidate head: `4d82f0fc3e003b71c5c0b2df0a17a842762189f5`
+- merge commit: `1693a3cd444072b2bd9041ec2b6e345876f4a348`
+- merge tree: `edcd82a5b5107160fa89d7d5488835cc8ffce859`
+- the merge tree is the same tree that was independently replayed on Machine B
 
 Read these first, in order:
 
-1. `FABLE_AUDIT_HANDOFF.md`
-2. `CURRENT_VERIFICATION_20260910.json`
-3. `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`
-4. `DIVERGENT_REF_AUDIT_20260910.md`
-5. `MAINLINE_RECONCILIATION_REPORT.md`
-6. `MAINLINE_RECONCILIATION_MANIFEST.json`
+1. `POST_PROMOTION_STATE_20260910.json`
+2. `FABLE_AUDIT_HANDOFF.md`
+3. `CURRENT_VERIFICATION_20260910.json`
+4. `MACHINE_B_EXACT_HEAD_VERIFICATION_20260910.json`
+5. `DIVERGENT_REF_AUDIT_20260910.md`
+6. `MAINLINE_RECONCILIATION_REPORT.md`
+7. `MAINLINE_RECONCILIATION_MANIFEST.json`
 
-The candidate uses v1.26 as the strongest runtime base, includes the existing W3 equation-risk repair, and selectively restores safety invariants lost from the divergent v1.14 line. Historical controllers/certifiers are evidence, not competing authority paths.
+The promoted runtime uses v1.26 as the strongest base, includes the W3 equation-risk repair, selectively restores safety invariants lost from the divergent v1.14 line, and includes bounded Windows atomic-replace retry hardening. Historical controllers/certifiers remain evidence, not competing authority paths.
 
-Mechanical evidence already obtained:
+## Mechanical evidence
 
-- Machine A: 259/259 factory tests PASS with 1 justified skip, 9/9 reconciliation regressions PASS, governed reporter PASS, deterministic E2E PASS.
-- Machine B: exact candidate `6d9358da22b2d76fd4dc765b7407a16391da918f` independently replayed; 9/9 reconciliation regressions PASS, 259/259 full suite PASS with 1 justified skip, deterministic E2E PASS.
-- GitHub Actions attempts on earlier heads failed before jobs were created and are setup/infrastructure failures, not test evidence.
+Machine A disposable checkout:
+
+- 9/9 reconciliation regressions PASS
+- 259/259 full factory tests PASS with 1 justified skip
+- governed reporter PASS
+- deterministic E2E PASS
+
+Machine B independent exact-head replay of `4d82f0fc3e003b71c5c0b2df0a17a842762189f5`:
+
+- 10/10 reconciliation regressions PASS
+- 260/260 full factory tests PASS with 1 justified skip
+- deterministic E2E PASS
+- `overall=PASS`
+- `core_readiness_status=READY_FOR_PROVIDER`
+- archive SHA-256: `fea904ccc23f6ad4a97c6a5aae2379c2859b28fa5512da6dce9521268469db76`
 
 The Machine-B replay used a disposable extracted archive and isolated `.venv`; the first E2E attempt exposed only a missing `pypdf` dependency, and the rerun with `pypdf 6.18.0` passed. No canonical local checkout was changed.
 
-### Verification frontier changed after that replay
-
-A later runtime hardening commit landed on the same reconciliation branch:
-
-`5221ada186bfedf9a0b9de7401cee874bc68a1d6` — `fix: retry transient Windows atomic replace locks`
-
-It adds bounded fail-loud retry/backoff around `os.replace()` for transient Windows `PermissionError` sharing locks and a regression test that forces the first replacement attempt to fail. It does not change the authority model, but it is runtime code and therefore invalidates any claim that commits after `6d9358d...` are documentation-only.
-
-**The final exact candidate head must therefore be replayed on Machine B before promotion.**
+GitHub Actions on the exact final candidate again failed before jobs were created. That remains setup/infrastructure evidence only and is not treated as a code-test result.
 
 ## Layout
 
@@ -81,10 +93,10 @@ Readiness is derived mechanically from gate objects; no caller-authored status i
 
 ## Historical evidence
 
-Older verification reports and donor branches remain useful provenance, but do not override this README, the Fable handoff, the reconciliation report/manifest, or the current code/tests. In particular, the preserved v1.12 owner-validation runbook under `AUDIT/HISTORICAL/` is historical operator evidence rather than current runtime authority.
+Older verification reports and donor branches remain useful provenance, but do not override canonical `master`, this README, the Fable handoff, reconciliation report/manifest, or the current code/tests. The preserved v1.12 owner-validation runbook under `AUDIT/HISTORICAL/` is historical operator evidence rather than current runtime authority.
 
-## Promotion boundary
+## Boundary still deferred
 
-Normalization is not semantic-quality certification, clinical correctness, or production acceptance. The final user-canonical Machine-A/Machine-B checkout/ref/reflog/stash reconciliation is intentionally deferred until GitHub repository normalization is complete.
+This GitHub promotion does **not** authorize destructive local normalization. Final Machine-A/Machine-B canonical checkout/ref/reflog/stash/unreachable-object reconciliation remains deferred until the GitHub repository-normalization campaign is complete.
 
-For the current decision frontier, start with `FABLE_AUDIT_HANDOFF.md`.
+Normalization is not semantic-quality certification, clinical correctness, or production acceptance.
