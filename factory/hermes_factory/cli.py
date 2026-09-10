@@ -56,6 +56,20 @@ def _provider_from_args(args, role: str):
     )
 
 
+def _lease_ttl(args) -> int:
+    # A worker lease must outlive the longest allowed provider command plus time
+    # for validation/staging/commit. The old 900s fixed lease could expire while
+    # a legitimate 900s model call was still running.
+    derived = max(1200, int(args.provider_timeout) + 300)
+    ttl = int(args.lease_ttl_seconds) if args.lease_ttl_seconds is not None else derived
+    if ttl <= int(args.provider_timeout):
+        raise SystemExit(
+            f"--lease-ttl-seconds ({ttl}) must exceed --provider-timeout ({args.provider_timeout}); "
+            "use at least provider timeout + 300 seconds"
+        )
+    return ttl
+
+
 def cmd_test(args):
     report = run_tests(project_root())
     print(json.dumps({"overall": report["overall"], "duration_seconds": report["duration_seconds"]}, indent=2))
@@ -148,6 +162,7 @@ def cmd_run(args):
         primary_concurrency=args.primary_concurrency,
         blind_concurrency=args.blind_concurrency,
         cold_concurrency=args.cold_concurrency,
+        lease_ttl_seconds=_lease_ttl(args),
     )
     if ingestion is not None:
         result["ingestion"] = ingestion
@@ -269,6 +284,8 @@ def build_parser():
     r.add_argument("--cold-concurrency", type=int, default=1)
     r.add_argument("--provider-timeout", type=int, default=600,
                    help="seconds the controller waits on one provider command (wrapper timeouts should be lower)")
+    r.add_argument("--lease-ttl-seconds", type=int,
+                   help="semantic lease duration; default=max(1200, provider-timeout+300); must exceed provider timeout")
     r.set_defaults(func=cmd_run)
 
     s = sub.add_parser("status"); s.add_argument("--run-dir", required=True); s.set_defaults(func=cmd_status)

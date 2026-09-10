@@ -139,6 +139,22 @@ def provider_flags(prefix: str, spec: str, timeout: int, *, explicit_version: st
     return flags
 
 
+def _last_json_object(text: str) -> dict[str, Any]:
+    decoder = json.JSONDecoder()
+    for start in reversed([i for i, char in enumerate(text) if char == "{"]):
+        try:
+            value, end = decoder.raw_decode(text[start:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict) and not text[start + end:].strip():
+            return value
+    raise ValueError("no_terminal_json_object_in_factory_stdout")
+
+
+def _appliance_status(core_status: str, required_stage_failures: list[dict]) -> str:
+    return "NOT_READY" if required_stage_failures else core_status
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="run_appliance", description=__doc__.splitlines()[0])
     parser.add_argument("--profile", choices=["SAFE_4", "BALANCED_8", "HIGH_12"], default="SAFE_4")
@@ -172,11 +188,16 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     started = time.time()
+    requested_09d = bool(args.database_09d and not args.skip_compare)
+    controller_timeout = int(args.timeout_per_call) + 90
+    lease_ttl = max(1200, controller_timeout + 300)
     run_cmd = [sys.executable, "-B", "-m", "hermes_factory", "run",
                "--mode", "external-command", "--execution-mode", "HYBRID",
                "--profile", args.profile, "--cold-audit-rate", str(args.cold_audit_rate),
                "--provider-schedule", args.provider_schedule.upper(),
                "--cold-concurrency", str(args.cold_concurrency),
+               "--provider-timeout", str(controller_timeout),
+               "--lease-ttl-seconds", str(lease_ttl),
                "--output", args.output]
     if args.primary_concurrency is not None:
         run_cmd += ["--primary-concurrency", str(args.primary_concurrency)]
@@ -195,9 +216,8 @@ def main(argv=None) -> int:
             run_cmd += ["--pages", args.pages]
         if args.source_id:
             run_cmd += ["--source-id", args.source_id]
-    if args.database_09d and not args.skip_compare:
+    if requested_09d:
         run_cmd += ["--database-09d", args.database_09d]
-    run_cmd += ["--provider-timeout", str(args.timeout_per_call + 90)]
     try:
         run_cmd += provider_flags(
             "primary", args.primary, args.timeout_per_call,
@@ -226,11 +246,16 @@ def main(argv=None) -> int:
         print(proc.stderr[-4000:], file=sys.stderr)
         print(f"[appliance] factory run FAILED rc={proc.returncode}", file=sys.stderr)
         return proc.returncode
-    result = json.loads(proc.stdout[proc.stdout.index("{"):])
+    try:
+        result = _last_json_object(proc.stdout)
+    except Exception as exc:
+        print(f"[appliance] cannot parse governed factory result: {exc}", file=sys.stderr)
+        return 2
     run_dir = Path(result["run_dir"])
-    status = result["readiness"]["status"]
-    print(f"[appliance] factory run complete: {result['run_id']} status={status}", flush=True)
+    core_status = result["readiness"]["status"]
+    print(f"[appliance] factory run complete: {result['run_id']} status={core_status}", flush=True)
 
+    required_stage_failures: list[dict] = []
     comparison_summary = None
     projection_summary = None
     context_guard_summary = None
@@ -242,8 +267,10 @@ def main(argv=None) -> int:
              "--run-dir", str(run_dir), "--database", args.database_09d],
             capture_output=True, text=True, encoding="utf-8")
         if cmp_proc.returncode != 0:
+            required_stage_failures.append({"stage": "READ_ONLY_09D_COMPARISON",
+                                            "error": cmp_proc.stderr[-4000:] or cmp_proc.stdout[-4000:]})
             print(cmp_proc.stderr[-2000:], file=sys.stderr)
-            print("[appliance] 09D comparison FAILED; run artifacts remain valid without it", file=sys.stderr)
+            print("[appliance] mandatory 09D comparison FAILED", file=sys.stderr)
         else:
             comparison_ok = True
             comparison_summary = json.loads(
@@ -257,8 +284,10 @@ def main(argv=None) -> int:
              "--run-dir", str(run_dir), "--database", args.database_09d],
             capture_output=True, text=True, encoding="utf-8")
         if proj_proc.returncode != 0:
+            required_stage_failures.append({"stage": "09D_MOTION2_CANDIDATE_PROJECTION",
+                                            "error": proj_proc.stderr[-4000:] or proj_proc.stdout[-4000:]})
             print(proj_proc.stderr[-2000:], file=sys.stderr)
-            print("[appliance] 09D projection requires review; comparison artifacts remain valid", file=sys.stderr)
+            print("[appliance] mandatory 09D projection FAILED", file=sys.stderr)
         summary_path = run_dir / "09D" / "motion2_projection_summary.json"
         candidate_projection_path = run_dir / "09D" / "motion2_candidate_projection.jsonl"
         if summary_path.exists() and candidate_projection_path.exists():
@@ -271,8 +300,10 @@ def main(argv=None) -> int:
                  "--run-dir", str(run_dir)],
                 capture_output=True, text=True, encoding="utf-8")
             if guard_proc.returncode != 0:
+                required_stage_failures.append({"stage": "09D_NUMERIC_CONTEXT_GUARD",
+                                                "error": guard_proc.stderr[-4000:] or guard_proc.stdout[-4000:]})
                 print(guard_proc.stderr[-2000:], file=sys.stderr)
-                print("[appliance] 09D numeric context guard FAILED; projection remains review-only", file=sys.stderr)
+                print("[appliance] mandatory 09D numeric context guard FAILED", file=sys.stderr)
             guard_summary_path = run_dir / "09D" / "motion2_numeric_context_guard_summary.json"
             if guard_summary_path.exists():
                 context_guard_summary = json.loads(guard_summary_path.read_text(encoding="utf-8"))
@@ -282,13 +313,18 @@ def main(argv=None) -> int:
                     flush=True,
                 )
 
+    status = _appliance_status(core_status, required_stage_failures)
     # This summary is written BEFORE packaging so the self-contained archive
-    # records exactly which optional downstream stages ran and what they found.
+    # records exactly which requested downstream stages ran and what they found.
     run_summary = {
         "schema_version": "hermes-appliance-run-summary-1.1",
         "run_id": result["run_id"],
         "run_dir_name": run_dir.name,
+        "core_readiness_status": core_status,
         "readiness_status": status,
+        "required_stage_failures": required_stage_failures,
+        "lease_ttl_seconds": lease_ttl,
+        "provider_controller_timeout_seconds": controller_timeout,
         "readiness_blockers": result["readiness"]["blockers"],
         "bounded_review_queues": result["readiness"]["bounded_review_queues"],
         "summary": result["summary"],
@@ -335,7 +371,9 @@ def main(argv=None) -> int:
     })
     (run_dir / "APPLIANCE_OUTCOME.json").write_text(json.dumps(outcome, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps(outcome, indent=2, ensure_ascii=False))
-    return 0 if package_ok and verify_ok is True else 1
+    if not package_ok or verify_ok is not True:
+        return 1
+    return 4 if required_stage_failures else 0
 
 
 if __name__ == "__main__":
