@@ -1,29 +1,33 @@
 {
-    "schema_version":  "extraction-factory-cross-platform-byte-stability-v1",
-    "recorded_at":  "2026-09-15",
-    "repository":  "sethburkhardt21-dev/extraction-factory",
-    "base_recertification":  "cbddc92ca0b1f44e5b984379a3d7dd2baae2de57",
-    "canonical_base_main":  "2d587d605049ebabe5c1a2fb1c5929cbd812ea5d",
-    "finding":  {
-                    "machine_b_default_checkout_verify":  "FAIL_BLOCKING",
-                    "control_core_autocrlf_false_verify":  "PASS",
-                    "root_cause":  "Git checkout text normalization changed certified bytes on Windows; certification itself bound the exact LF Git-blob production/test surface.",
-                    "production_semantics_changed":  false,
-                    "certification_semantics_changed":  false
-                },
-    "repair":  {
-                   "path":  ".gitattributes",
-                   "rule":  "* -text",
-                   "intent":  "Preserve repository blob bytes exactly across Windows/macOS/Linux and prevent core.autocrlf from invalidating certified manifests and evidence hashes.",
-                   "production_code_changed":  false,
-                   "test_code_changed":  false,
-                   "authority_model_changed":  false
-               },
-    "verification":  {
-                         "pre_fix_default_windows":  "FAIL_BLOCKING_CERTIFIED_FILES_CHANGED",
-                         "core_autocrlf_false_control":  "PASS",
-                         "fresh_default_windows_after_fix":  "PENDING",
-                         "independent_machine_a":  "PENDING"
-                     },
-    "scope_boundary":  "Checkout byte-stability only; no provider authority, semantic model certification, external effects, or unrelated repository mutation."
+  "schema_version": "extraction-factory-cross-platform-byte-stability-v1",
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "base_recertification": "cbddc92ca0b1f44e5b984379a3d7dd2baae2de57",
+  "canonical_base_main": "2d587d605049ebabe5c1a2fb1c5929cbd812ea5d",
+  "finding": {
+    "machine_b_default_checkout_verify": "FAIL_BLOCKING",
+    "control_core_autocrlf_false_verify": "PASS",
+    "root_cause": "Git checkout text normalization changed certified bytes on Windows; certification itself bound the exact LF Git-blob production/test surface.",
+    "production_semantics_changed": false,
+    "certification_semantics_changed": false
+  },
+  "repair": {
+    "path": ".gitattributes",
+    "rule": "* -text",
+    "intent": "Preserve repository blob bytes exactly across Windows/macOS/Linux and prevent core.autocrlf from invalidating certified manifests and evidence hashes.",
+    "production_code_changed": false,
+    "test_code_changed": false,
+    "authority_model_changed": false
+  },
+  "verification": {
+    "pre_fix_default_windows": "FAIL_BLOCKING_CERTIFIED_FILES_CHANGED",
+    "core_autocrlf_false_control": "PASS",
+    "fresh_default_windows_after_fix": "PASS_VERIFY_BUILD_AND_260_TESTS_1_SKIP",
+    "independent_machine_a": "PASS_VERIFY_BUILD_AND_260_TESTS_1_SKIP",
+    "machine_b_default_checkout_core_autocrlf": true,
+    "machine_a_checkout_core_autocrlf": false,
+    "candidate_commit_verified": "97a102e046ca96cea1b4d29310f002976446a48e",
+    "legacy_verify_factory_parity": "CANDIDATE_AND_MAIN_BOTH_FAIL_SAME_TWO_PRE_EXISTING_LEGACY_CHECKS"
+  },
+  "scope_boundary": "Checkout byte-stability only; no provider authority, semantic model certification, external effects, or unrelated repository mutation."
 }

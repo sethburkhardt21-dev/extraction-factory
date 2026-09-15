@@ -41,5 +41,29 @@
     "preflight": "b7b354d6698ec0369e4108671cc3e26171ad445bcca244097f62c5bbfa0e1eb5"
   },
   "scope_boundary": "This recertifies the already-canonical current extraction-factory mechanical execution/test surface. It does not add production capability, grant provider authority, alter semantic model certification, or change any unrelated repository.",
-  "independent_replay": "PENDING_MACHINE_B"
+  "independent_replay": "PASS_MACHINE_B_AND_MACHINE_A",
+  "independent_replay_evidence": {
+    "candidate_commit": "97a102e046ca96cea1b4d29310f002976446a48e",
+    "machine_b": {
+      "fresh_default_checkout_core_autocrlf": true,
+      "gitattributes_text_for_certified_path": "unset",
+      "verify_build": "PASS",
+      "unit_suite": "PASS_260_TESTS_1_SKIP"
+    },
+    "machine_a": {
+      "fresh_checkout_core_autocrlf": false,
+      "gitattributes_text_for_certified_path": "unset",
+      "verify_build": "PASS",
+      "unit_suite": "PASS_260_TESTS_1_SKIP"
+    },
+    "legacy_verify_factory": {
+      "candidate": "FAIL_BLOCKING",
+      "canonical_main_baseline": "FAIL_BLOCKING",
+      "same_failures": [
+        "json:PILOTS/MACHINES_P0299_P0301_TURN09/SOURCE_UNITS/source_unit_manifest.json",
+        "turn10_real_source_mutations"
+      ],
+      "classification": "PRE_EXISTING_LEGACY_PREFLIGHT_LIMITATION_NOT_INTRODUCED_BY_RECERTIFICATION"
+    }
+  }
 }
