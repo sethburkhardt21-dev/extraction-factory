@@ -63,7 +63,24 @@
     "model_certification_registry_present": "PASS"
   },
   "machine_b": {
-    "status": "PENDING_FRESH_DEFAULT_AUTOCRLF_TRUE_REPLAY"
+    "status": "PASS_STRUCTURAL_AND_TEST_REPLAY",
+    "fresh_default_checkout_core_autocrlf": true,
+    "fresh_clone_clean": true,
+    "runtime_python": "3.12.10",
+    "runtime_pypdf": "NOT_INSTALLED",
+    "effective_factory_policy": "text=unset,eol=unspecified",
+    "verify_build": "PASS",
+    "focused_certified_surface_tests": "PASS_6_TESTS",
+    "full_suite": "PASS_262_TESTS_1_SKIP",
+    "preflight_skip_tests": {
+      "overall": "FAIL_BLOCKING",
+      "manifest_integrity": "PASS",
+      "runtime_lock": "FAIL_EXPECTED_ENVIRONMENT_VERSION_MISMATCH_3.12.13_TO_3.12.10",
+      "model_certification_registry_present": "PASS",
+      "classification": "ENVIRONMENT_MISMATCH_ONLY_NOT_CERTIFIED_BYTE_OR_TEST_REGRESSION"
+    },
+    "post_validation_dirty_count": 3,
+    "post_validation_dirty_reason": "verify --skip-tests regenerates CURRENT_BUILD_MANIFEST/PREFLIGHT evidence; fresh clone was clean before validation."
   },
   "legacy_verify_factory": {
     "canonical_main_baseline": "FAIL_BLOCKING",
@@ -82,5 +99,6 @@
     "preflight": "e41838e976364a527dcc1c6013d2afc218e7bb8ac05b84318d433e91ba16ced6"
   },
   "scope_boundary": "Mechanical certification freshness and cross-platform exact-byte checkout stability only. No production effects, provider access, semantic model certification, DLE authority, or unrelated repository mutation.",
-  "promotion": "PENDING_MACHINE_B_INDEPENDENT_REPLAY"
+  "promotion": "READY_AFTER_FINAL_HEAD_AND_REMOTE_PARENT_GUARDS",
+  "cross_machine_conclusion": "Exact-byte factory policy reproduced cleanly on Machine B with core.autocrlf=true: fresh clone clean, verify_build PASS, and 262 tests PASS. Machine A canonical runtime 3.12.13 gives full preflight PASS."
 }
