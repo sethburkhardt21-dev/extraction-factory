@@ -13,6 +13,7 @@ from .hashing import sha256_file, sha256_json
 # authority if the test code that produced it can change without invalidating
 # the certificate.
 PRODUCTION_GLOBS = [
+    ".gitattributes",
     "hermes_factory/**/*.py",
     "providers_ext/**/*.py",
     "stages_ext/**/*.py",
@@ -24,6 +25,33 @@ PRODUCTION_GLOBS = [
     "RUN_FACTORY.sh",
     "CURRENT/MODEL_CERTIFICATION_REGISTRY.json",
 ]
+
+
+REQUIRED_BYTE_STABILITY_POLICY_LINES = {
+    "* -text",
+}
+
+
+def _validate_certified_byte_stability_policy(root: Path) -> None:
+    root = Path(root).resolve()
+    # Checkout conversion can invalidate exact-byte certification even when the
+    # Git blobs are correct. A repository checkout must therefore carry a local
+    # certified policy that disables text normalization for this surface.
+    # Extracted/runtime-only roots without repository metadata are already
+    # governed by their exact manifest bytes and do not need Git attributes.
+    if not (root.parent / ".git").exists():
+        return
+    policy = root / ".gitattributes"
+    if not policy.is_file():
+        raise RuntimeError("certified_byte_stability_policy_missing")
+    lines = {
+        line.strip()
+        for line in policy.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    missing = sorted(REQUIRED_BYTE_STABILITY_POLICY_LINES - lines)
+    if missing:
+        raise RuntimeError("certified_byte_stability_policy_incomplete:" + ",".join(missing))
 
 
 def production_files(root: Path) -> list[Path]:
@@ -38,6 +66,7 @@ def production_files(root: Path) -> list[Path]:
 
 def build_manifest(root: Path) -> Dict[str, Any]:
     root = Path(root)
+    _validate_certified_byte_stability_policy(root)
     files = []
     for p in production_files(root):
         files.append({
@@ -62,7 +91,7 @@ def write_current_manifest(root: Path, out: Path) -> Dict[str, Any]:
     manifest = build_manifest(root)
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+    out.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8", newline="\n")
     return manifest
 
 
@@ -101,7 +130,7 @@ def certify_build(root: Path, certificate_path: Path, *, test_report_path: Path,
     if certificate_path.exists():
         raise FileExistsError("certificate_already_exists; create a new versioned certificate instead of overwriting")
     certificate_path.parent.mkdir(parents=True, exist_ok=True)
-    certificate_path.write_text(json.dumps(cert, indent=2, sort_keys=True), encoding="utf-8")
+    certificate_path.write_text(json.dumps(cert, indent=2, sort_keys=True), encoding="utf-8", newline="\n")
     return cert
 
 

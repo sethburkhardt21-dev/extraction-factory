@@ -21,7 +21,7 @@ def run_tests(root: Path) -> dict:
         "output": text,
     }
     (root / "CURRENT").mkdir(exist_ok=True)
-    (root / "CURRENT" / "TEST_REPORT.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    (root / "CURRENT" / "TEST_REPORT.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8", newline="\n")
     md = ["# Hermes Advanced v1.1 Test Report", "", f"- Overall: **{report['overall']}**", f"- Return code: `{proc.returncode}`", f"- Duration: `{report['duration_seconds']}` seconds", "", "```text", text, "```", ""]
-    (root / "CURRENT" / "TEST_REPORT.md").write_text("\n".join(md), encoding="utf-8")
+    (root / "CURRENT" / "TEST_REPORT.md").write_text("\n".join(md), encoding="utf-8", newline="\n")
     return report

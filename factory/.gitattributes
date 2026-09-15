@@ -1,0 +1,2 @@
+# Certified execution/test surface must preserve exact Git blob bytes across clients.
+* -text

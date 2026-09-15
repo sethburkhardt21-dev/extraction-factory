@@ -11,8 +11,14 @@ from hermes_factory.build_integrity import build_manifest, certify_build, verify
 class CertifiedTestSurfaceTests(unittest.TestCase):
     def _root(self, td: Path) -> tuple[Path, Path]:
         root = td / "factory"
+        (td / ".git").mkdir()
         for rel in ["hermes_factory", "providers_ext", "stages_ext", "benchmarks_ext", "validation", "tests", "CURRENT"]:
             (root / rel).mkdir(parents=True, exist_ok=True)
+        (root / ".gitattributes").write_text(
+            "* -text\n",
+            encoding="utf-8",
+            newline="\n",
+        )
         (root / "hermes_factory" / "core.py").write_text("VALUE = 1\n", encoding="utf-8")
         (root / "tests" / "test_guard.py").write_text(
             "def test_guard():\n    assert True\n", encoding="utf-8"
@@ -34,6 +40,23 @@ class CertifiedTestSurfaceTests(unittest.TestCase):
             paths = {row["path"] for row in manifest["files"]}
             self.assertIn("tests/test_guard.py", paths)
             self.assertIn("tests/**/*.py", manifest["certified_surface_globs"])
+
+    def test_byte_stability_policy_is_certified_and_required(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root, _ = self._root(Path(raw))
+            manifest = build_manifest(root)
+            paths = {row["path"] for row in manifest["files"]}
+            self.assertIn(".gitattributes", paths)
+            (root / ".gitattributes").unlink()
+            with self.assertRaisesRegex(RuntimeError, "certified_byte_stability_policy_missing"):
+                build_manifest(root)
+
+    def test_incomplete_byte_stability_policy_is_rejected(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root, _ = self._root(Path(raw))
+            (root / ".gitattributes").write_text("*.py text eol=lf\n", encoding="utf-8", newline="\n")
+            with self.assertRaisesRegex(RuntimeError, "certified_byte_stability_policy_incomplete"):
+                build_manifest(root)
 
     def test_test_mutation_after_certification_fails_build_integrity(self):
         with tempfile.TemporaryDirectory() as raw:
