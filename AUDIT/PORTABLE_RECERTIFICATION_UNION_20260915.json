@@ -1,6 +1,11 @@
 {
   "authority_boundary": "Mechanical byte portability and build certification only; no provider authority, semantic model authority, production-effects authority, or unrelated repository mutation.",
   "base_main": "a6f75c2608f0607e607cef41e6828b05f261b586",
+  "donor_adjudication": {
+    "archive_ref": "refs/tags/archive/local-machine-b-20260915/extraction-portable-recertify-candidate",
+    "reason": "The donor LF-normalizing policy made historical CRLF blobs appear dirty under core.autocrlf=true. Its deterministic-writer and certified-policy hardening was harvested into an exact-byte-preserving policy instead.",
+    "status": "HARVESTED_SUPERSEDED_NOT_PROMOTED"
+  },
   "donor_archive_ref": "refs/tags/archive/local-machine-b-20260915/extraction-portable-recertify-candidate",
   "donor_commit": "095be80bb0c8ea9bbc1a1bc8525548b23e18cb33",
   "harvested_changes": [
@@ -9,19 +14,56 @@
     "emit LF explicitly from build manifest, test report, preflight, and runtime-lock writers",
     "add certified checkout-policy regression tests"
   ],
+  "implementation_commit": "872cd6e07bf22a2742d44eec8265a7db07937737",
   "intent": "Union the donor deterministic-output/certified-policy hardening with canonical exact-byte checkout preservation.",
   "policy": {
     "certified_factory": "factory/.gitattributes => * -text",
     "rationale": "Disable Git text conversion while generators explicitly emit LF, preserving exact certified bytes across Windows/macOS/Linux without renormalizing historical blobs.",
     "repository_root": ".gitattributes => * -text"
   },
+  "recertification": {
+    "artifact_sha256": {
+      "certified_build_manifest": "5eeb0cccb0a62869c64c881c8ed0895eba17e3ed4118c55eeefc21950fd2b245",
+      "current_build_manifest": "671470a6908abca03f9b0b4d80220aa9ae3301ea3785a41a4e7e6440ec8d7bfb",
+      "preflight": "147dfd048838555dd73bb0ae6b674c6e84b63d0fce40767f739d99d0783bc6e6",
+      "runtime_lock": "8a1f151a7efa9d67676c9b93d98e31f884ede31bf8f8133767e87049020136b6",
+      "test_report": "e3db45f6fc183d991d2263ff3f0705e679118849d91235512889724a64ec552c",
+      "versioned_certification": "5eeb0cccb0a62869c64c881c8ed0895eba17e3ed4118c55eeefc21950fd2b245"
+    },
+    "certification_id": "CERT-84d464521ceb4d9391688670946f64b2",
+    "certified_file_count": 96,
+    "factory_gitattributes_certified": true,
+    "parent_certification_id": "CERT-0e77fe600be74f3e9de6329267e09ef2",
+    "preflight_overall": "PASS",
+    "production_code_manifest_sha256": "ae596dce6029a677d4d83733ee6ee15d5c9882a89be2f122a2d34ca08a148319",
+    "runtime": {
+      "implementation": "CPython",
+      "python": "3.12.13"
+    },
+    "runtime_lock": {
+      "external_python_dependencies": {
+        "pypdf": "NOT_INSTALLED"
+      },
+      "python_implementation": "CPython",
+      "python_version": "3.12.13",
+      "runtime_contract": "hermes-factory-1.1"
+    },
+    "skipped": 1,
+    "test_count": 262,
+    "test_overall": "PASS",
+    "test_report_actual_sha256": "e3db45f6fc183d991d2263ff3f0705e679118849d91235512889724a64ec552c",
+    "test_report_sha256": "e3db45f6fc183d991d2263ff3f0705e679118849d91235512889724a64ec552c",
+    "test_returncode": 0
+  },
   "recorded_at": "2026-09-15",
   "repository": "sethburkhardt21-dev/extraction-factory",
   "schema_version": "extraction-factory-portable-union-v1",
   "verification": {
-    "machine_a_recertification": "PENDING",
+    "machine_a_pre_cert": "PASS_6_FOCUSED_AND_262_TESTS_1_SKIP_PYTHON_3_12_10",
+    "machine_a_recertification": "PASS_262_TESTS_1_SKIP_AND_PREFLIGHT_PASS_PYTHON_3_12_13",
+    "machine_a_verify_build": "PASS",
     "machine_b_post_cert": "PENDING",
-    "machine_b_pre_cert": "PENDING",
+    "machine_b_pre_cert": "PASS_6_FOCUSED_AND_262_TESTS_1_SKIP_PYTHON_3_14_2",
     "promotion": "PENDING"
   }
 }

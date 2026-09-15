@@ -1,5 +1,6 @@
 {
   "certified_surface_globs": [
+    ".gitattributes",
     "hermes_factory/**/*.py",
     "providers_ext/**/*.py",
     "stages_ext/**/*.py",
@@ -12,6 +13,11 @@
     "CURRENT/MODEL_CERTIFICATION_REGISTRY.json"
   ],
   "files": [
+    {
+      "bytes": 8,
+      "path": ".gitattributes",
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
     {
       "bytes": 2269,
       "path": "CURRENT/MODEL_CERTIFICATION_REGISTRY.json",
@@ -98,9 +104,9 @@
       "sha256": "e722f41f87c1dc9d675d0705d9a62e31e8c7abbb451690bb6be8f8e72d757835"
     },
     {
-      "bytes": 5498,
+      "bytes": 6454,
       "path": "hermes_factory/build_integrity.py",
-      "sha256": "8373f80bf785553056c80c875180851718134727dc2ccf63539c26f73935d6b3"
+      "sha256": "70dd3f08b2a2e346ea280d39604e5973a5a439776735c8fb8ab2598bd23751f0"
     },
     {
       "bytes": 3719,
@@ -203,9 +209,9 @@
       "sha256": "39f30d570454164bd4dd1b4126f30d9c575f8774c982424e984feea04fc83ef1"
     },
     {
-      "bytes": 2596,
+      "bytes": 2624,
       "path": "hermes_factory/preflight.py",
-      "sha256": "733420d1c9d06a73645d09595635e99755edec7f17e21849dcc2011af1aa82c1"
+      "sha256": "7dc6aa363f12be0f8f619597dc6f7fc1468e26d97b2d4e1e67f2c0cf79d2ab05"
     },
     {
       "bytes": 213,
@@ -248,9 +254,9 @@
       "sha256": "d565e12839a97643289d35f5ffeb411b061d0d61bd04d29690f5c9f0781d063c"
     },
     {
-      "bytes": 1537,
+      "bytes": 1551,
       "path": "hermes_factory/runtime_lock.py",
-      "sha256": "25716c3f2d50f726a17e5ae7300f0e68db0aff7eea33ad0377082ba6095d9d50"
+      "sha256": "801fdc27ccb4f4b5143f831dffef338a6c97217a1d3ea47b800d4f1d75ea8631"
     },
     {
       "bytes": 9375,
@@ -273,9 +279,9 @@
       "sha256": "a135ddd331aa7c5aa8c1eaae215ece16f2a734d97476015934d54b46e99eeb0e"
     },
     {
-      "bytes": 1307,
+      "bytes": 1335,
       "path": "hermes_factory/test_runner.py",
-      "sha256": "7c5d1c20d48f8ea346f2337d808c369384d8993691850b3da4ca3d7264fcfe74"
+      "sha256": "3972de3dec6c1a400472047861866d07a46f7386c61d7ea8f5327a73c7e06132"
     },
     {
       "bytes": 4848,
@@ -368,9 +374,9 @@
       "sha256": "92ee54b3d845b689e38eb795dd6f93628e32f2b8a034eb1b64bcf9c2fb26124c"
     },
     {
-      "bytes": 3528,
+      "bytes": 4557,
       "path": "tests/test_certified_test_surface.py",
-      "sha256": "beef86726e5a2eff8701cac274b7ceb6d7b125b8f479163627ab0b13828eb62b"
+      "sha256": "641bdb0fd6ec78ac46fb4b1a32f4a27e33ace0a0773d69a6dc36563dc6f6c398"
     },
     {
       "bytes": 13549,
@@ -489,8 +495,9 @@
     }
   ],
   "implementation": "CPython",
-  "production_code_manifest_sha256": "5355323c9b29894c344613d46cfa02789fb87aa7e00f6b7e6f5b7426516e1bb8",
+  "production_code_manifest_sha256": "ae596dce6029a677d4d83733ee6ee15d5c9882a89be2f122a2d34ca08a148319",
   "production_globs": [
+    ".gitattributes",
     "hermes_factory/**/*.py",
     "providers_ext/**/*.py",
     "stages_ext/**/*.py",
