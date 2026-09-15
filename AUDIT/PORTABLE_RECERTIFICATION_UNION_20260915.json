@@ -1,0 +1,27 @@
+{
+  "authority_boundary": "Mechanical byte portability and build certification only; no provider authority, semantic model authority, production-effects authority, or unrelated repository mutation.",
+  "base_main": "a6f75c2608f0607e607cef41e6828b05f261b586",
+  "donor_archive_ref": "refs/tags/archive/local-machine-b-20260915/extraction-portable-recertify-candidate",
+  "donor_commit": "095be80bb0c8ea9bbc1a1bc8525548b23e18cb33",
+  "harvested_changes": [
+    "certify factory/.gitattributes as part of the build surface",
+    "require the certified factory checkout policy when repository metadata is present",
+    "emit LF explicitly from build manifest, test report, preflight, and runtime-lock writers",
+    "add certified checkout-policy regression tests"
+  ],
+  "intent": "Union the donor deterministic-output/certified-policy hardening with canonical exact-byte checkout preservation.",
+  "policy": {
+    "certified_factory": "factory/.gitattributes => * -text",
+    "rationale": "Disable Git text conversion while generators explicitly emit LF, preserving exact certified bytes across Windows/macOS/Linux without renormalizing historical blobs.",
+    "repository_root": ".gitattributes => * -text"
+  },
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "schema_version": "extraction-factory-portable-union-v1",
+  "verification": {
+    "machine_a_recertification": "PENDING",
+    "machine_b_post_cert": "PENDING",
+    "machine_b_pre_cert": "PENDING",
+    "promotion": "PENDING"
+  }
+}

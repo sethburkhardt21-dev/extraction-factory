@@ -34,12 +34,12 @@ def run_preflight(root: Path, *, run_tests: bool = True) -> Dict[str, Any]:
         "claim_boundary": "Preflight verifies this exact build/runtime/mechanical test state. It does not imply semantic model certification.",
     }
     (root / "CURRENT").mkdir(exist_ok=True)
-    (root / "CURRENT" / "PREFLIGHT.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    (root / "CURRENT" / "PREFLIGHT.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8", newline="\n")
     lines = ["HERMES EXTRACTION FACTORY ADVANCED v1.1 PREFLIGHT", f"OVERALL: {overall}", ""]
     for c in checks:
         lines.append(f"{c['result']}: {c['name']}")
         if c["detail"]:
             detail = c["detail"] if isinstance(c["detail"], str) else json.dumps(c["detail"], ensure_ascii=False)
             lines.append("  " + detail.replace("\n", "\n  "))
-    (root / "CURRENT" / "PREFLIGHT.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (root / "CURRENT" / "PREFLIGHT.txt").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     return report
