@@ -1,0 +1,45 @@
+{
+  "schema_version": "extraction-factory-recertification-reconciliation-v1",
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "base_main": "2d587d605049ebabe5c1a2fb1c5929cbd812ea5d",
+  "reason": "Canonical main production/test surface had advanced to 95 governed files while CURRENT/CERTIFIED_BUILD_MANIFEST.json still certified the historical 37-file surface, causing verify_build to fail closed.",
+  "pre_repair": {
+    "certified_manifest_hash": "9afb9523bcd5a7a54c24d06713cf4d16f234cd9f3aa0a928a54427511395ba4c",
+    "certified_file_count": 37,
+    "current_manifest_hash": "5355323c9b29894c344613d46cfa02789fb87aa7e00f6b5f7426516e1bb8",
+    "current_file_count": 95,
+    "verify_build": "FAIL_BLOCKING"
+  },
+  "repair": {
+    "production_code_changed": false,
+    "test_code_changed": false,
+    "authority_model_changed": false,
+    "generated_evidence_only": true,
+    "certification_id": "CERT-0e77fe600be74f3e9de6329267e09ef2",
+    "parent_certification_id": "CERT-febabbd38b0a4e0b87ec5b065ff832c4",
+    "production_code_manifest_sha256": "5355323c9b29894c344613d46cfa02789fb87aa7e00f6b7e6f5b7426516e1bb8",
+    "certified_file_count": 95,
+    "runtime_python": "3.12.13",
+    "runtime_implementation": "CPython",
+    "runtime_pypdf": "NOT_INSTALLED"
+  },
+  "verification": {
+    "pre_cert_full_suite": "PASS_260_TESTS_1_SKIP",
+    "certify_build_rerun": "PASS_260_TESTS_1_SKIP",
+    "preflight": "PASS",
+    "manifest_integrity": "PASS",
+    "runtime_lock": "PASS",
+    "model_certification_registry_present": "PASS",
+    "advanced_test_suite": "PASS_260_TESTS_1_SKIP"
+  },
+  "artifact_sha256": {
+    "certified_build_manifest": "9a89e28ae33bbc9a018c910a422ecc37ea097dff50614a549a83af2b5654d099",
+    "versioned_certification": "9a89e28ae33bbc9a018c910a422ecc37ea097dff50614a549a83af2b5654d099",
+    "current_build_manifest": "4081da577edb9d15d33718bb8051c1b5ee0245e9e6ecfb683caa61f215f81b0a",
+    "test_report": "63f033798bf9d113c9174731beefc6f9835f81b13df9aabaa00cf55b08db6168",
+    "preflight": "b7b354d6698ec0369e4108671cc3e26171ad445bcca244097f62c5bbfa0e1eb5"
+  },
+  "scope_boundary": "This recertifies the already-canonical current extraction-factory mechanical execution/test surface. It does not add production capability, grant provider authority, alter semantic model certification, or change any unrelated repository.",
+  "independent_replay": "PENDING_MACHINE_B"
+}
