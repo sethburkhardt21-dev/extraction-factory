@@ -1,0 +1,73 @@
+{
+  "schema_version": "extraction-factory-portable-integration-v1",
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "canonical_base_main": "a6f75c2608f0607e607cef41e6828b05f261b586",
+  "source_hardening_commit": "53c21b6860b4d82b986c4038e107ce0f07c34fe6",
+  "recovered_donor": {
+    "commit": "095be80bb0c8ea9bbc1a1bc8525548b23e18cb33",
+    "archive_tag": "archive/local-machine-b-20260915/extraction-portable-recertify-095be80b",
+    "classification": "USEFUL_DONOR_NOT_DIRECTLY_PROMOTABLE",
+    "reason": [
+      "Donor introduced deterministic LF writers, certified checkout-policy enforcement, and two additional certified-surface tests.",
+      "Its broad factory text/eol=lf rule retroactively normalized historical CRLF blobs, so a fresh Machine-B checkout was dirty before verification.",
+      "The donor was therefore harvested selectively rather than promoted wholesale."
+    ],
+    "donor_machine_b_observation": {
+      "core_autocrlf": true,
+      "verify_build": "PASS",
+      "unit_suite": "PASS_262_TESTS_1_SKIP",
+      "fresh_checkout_clean": false,
+      "dirty_historical_paths_before_tests": 6
+    }
+  },
+  "integrated_hardening": {
+    "factory_local_policy": "* -text",
+    "root_policy_preserved": "* -text",
+    "policy_is_certified": true,
+    "exact_blob_checkout_preservation": true,
+    "deterministic_lf_generators": [
+      "factory/hermes_factory/build_integrity.py",
+      "factory/hermes_factory/test_runner.py",
+      "factory/hermes_factory/preflight.py",
+      "factory/hermes_factory/runtime_lock.py"
+    ],
+    "new_policy_tests": 2,
+    "production_capability_added": false,
+    "provider_authority_changed": false,
+    "semantic_model_authority_changed": false
+  },
+  "canonical_recertification": {
+    "certificate_path": "factory/CURRENT/CERTIFICATIONS/CERTIFIED_BUILD_MANIFEST_0007.json",
+    "certification_id": "CERT-7e8d11362e6b4a278ff8efee4f109b98",
+    "parent_certification_id": "CERT-0e77fe600be74f3e9de6329267e09ef2",
+    "production_code_manifest_sha256": "557d9366aae77c1757656217debbcdd7d77dcea081a3245e7e5cd50533b3a450",
+    "certified_file_count": 96,
+    "runtime_python": "3.12.13",
+    "runtime_implementation": "CPython",
+    "test_suite": "PASS_262_TESTS_1_SKIP",
+    "preflight": "PASS",
+    "verify_build": "PASS"
+  },
+  "artifact_sha256": {
+    "certified_build_manifest": "b8e96616d4a26868853bd6468f3c8a13009361cc8b1eda350df7421a88a682cc",
+    "versioned_certification": "b8e96616d4a26868853bd6468f3c8a13009361cc8b1eda350df7421a88a682cc",
+    "current_build_manifest": "3dc516d9f6cb04beb85917cbd23cc4fb4cd56f734d2be624681fd2069beff0bd",
+    "runtime_lock": "8a1f151a7efa9d67676c9b93d98e31f884ede31bf8f8133767e87049020136b6",
+    "test_report_json": "7b4f90553c325163c580d41eb5fa2a33040ddde1723fa6d638cb5c256544056d",
+    "test_report_md": "e0fa77e9c2632209a4f2618f06a02ae4c62878207f587e45eec8800f9f07c911",
+    "preflight_json": "117cea2a7b445efe9e68dfe75894818fda83ca1ff34a0bdf979dd143d2946016",
+    "preflight_txt": "0dd7df427c60e358bd06b8351d9549c94936c433abc3a6dd2a20be414e7b293a"
+  },
+  "machine_a": {
+    "runtime_python": "3.12.13",
+    "certify_build": "PASS",
+    "unit_suite": "PASS_262_TESTS_1_SKIP",
+    "verify_skip_tests": "PASS",
+    "read_only_verify_build": "PASS",
+    "fresh_source_checkout_before_certification": true
+  },
+  "machine_b_final_replay": "PENDING_FINAL_COMMITTED_CANDIDATE",
+  "legacy_verify_factory_boundary": "Historical verify_factory legacy pilot checks are separate from certified advanced-runtime verification; the same two legacy failures reproduce on prior canonical main and are not introduced by this hardening.",
+  "scope_boundary": "Mechanical byte-portability/certification hardening only. No external effects, provider authority, semantic model authority, DLE mutation, or unrelated repository mutation."
+}
