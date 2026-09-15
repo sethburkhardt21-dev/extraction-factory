@@ -22,7 +22,7 @@ def current_runtime() -> dict:
 def write_runtime_lock(path: Path) -> dict:
     data = current_runtime()
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(path).write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+    Path(path).write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8", newline="\n")
     return data
 
 
