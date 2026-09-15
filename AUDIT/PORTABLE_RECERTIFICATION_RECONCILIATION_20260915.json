@@ -1,0 +1,86 @@
+{
+  "schema_version": "extraction-factory-portable-recertification-reconciliation-v2",
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "canonical_base_main": "a6f75c2608f0607e607cef41e6828b05f261b586",
+  "prior_recertification": {
+    "certification_id": "CERT-0e77fe600be74f3e9de6329267e09ef2",
+    "manifest_sha256": "5355323c9b29894c344613d46cfa02789fb87aa7e00f6b7e6f5b7426516e1bb8",
+    "certified_file_count": 95
+  },
+  "donor_sibling": {
+    "commit": "095be80bb0c8ea9bbc1a1bc8525548b23e18cb33",
+    "branch": "recovery/extraction-portable-recertify-20260915",
+    "base": "2d587d605049ebabe5c1a2fb1c5929cbd812ea5d",
+    "disposition": "SELECTIVE_SOURCE_TEST_GENERATOR_HARVEST",
+    "harvested_paths": [
+      "factory/.gitattributes",
+      "factory/hermes_factory/build_integrity.py",
+      "factory/hermes_factory/preflight.py",
+      "factory/hermes_factory/runtime_lock.py",
+      "factory/hermes_factory/test_runner.py",
+      "factory/tests/test_certified_test_surface.py"
+    ],
+    "donor_generated_artifacts_replayed": false,
+    "donor_receipt_replayed": false
+  },
+  "rejected_intermediate_candidate": {
+    "commit": "7588c51c11f832bb7078886f1831a4796dbbf676",
+    "reason": "Broad factory text/eol attributes made a fresh Machine B clone report tracked historical generated files dirty despite verify_build passing. Candidate was not promoted."
+  },
+  "integration": {
+    "source_commit": "bae651475917a6dbe60dbba32baca9aed0d18ebf",
+    "root_policy": ".gitattributes: * -text",
+    "factory_policy": "factory/.gitattributes: * -text",
+    "policy_is_certified": true,
+    "tracked_generators_emit_explicit_lf": true,
+    "rationale": "Treat certified factory files as exact bytes so core.autocrlf cannot rewrite them; generators still emit deterministic LF for newly generated authoritative artifacts.",
+    "production_capability_added": false,
+    "provider_authority_changed": false,
+    "semantic_model_authority_changed": false
+  },
+  "certification": {
+    "certification_id": "CERT-1ef1072986194cddaf32d3280828f69c",
+    "parent_certification_id": "CERT-0e77fe600be74f3e9de6329267e09ef2",
+    "production_code_manifest_sha256": "587d3d09b0ea7f768459483549f7d1486cdcbf3a94d761358eafac40b754816a",
+    "certified_file_count": 96,
+    "runtime": {
+      "implementation": "CPython",
+      "python": "3.12.13"
+    },
+    "test_report_sha256": "636bc10bb61139c5ef5d5e4a9f691ba7686e01b1fb222d788f2f16d655fe5bfc",
+    "versioned_path": "factory/CURRENT/CERTIFICATIONS/CERTIFIED_BUILD_MANIFEST_0007.json"
+  },
+  "machine_a": {
+    "runtime_python": "3.12.13",
+    "runtime_pypdf": "NOT_INSTALLED",
+    "focused_certified_surface_tests": "PASS_6_TESTS",
+    "pre_cert_full_suite": "PASS_262_TESTS_1_SKIP",
+    "certify_build_rerun": "PASS_262_TESTS_1_SKIP",
+    "post_cert_verify_skip_tests": "PASS",
+    "manifest_integrity": "PASS",
+    "runtime_lock": "PASS",
+    "model_certification_registry_present": "PASS"
+  },
+  "machine_b": {
+    "status": "PENDING_FRESH_DEFAULT_AUTOCRLF_TRUE_REPLAY"
+  },
+  "legacy_verify_factory": {
+    "canonical_main_baseline": "FAIL_BLOCKING",
+    "prior_portable_candidate": "FAIL_BLOCKING",
+    "same_known_failures": [
+      "json:PILOTS/MACHINES_P0299_P0301_TURN09/SOURCE_UNITS/source_unit_manifest.json",
+      "turn10_real_source_mutations"
+    ],
+    "classification": "PRE_EXISTING_LEGACY_PREFLIGHT_LIMITATION_NOT_INTRODUCED_BY_PORTABILITY_REPAIR"
+  },
+  "artifact_sha256": {
+    "certified_build_manifest": "7e27d05210398874eba0d62de0ecf0eada36a038a4a38479a688e5886270fefb",
+    "versioned_certification": "7e27d05210398874eba0d62de0ecf0eada36a038a4a38479a688e5886270fefb",
+    "current_build_manifest": "14e792a009956fbfa186e8fabe279cc5023698cdd3b32db9c852cff1503bf6cf",
+    "test_report": "636bc10bb61139c5ef5d5e4a9f691ba7686e01b1fb222d788f2f16d655fe5bfc",
+    "preflight": "e41838e976364a527dcc1c6013d2afc218e7bb8ac05b84318d433e91ba16ced6"
+  },
+  "scope_boundary": "Mechanical certification freshness and cross-platform exact-byte checkout stability only. No production effects, provider access, semantic model certification, DLE authority, or unrelated repository mutation.",
+  "promotion": "PENDING_MACHINE_B_INDEPENDENT_REPLAY"
+}

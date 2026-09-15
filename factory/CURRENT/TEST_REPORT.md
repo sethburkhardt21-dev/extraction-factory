@@ -2,14 +2,14 @@
 
 - Overall: **PASS**
 - Return code: `0`
-- Duration: `8.94` seconds
+- Duration: `9.717` seconds
 
 ```text
 {
   "applied": true,
   "automatic_time_expiry": "NOT_DEFINED_BY_ARCHITECTURE",
   "certification_key": "OLLAMA|model|PRIMARY|W2|S1|BENCH",
-  "event_id": "CERTLIFE-2298448292d9e727efbe392e",
+  "event_id": "CERTLIFE-d1f02f5a204b713cafdddd21",
   "from_status": "CERTIFIED_WITH_LIMITS",
   "incident_ref": "INC-9",
   "invalidated_evidence_match_mode": "FULL_FINGERPRINT",
@@ -20,13 +20,13 @@
   "schema_version": "hermes-certification-lifecycle-transition-1.3",
   "to_status": "SUSPENDED"
 }
-registry updated: C:\Users\sethb\AppData\Local\Temp\tmpza0gsmux\registry.json
+registry updated: C:\Users\sethb\AppData\Local\Temp\tmptvm53ois\registry.json
 NOTE: registry is protected production state — rerun tests and certify-build after this change.
 {
   "applied": false,
   "automatic_time_expiry": "NOT_DEFINED_BY_ARCHITECTURE",
   "certification_key": "OLLAMA|model|PRIMARY|W2|S1|BENCH",
-  "event_id": "CERTLIFE-e42def7e30f9d5ebb6cff043",
+  "event_id": "CERTLIFE-dc6f9a1906746af4967ac671",
   "from_status": "CERTIFIED_WITH_LIMITS",
   "incident_ref": null,
   "invalidated_evidence_match_mode": "FULL_FINGERPRINT",
@@ -76,8 +76,8 @@ NOTE: registry is protected production state — rerun tests and certify-build a
       "U2"
     ],
     "primary": {
-      "score_path": "C:\\Users\\sethb\\AppData\\Local\\Temp\\tmpovkvdvka\\primary_score.json",
-      "score_sha256": "680f60e89cf447e4e9c5b480e9696b5624e59f1961c0db83c8ca8992f4535013",
+      "score_path": "C:\\Users\\sethb\\AppData\\Local\\Temp\\tmpus8pcn2s\\primary_score.json",
+      "score_sha256": "30ac85bc90542efd1adaf222598dcc23f86be9c0e71d8fa0c37883ee3c6d4673",
       "candidate_file_sha256": "28def7363299dc4444491eae19373d983d1549d113cd75ad180365932f3e41f0",
       "primary_candidate_file_sha256": null,
       "source_units_sha256": "da8e2a442fe34b92f03c2b976bb2764d1a87713d0a6b2d2500bf8cded322f9b7",
@@ -104,8 +104,8 @@ NOTE: registry is protected production state — rerun tests and certify-build a
       "registry_authority_sha256": "3955141318edbc9839ca2e8cfac73717497fc4c816ebce4e385a03ee85b9c858"
     },
     "blind": {
-      "score_path": "C:\\Users\\sethb\\AppData\\Local\\Temp\\tmpovkvdvka\\blind_score.json",
-      "score_sha256": "df03903712b1a526ce462659f53a40106443c925cc41796b27be58d360274a77",
+      "score_path": "C:\\Users\\sethb\\AppData\\Local\\Temp\\tmpus8pcn2s\\blind_score.json",
+      "score_sha256": "c3187db48bdf23db50b8535bec4e09bf268cbb1dc2126207d5e4e30b470c7a0f",
       "candidate_file_sha256": "469a9414281fa59fb763c042812161f55bd4dc2adc200f00824e839640e6716f",
       "primary_candidate_file_sha256": "28def7363299dc4444491eae19373d983d1549d113cd75ad180365932f3e41f0",
       "source_units_sha256": "da8e2a442fe34b92f03c2b976bb2764d1a87713d0a6b2d2500bf8cded322f9b7",
@@ -222,6 +222,8 @@ test_primary_baseline_authority_drift_fails (test_certification_replay_lifecycle
 test_scored_identity_authority_drift_fails (test_certification_replay_lifecycle.ReplayAuthorityTests.test_scored_identity_authority_drift_fails) ... ok
 test_whole_registry_sha_only_change_is_replay_equivalent (test_certification_replay_lifecycle.ReplayAuthorityTests.test_whole_registry_sha_only_change_is_replay_equivalent) ... ok
 test_certificate_records_test_surface_glob (test_certified_test_surface.CertifiedTestSurfaceTests.test_certificate_records_test_surface_glob) ... ok
+test_checkout_policy_is_certified_and_required (test_certified_test_surface.CertifiedTestSurfaceTests.test_checkout_policy_is_certified_and_required) ... ok
+test_incomplete_checkout_policy_is_rejected (test_certified_test_surface.CertifiedTestSurfaceTests.test_incomplete_checkout_policy_is_rejected) ... ok
 test_new_test_added_after_certification_fails_build_integrity (test_certified_test_surface.CertifiedTestSurfaceTests.test_new_test_added_after_certification_fails_build_integrity) ... ok
 test_test_mutation_after_certification_fails_build_integrity (test_certified_test_surface.CertifiedTestSurfaceTests.test_test_mutation_after_certification_fails_build_integrity) ... ok
 test_tests_are_part_of_certified_surface (test_certified_test_surface.CertifiedTestSurfaceTests.test_tests_are_part_of_certified_surface) ... ok
@@ -410,7 +412,7 @@ test_w2_text_family_can_still_be_locally_complete_when_no_other_flags_exist (tes
 test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags (test_w3_tierb_routing.W3TierBRoutingTests.test_w3_equation_family_cannot_be_locally_closed_without_any_specialist_flags) ... ok
 
 ----------------------------------------------------------------------
-Ran 260 tests in 7.914s
+Ran 262 tests in 8.283s
 
 OK (skipped=1)
 ```
