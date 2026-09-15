@@ -1,0 +1,61 @@
+{
+  "schema_version": "extraction-factory-portable-recertification-v1",
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "base_main": "2d587d605049ebabe5c1a2fb1c5929cbd812ea5d",
+  "problem": {
+    "summary": "Canonical main production/test surface had advanced beyond the historical committed build certificate, and raw-byte certification was not portable across Git clients with different autocrlf settings.",
+    "historical_certified_manifest_hash": "9afb9523bcd5a7a54c24d06713cf4d16f234cd9f3aa0a928a54427511395ba4c",
+    "historical_certified_file_count": 37,
+    "pre_repair_current_file_count": 95,
+    "machine_a_git_autocrlf": "false",
+    "machine_b_git_autocrlf": "true"
+  },
+  "rejected_attempt": {
+    "commit": "cbddc92ca0b1f44e5b984379a3d7dd2baae2de57",
+    "archive_ref": "refs/tags/archive/rejected-20260915/recertification-cross-machine-eol",
+    "reason": "Machine B correctly failed structural verify because checkout CRLF conversion changed raw certified file bytes. Candidate was not promoted."
+  },
+  "portability_repair": {
+    "git_policy": "factory/.gitattributes pins LF for certified JSON/Markdown/Python/shell/text/version files.",
+    "policy_is_certified": true,
+    "tracked_generators_emit_lf": true,
+    "modified_generators": [
+      "factory/hermes_factory/build_integrity.py",
+      "factory/hermes_factory/test_runner.py",
+      "factory/hermes_factory/preflight.py",
+      "factory/hermes_factory/runtime_lock.py"
+    ],
+    "production_capability_added": false,
+    "provider_authority_changed": false,
+    "semantic_model_authority_changed": false
+  },
+  "machine_a": {
+    "runtime_python": "3.12.13",
+    "pypdf": "NOT_INSTALLED",
+    "focused_certified_surface_tests": "PASS_6_OF_6",
+    "full_pre_cert_suite": "PASS_262_TESTS_1_SKIP",
+    "certify_build_rerun": "PASS_262_TESTS_1_SKIP",
+    "post_cert_verify": "PASS_262_TESTS_1_SKIP",
+    "preflight": "PASS",
+    "manifest_integrity": "PASS",
+    "runtime_lock": "PASS",
+    "model_certification_registry_present": "PASS",
+    "certification_id": "CERT-b378e10f5d88475a94d16117170577b7",
+    "parent_certification_id": "CERT-febabbd38b0a4e0b87ec5b065ff832c4",
+    "certified_manifest_hash": "afb017d716e8b16c4cbfe83a23288174aba148ca2e465c52a63fa4e43e635f14",
+    "certified_file_count": 96,
+    "test_report_sha256": "96427a4cf008a49c64f1d53356d469552cfcc06412837300db769a3209c4a3fc",
+    "test_report_binding_match": true,
+    "certified_policy_file_present": true,
+    "generated_artifacts_crlf_count": 0
+  },
+  "machine_b": {
+    "status": "PENDING_INDEPENDENT_FRESH_CLONE_REPLAY",
+    "expected_git_autocrlf": "true",
+    "expected_runtime_python": "3.12.10",
+    "note": "Structural manifest verification and full tests are required before promotion. Full preflight may remain runtime-lock blocked because the canonical runtime lock is Python 3.12.13."
+  },
+  "authority_boundary": "This change repairs mechanical certification freshness and cross-machine byte portability for the already-canonical extraction-factory surface. It does not authorize production effects, provider access, semantic model certification, or any unrelated repository.",
+  "promotion": "PENDING_MACHINE_B"
+}
