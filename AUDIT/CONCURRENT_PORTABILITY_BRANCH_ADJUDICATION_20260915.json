@@ -1,0 +1,45 @@
+{
+  "schema_version": "extraction-factory-concurrent-portability-adjudication-v1",
+  "recorded_at": "2026-09-15",
+  "repository": "sethburkhardt21-dev/extraction-factory",
+  "canonical_main_before_receipt": "58fbae7da005e9fecbfaa17c373c8841c9839775",
+  "canonical_factory_tree": "e34ceddc8b2549b6cdc5dba30969fed0cab15dbf",
+  "canonical_portability_evidence": {
+    "machine_a": "fresh clone clean; verify_build PASS; canonical Python 3.12.13 preflight PASS",
+    "machine_b": "fresh clone clean with core.autocrlf=true; factory policy effective text=unset/eol=unspecified; verify_build PASS; focused 6 tests PASS; full 262 tests PASS with 1 skip",
+    "policy": "factory/.gitattributes contains * -text and is itself part of the certified 96-file surface",
+    "certificate": "CERT-1ef1072986194cddaf32d3280828f69c",
+    "production_code_manifest_sha256": "587d3d09b0ea7f768459483549f7d1486cdcbf3a94d761358eafac40b754816a"
+  },
+  "concurrent_alternatives": [
+    {
+      "branch": "recovery/extraction-portable-integration-20260915",
+      "commit": "680bfb2a94220279fef9d8b57fc15c21dbb006e3",
+      "base": "a6f75c2608f0607e607cef41e6828b05f261b586",
+      "archive_tag": "archive/concurrent-alternative-20260915/extraction-portable-integration-680bfb2a",
+      "classification": "SUPERSEDED_EQUIVALENT_MAIN_STRONGER",
+      "reason": [
+        "Uses the same exact-byte * -text factory policy.",
+        "Source/test differences from canonical main are naming, comments, and error-token names rather than additional behavior.",
+        "Its receipt records Machine A verification only; canonical main also has independent clean Machine B autocrlf=true replay.",
+        "Its generated certification artifacts bind the alternative source naming and should not replace the cross-machine-verified canonical certificate."
+      ]
+    },
+    {
+      "branch": "recovery/extraction-portable-union-20260915",
+      "commit": "872cd6e07bf22a2742d44eec8265a7db07937737",
+      "base": "a6f75c2608f0607e607cef41e6828b05f261b586",
+      "archive_tag": "archive/concurrent-alternative-20260915/extraction-portable-union-872cd6e0",
+      "classification": "INCOMPLETE_PENDING_ALTERNATIVE",
+      "reason": [
+        "Uses the same exact-byte * -text factory policy.",
+        "Its receipt explicitly leaves Machine A recertification, Machine B pre/post certification, and promotion PENDING.",
+        "Relative to canonical main it removes the versioned 0007 certificate while only renaming policy/test symbols; it does not provide stronger accepted evidence."
+      ]
+    }
+  ],
+  "disposition": "ARCHIVE_EXACT_TIPS_THEN_DELETE_REMOTE_RECOVERY_BRANCHES_NO_REPLAY",
+  "factory_mutated_by_receipt": false,
+  "dle_mutated": false,
+  "scope_boundary": "Repository reconciliation evidence only. No production effects, provider authority, semantic model authority, DLE mutation, or unrelated repository mutation."
+}
