@@ -1,9 +1,9 @@
 {
   "files": [
     {
-      "bytes": 645,
+      "bytes": 1558,
       "path": "CURRENT/MODEL_CERTIFICATION_REGISTRY.json",
-      "sha256": "80c504364b35564c0a81c0f2293e9f93e92cf0d7c1e5403fc869a0fe4f13c351"
+      "sha256": "e667d59b6955472bc4473071216be311d0ca994778a79d24abc5cb4bc3a1ab60"
     },
     {
       "bytes": 122,
@@ -14,6 +14,26 @@
       "bytes": 6,
       "path": "VERSION",
       "sha256": "1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8"
+    },
+    {
+      "bytes": 2920,
+      "path": "benchmarks_ext/alignlib.py",
+      "sha256": "483d3b173252e165ae7c6df84cee026e0d1148387b922173e160dae9dcb0de0e"
+    },
+    {
+      "bytes": 7219,
+      "path": "benchmarks_ext/certify_roles.py",
+      "sha256": "f836c3df781bbd8eea7838994ea0b35910b36371ef92484a52744305296bdf3a"
+    },
+    {
+      "bytes": 13173,
+      "path": "benchmarks_ext/gold_build.py",
+      "sha256": "7c955579c121e47be413d3ef7cc11104e6cbe251dfa59f4ae3a777ce2a07c585"
+    },
+    {
+      "bytes": 9485,
+      "path": "benchmarks_ext/score_role.py",
+      "sha256": "58f7ecea66415a8bfc9ae97047a0e029d8e26170a96a2c49eba7d252b9be60c4"
     },
     {
       "bytes": 72,
@@ -41,14 +61,14 @@
       "sha256": "97ddae0999a94c82efb93eaef035926d7b80e2947fb507cf05cb337147b183eb"
     },
     {
-      "bytes": 4782,
+      "bytes": 4891,
       "path": "hermes_factory/build_integrity.py",
-      "sha256": "28c15b13bbda1a77a867dd62484a52f6f7a6862ee1ee71f7e72f04ea9a1fb168"
+      "sha256": "dfdbd721739a20aaa33cb11237c469d07c32437e03852780553e4e722142a72b"
     },
     {
-      "bytes": 11656,
+      "bytes": 13063,
       "path": "hermes_factory/cli.py",
-      "sha256": "7478261beebcad1ec14fcbf9e82a940d683f629ecb341f81d96a7b43b4fce9e8"
+      "sha256": "bed912a2957e2120e858b6d6a41b313940a7c31add5b7e714d67718b0408aff4"
     },
     {
       "bytes": 1741,
@@ -71,9 +91,9 @@
       "sha256": "47ff06ab84b6777ad8f30c4c2cb3cd23a755345c38596fcac6216815a84e37f6"
     },
     {
-      "bytes": 4875,
+      "bytes": 10697,
       "path": "hermes_factory/ingest.py",
-      "sha256": "5c20a392abdc7c332e208ef77c7ec7251e7b96426ee1eb22e3ddeee0c56cb15e"
+      "sha256": "07b515dd77ac9c18c68edc8de2e29f5f7ae693868bafaf5d3e2ca464e19cc961"
     },
     {
       "bytes": 25368,
@@ -86,9 +106,9 @@
       "sha256": "b21fcd7c7fc9eacc7781a4958bba5133df07d0b166d1a9b498bb0690a926145b"
     },
     {
-      "bytes": 1014,
+      "bytes": 1978,
       "path": "hermes_factory/model_registry.py",
-      "sha256": "88241d6abebc3dc703f01212da1c044851bc6f6962b935371655695a0133ae77"
+      "sha256": "6357a6dc2550c1dfc2ece14c8d0100607e21bede18af955ea1de5859720a870f"
     },
     {
       "bytes": 5713,
@@ -126,9 +146,9 @@
       "sha256": "1009f4cb1debe8db3a2640d0fdb97072e8f93a79290b059b4a046be1c16a3006"
     },
     {
-      "bytes": 2423,
+      "bytes": 2711,
       "path": "hermes_factory/providers/command.py",
-      "sha256": "4144f0e4acda2517ecccc68ff1a0f711812e6dcd1e0eb39741718aeb86073491"
+      "sha256": "8b1ba9c6a78b9dc1eabcfc761beaf9223b761420b90e7ac22cc5feddd45b63d0"
     },
     {
       "bytes": 2802,
@@ -136,9 +156,9 @@
       "sha256": "80ba902825c55e9eae3270e4f812507ef1800cb7f7ae4de3a49327cde30fab2e"
     },
     {
-      "bytes": 1978,
+      "bytes": 2546,
       "path": "hermes_factory/readiness.py",
-      "sha256": "1dbd35e1453fde8f98a6060e3ea6f162a1dca1a06cd75e15a8364ae515d05d79"
+      "sha256": "6dd13234027f5f861f42c50f15ac754cf733d4ab9881e5a805f955f495b6a618"
     },
     {
       "bytes": 1183,
@@ -146,9 +166,9 @@
       "sha256": "ffc132e117e6dbe91af694a45e8f6914c93d8b23becdab9e663d3100dc4f9866"
     },
     {
-      "bytes": 1918,
+      "bytes": 2559,
       "path": "hermes_factory/router.py",
-      "sha256": "25187b70f2875131da80986497e522c22026444499a5d06d4750c2d53027f4e0"
+      "sha256": "b7ff516128804419906f182d3825ca0450dc2e2f59f30ffadd05d9e3b967afcb"
     },
     {
       "bytes": 1537,
@@ -184,16 +204,40 @@
       "bytes": 3423,
       "path": "hermes_factory/union.py",
       "sha256": "e3dd26943074b2d04df983c8c21f67894e6603edbebfeb79ca6c9d28b0167cec"
+    },
+    {
+      "bytes": 15859,
+      "path": "providers_ext/llm_provider.py",
+      "sha256": "4e276e4fc4a41c5f36bd721432a02e904d58dc99f4bc9b3c5dabb9d0348698f5"
+    },
+    {
+      "bytes": 5884,
+      "path": "providers_ext/smoke_providers.py",
+      "sha256": "20988acb7b78676fd802df6bcedc4d9eb8fcec0496ccbbc2ac8266f599647841"
+    },
+    {
+      "bytes": 9010,
+      "path": "run_appliance.py",
+      "sha256": "ad79136a0f9a8841739ed0fdf9ecaed8df55fedfd943c1c7e3467b256b65be58"
+    },
+    {
+      "bytes": 11285,
+      "path": "stages_ext/compare_09d.py",
+      "sha256": "65cf604e318b1a48c2ef1f49bf2d9b643c26fa5bc8ef5f9797e568d77885630d"
     }
   ],
   "implementation": "CPython",
-  "production_code_manifest_sha256": "9afb9523bcd5a7a54c24d06713cf4d16f234cd9f3aa0a928a54427511395ba4c",
+  "production_code_manifest_sha256": "399ceec7eb56a34e378b4dca1a6decbdf717764b3a544cf457215f95139f0ba6",
   "production_globs": [
     "hermes_factory/**/*.py",
+    "providers_ext/**/*.py",
+    "stages_ext/**/*.py",
+    "benchmarks_ext/**/*.py",
+    "run_appliance.py",
     "VERSION",
     "RUN_FACTORY.sh",
     "CURRENT/MODEL_CERTIFICATION_REGISTRY.json"
   ],
-  "python": "3.12.13",
-  "schema_version": "hermes-current-build-manifest-1.1"
+  "python": "3.11.16",
+  "schema_version": "hermes-current-build-manifest-1.2"
 }
